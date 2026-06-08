@@ -32,3 +32,4 @@ while True:
 
 camara.release()
 cv2.destroyAllWindows()
+
