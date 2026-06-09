@@ -1,4 +1,5 @@
 import os
+import csv
 from datetime import datetime
 import streamlit as st
 import cv2
@@ -28,24 +29,47 @@ st.write("Proyecto VisionQA - ISSCJ")
 
 # ---------------- CÁMARA ----------------
 
-st.subheader("Camara en tiempo real")
+st.subheader("Captura de Imagen")
 
-run_camera = st.checkbox("Activar cámara")
+foto = st.camera_input("Toma una fotografía de la pieza")
 
-frame_window = st.image([])
+if foto is not None:
 
-if run_camera:
-    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    st.image(foto)
 
-    import time
-    time.sleep(1)  # deja que la cámara encienda
+    fecha_hora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
-    ret, frame = cap.read()
+    nombre_archivo = datetime.now().strftime(
+        "inspeccion_%Y%m%d_%H%M%S.jpg"
+    )
 
-    if not ret or frame is None:
-        st.error("No se pudo leer la cámara (frame vacío)")
-    else:
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        frame_window.image(frame)
+    ruta = os.path.join(
+        "inspecciones",
+        nombre_archivo
+    )
 
-    cap.release()
+    with open(ruta, "wb") as f:
+        f.write(foto.getbuffer())
+
+    archivo_csv = "registro_inspecciones.csv"
+
+    with open(
+        archivo_csv,
+        mode="a",
+        newline="",
+        encoding="utf-8"
+    ) as archivo:
+
+        escritor = csv.writer(archivo)
+
+        escritor.writerow([
+            fecha_hora,
+            "PENDIENTE",
+            nombre_archivo
+        ])
+
+    st.success("Imagen capturada y guardada correctamente")
+
+    st.write(f"Fecha y hora: {fecha_hora}")
+
+    st.write(f"Archivo guardado: {nombre_archivo}")
