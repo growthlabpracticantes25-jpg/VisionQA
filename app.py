@@ -4,6 +4,8 @@ from datetime import datetime
 import streamlit as st
 import cv2
 
+from modelo_ia import clasificar_imagen
+
 # ---------------- APP PRINCIPAL ----------------
 
 st.title("VisionQA")
@@ -50,6 +52,16 @@ if foto is not None:
 
     with open(ruta, "wb") as f:
         f.write(foto.getbuffer())
+          # -------- IA --------
+
+    resultado = clasificar_imagen(ruta)
+
+    prob_buena = resultado[0][0]
+    prob_mala = resultado[0][1]
+
+    st.write(resultado)
+
+    # --------------------
 
     archivo_csv = "registro_inspecciones.csv"
 
@@ -73,3 +85,4 @@ if foto is not None:
     st.write(f"Fecha y hora: {fecha_hora}")
 
     st.write(f"Archivo guardado: {nombre_archivo}")
+
