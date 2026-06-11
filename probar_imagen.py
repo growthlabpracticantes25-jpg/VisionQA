@@ -13,10 +13,11 @@ interpreter.allocate_tensors()
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
+# Pedir ruta
+ruta = input("Ruta de imagen: ")
+
 # Abrir imagen
-imagen = Image.open(
-    "dataset/malas/Mala 01.JPG"
-)
+imagen = Image.open(ruta)
 
 # Redimensionar
 imagen = imagen.resize((224, 224))

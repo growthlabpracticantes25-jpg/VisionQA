@@ -16,10 +16,38 @@ st.subheader("Estado del Sistema")
 st.success("Sistema listo para inspección")
 
 st.subheader("Resumen")
-st.write("Total inspecciones: 0")
-st.write("Piezas buenas: 0")
-st.write("Piezas malas: 0")
 
+total = 0
+aptas = 0
+no_aptas = 0
+
+archivo_csv = "registro_inspecciones.csv"
+
+if os.path.exists(archivo_csv):
+
+    with open(
+        archivo_csv,
+        mode="r",
+        encoding="utf-8"
+    ) as archivo:
+
+        lector = csv.reader(archivo)
+
+        for fila in lector:
+
+            total += 1
+
+            if len(fila) > 1:
+
+                if fila[1] == "APTO" or fila[1] == "BUENA":
+                    aptas += 1
+
+                elif fila[1] == "NO APTO" or fila[1] == "MALA":
+                    no_aptas += 1
+
+st.write(f"Total inspecciones: {total}")
+st.write(f"Piezas aptas: {aptas}")
+st.write(f"Piezas no aptas: {no_aptas}")
 st.button("Iniciar Inspección")
 
 st.subheader("Registro de Inspecciones")
@@ -52,16 +80,29 @@ if foto is not None:
 
     with open(ruta, "wb") as f:
         f.write(foto.getbuffer())
-          # -------- IA --------
+
+    # -------- IA --------
 
     resultado = clasificar_imagen(ruta)
 
     prob_buena = resultado[0][0]
     prob_mala = resultado[0][1]
 
-    st.write(resultado)
+    if prob_buena > prob_mala:
+        clasificacion = "APTO"
+        confianza = prob_buena * 100
+    else:
+        clasificacion = "NO APTO"
+        confianza = prob_mala * 100
 
-    # --------------------
+    st.subheader("Resultado de la Inspección")
+
+    if clasificacion == "APTO":
+        st.success(f"✅ APTO ({confianza:.2f}%)")
+    else:
+        st.error(f"❌ NO APTO ({confianza:.2f}%)")
+
+    # -------- CSV --------
 
     archivo_csv = "registro_inspecciones.csv"
 
@@ -76,7 +117,7 @@ if foto is not None:
 
         escritor.writerow([
             fecha_hora,
-            "PENDIENTE",
+            clasificacion,
             nombre_archivo
         ])
 
@@ -85,4 +126,3 @@ if foto is not None:
     st.write(f"Fecha y hora: {fecha_hora}")
 
     st.write(f"Archivo guardado: {nombre_archivo}")
-
