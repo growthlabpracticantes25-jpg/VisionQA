@@ -117,16 +117,86 @@ st.subheader("Análisis de Causas")
 
 if st.button("Analizar Causas"):
 
-    st.info(
-        """
-        Módulo de análisis de causas
-        basado en Manufactura Esbelta
-        y metodología 6 Sigma.
+    if inspecciones_validas > 0:
 
-        Integración con Gemini API
-        en desarrollo.
-        """
-    )
+        porcentaje_rechazo = (
+            no_aptas / inspecciones_validas
+        ) * 100
+
+        if porcentaje_rechazo < 20:
+
+            st.success(
+                f"""
+                Nivel de rechazo: {porcentaje_rechazo:.1f}%
+
+                El proceso presenta una
+                condición estable.
+
+                Recomendación:
+
+                Mantener monitoreo continuo
+                y control del proceso.
+                """
+            )
+
+        elif porcentaje_rechazo < 40:
+
+            st.warning(
+                f"""
+                Nivel de rechazo: {porcentaje_rechazo:.1f}%
+
+                Se observa una tendencia
+                moderada de defectos.
+
+                Posibles causas:
+
+                • Variación de material.
+                • Ajustes de proceso.
+                • Desgaste parcial de herramienta.
+
+                Recomendación:
+
+                Revisar parámetros críticos.
+                """
+            )
+
+        else:
+
+            st.error(
+                f"""
+                Nivel de rechazo: {porcentaje_rechazo:.1f}%
+
+                Condición crítica detectada.
+
+                Posibles causas:
+
+                • Herramienta desgastada.
+                • Problemas de calibración.
+                • Variación significativa del proceso.
+
+                Recomendación:
+
+                Realizar análisis de causa raíz
+                utilizando metodología 6M.
+                """
+            )
+    else:
+
+        st.success(
+            """
+            El proceso presenta una
+            tendencia estable.
+
+            La mayoría de las piezas
+            cumplen con los criterios
+            de calidad establecidos.
+
+            Recomendación:
+
+            Mantener monitoreo continuo
+            del proceso.
+            """
+        )
 st.button("Iniciar Inspección")
 
 st.subheader("Registro de Inspecciones")
@@ -210,6 +280,7 @@ archivo_subido = st.file_uploader(
 st.subheader("Captura de Imagen")
 
 foto = st.camera_input("Toma una fotografía de la pieza")
+
 if archivo_subido is not None:
 
     st.image(archivo_subido)
@@ -252,50 +323,8 @@ if archivo_subido is not None:
         st.error(
             f"❌ NO APTO ({confianza:.2f}%)"
         )
-if archivo_subido is not None:
 
-    st.image(archivo_subido)
-
-    fecha_hora = datetime.now().strftime(
-        "%d/%m/%Y %H:%M:%S"
-    )
-
-    nombre_archivo = datetime.now().strftime(
-        "archivo_%Y%m%d_%H%M%S.jpg"
-    )
-
-    ruta = os.path.join(
-        "inspecciones",
-        nombre_archivo
-    )
-
-    with open(ruta, "wb") as f:
-        f.write(archivo_subido.getbuffer())
-
-    resultado = clasificar_imagen(ruta)
-
-    prob_buena = resultado[0][0]
-    prob_mala = resultado[0][1]
-
-    if prob_buena > prob_mala:
-        clasificacion = "APTO"
-        confianza = prob_buena * 100
-    else:
-        clasificacion = "NO APTO"
-        confianza = prob_mala * 100
-
-    st.subheader("Resultado de la Inspección")
-
-    if clasificacion == "APTO":
-        st.success(
-            f"✅ APTO ({confianza:.2f}%)"
-        )
-    else:
-        st.error(
-            f"❌ NO APTO ({confianza:.2f}%)"
-        )
-
-    # -------- CSV --------
+       # -------- CSV --------
 
     archivo_csv = "registro_inspecciones.csv"
 
@@ -311,18 +340,20 @@ if archivo_subido is not None:
         escritor.writerow([
             fecha_hora,
             clasificacion,
+            f"{confianza:.2f}",
             nombre_archivo
         ])
 
     st.success(
         "Imagen cargada y registrada correctamente"
     )
-
 if foto is not None:
 
     st.image(foto)
 
-    fecha_hora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    fecha_hora = datetime.now().strftime(
+        "%d/%m/%Y %H:%M:%S"
+    )
 
     nombre_archivo = datetime.now().strftime(
         "inspeccion_%Y%m%d_%H%M%S.jpg"
@@ -340,6 +371,9 @@ if foto is not None:
 
     resultado = clasificar_imagen(ruta)
 
+    st.write("Resultado IA:")
+    st.write(resultado)
+
     prob_buena = resultado[0][0]
     prob_mala = resultado[0][1]
 
@@ -352,12 +386,19 @@ if foto is not None:
 
     st.subheader("Resultado de la Inspección")
 
+    st.write("Prob Buena:", prob_buena)
+    st.write("Prob Mala:", prob_mala)
+    
     if clasificacion == "APTO":
-        st.success(f"✅ APTO ({confianza:.2f}%)")
+        st.success(
+            f"✅ APTO ({confianza:.2f}%)"
+        )
     else:
-        st.error(f"❌ NO APTO ({confianza:.2f}%)")
+        st.error(
+            f"❌ NO APTO ({confianza:.2f}%)"
+        )
 
-    # -------- CSV --------
+# -------- CSV --------
 
     archivo_csv = "registro_inspecciones.csv"
 
@@ -373,6 +414,7 @@ if foto is not None:
         escritor.writerow([
             fecha_hora,
             clasificacion,
+            f"{confianza:.2f}",
             nombre_archivo
         ])
 
