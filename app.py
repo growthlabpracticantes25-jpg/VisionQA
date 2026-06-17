@@ -303,8 +303,14 @@ if archivo_subido is not None:
 
     resultado = clasificar_imagen(ruta)
 
+    st.write("Resultado IA:")
+    st.write(resultado)
+
     prob_buena = resultado[0][0]
     prob_mala = resultado[0][1]
+
+    st.write("Prob Buena:", prob_buena)
+    st.write("Prob Mala:", prob_mala)
 
     if prob_buena > prob_mala:
         clasificacion = "APTO"
