@@ -7,3 +7,9 @@ interpreter = tf.lite.Interpreter(
 interpreter.allocate_tensors()
 
 print("MODELO CARGADO CORRECTAMENTE")
+
+from modelo_ia import clasificar_imagen
+
+resultado = clasificar_imagen("dataset/malas/Mala 22.JPG")
+
+print(resultado)
