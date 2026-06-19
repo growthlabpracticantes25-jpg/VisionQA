@@ -4,6 +4,7 @@ from datetime import datetime
 import streamlit as st
 import cv2
 import matplotlib.pyplot as plt
+import pandas as pd 
 
 from modelo_ia import clasificar_imagen
 
@@ -229,7 +230,9 @@ if os.path.exists(archivo_csv):
 
                 Fecha: {ultima[0]}
 
-                Archivo: {ultima[2]}
+                Archivo Guardado: {ultima[3]}
+
+                Imagen Original: {ultima[4]}
                 """
             )
 
@@ -241,7 +244,9 @@ if os.path.exists(archivo_csv):
 
                 Fecha: {ultima[0]}
 
-                Archivo: {ultima[2]}
+                Archivo Guardado: {ultima[3]}
+
+                Imagen Original: {ultima[4]}
                 """
             )
 
@@ -258,10 +263,25 @@ if os.path.exists(archivo_csv):
         datos = list(lector)
 
     if len(datos) > 0:
-        st.table(datos)
 
-    else:
-        st.write("No hay inspecciones registradas")
+     df = pd.DataFrame(
+        datos,
+        columns=[
+            "Fecha",
+            "Resultado",
+            "Confianza (%)",
+            "Archivo Guardado",
+            "Imagen Original"
+        ]
+    )
+
+    st.dataframe(
+        df,
+        use_container_width=True
+    )
+
+else:
+ st.write("No hay inspecciones registradas")
 
 st.subheader("Información del Proyecto")
 st.write("Versión: 1.0")
@@ -283,6 +303,7 @@ foto = st.camera_input("Toma una fotografía de la pieza")
 
 if archivo_subido is not None:
 
+    nombre_original = archivo_subido.name 
     st.image(archivo_subido)
 
     fecha_hora = datetime.now().strftime(
@@ -347,7 +368,8 @@ if archivo_subido is not None:
             fecha_hora,
             clasificacion,
             f"{confianza:.2f}",
-            nombre_archivo
+             nombre_archivo,
+            nombre_original
         ])
 
     st.success(
