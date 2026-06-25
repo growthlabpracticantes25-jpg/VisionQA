@@ -5,17 +5,41 @@ import streamlit as st
 import cv2
 import matplotlib.pyplot as plt
 import pandas as pd 
-
 from modelo_ia import clasificar_imagen
+from gemini_analisis import analizar_causas 
 
 # ---------------- APP PRINCIPAL ----------------
+st.set_page_config(
+    page_title="VisionQA",
+    page_icon="🔍",
+    layout="wide"
+)
+st.title("🔍 VisionQA")
 
-st.title("VisionQA")
+st.markdown(
+    """
+    ### Sistema de Control de Calidad Asistido por IA
+    Inspección visual de piezas mediante inteligencia artificial, registro automático y análisis de causas.
+    """
+)
 
-st.write("Sistema de Control de Calidad Asistido por IA")
+st.divider()
 
-st.subheader("Estado del Sistema")
-st.success("Sistema listo para inspección")
+st.subheader("🟢 Estado del Sistema")
+
+st.success(
+    """
+    **Sistema listo para inspección**
+
+    ✔ Modelo de IA cargado correctamente
+
+    ✔ Gemini conectado
+
+    ✔ Registro de inspecciones disponible
+    """
+)
+
+st.divider()
 
 st.subheader("Resumen")
 
@@ -24,7 +48,7 @@ aptas = 0
 no_aptas = 0
 
 archivo_csv = "registro_inspecciones.csv"
-
+os.makedirs("inspecciones", exist_ok=True) 
 if os.path.exists(archivo_csv):
 
     with open(
@@ -50,21 +74,38 @@ if os.path.exists(archivo_csv):
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.metric("Total", total)
+    st.metric(
+        label="📦 Total de Inspecciones",
+        value=total
+    )
 
 with col2:
-    st.metric("Aptas", aptas)
+    st.metric(
+        label="✅ Piezas Aptas",
+        value=aptas
+    )
 
 with col3:
-    st.metric("No Aptas", no_aptas)
+    st.metric(
+        label="❌ Piezas No Aptas",
+        value=no_aptas
+    )
+    st.caption(
+    "Actualización automática con base en las inspecciones registradas."
+)
+
+st.divider()
 st.subheader("Estadísticas de Inspección")
+col_graf1, col_graf2 = st.columns(2)
 
 datos_grafica = {
     "Aptas": aptas,
     "No Aptas": no_aptas
 }
 
-st.bar_chart(datos_grafica)
+with col_graf1:
+    st.bar_chart(datos_grafica)
+
 # -------- KPIs --------
 
 inspecciones_validas = aptas + no_aptas
@@ -94,6 +135,256 @@ if inspecciones_validas > 0:
             "Tasa de Rechazo",
             f"{porcentaje_no_apto:.1f}%"
         )
+st.divider() 
+
+st.subheader("🔎 Módulo de Inspección")
+# ---------------- CARGA DE ARCHIVO ----------------
+
+st.subheader("📂 Cargar Imagen para Inspección")
+
+archivo_subido = st.file_uploader(
+    "Selecciona una imagen",
+    type=["jpg", "jpeg", "png"]
+)
+
+# ---------------- CÁMARA ----------------
+
+st.subheader("📷 Captura de Imagen en Tiempo Real")
+
+foto = st.camera_input("Toma una fotografía de la pieza")
+
+if archivo_subido is not None:
+
+    nombre_original = archivo_subido.name 
+    st.image(archivo_subido)
+
+    fecha_hora = datetime.now().strftime(
+        "%d/%m/%Y %H:%M:%S"
+    )
+
+    nombre_archivo = datetime.now().strftime(
+        "archivo_%Y%m%d_%H%M%S.jpg"
+    )
+
+    ruta = os.path.join(
+        "inspecciones",
+        nombre_archivo
+    )
+
+    with open(ruta, "wb") as f:
+        f.write(archivo_subido.getbuffer())
+
+    resultado = clasificar_imagen(ruta)
+
+    st.write("Resultado IA:")
+    st.write(resultado)
+
+    prob_buena = resultado[0][0]
+    prob_mala = resultado[0][1]
+
+    st.write("Prob Buena:", prob_buena)
+    st.write("Prob Mala:", prob_mala)
+
+    diferencia = abs(prob_buena - prob_mala)
+
+    if diferencia < 0.10:
+        clasificacion = "REVISION MANUAL"
+        confianza = max(prob_buena, prob_mala) * 100
+
+    elif prob_buena > prob_mala:
+        clasificacion = "APTO"
+        confianza = prob_buena * 100
+
+    else:
+        clasificacion = "NO APTO"
+        confianza = prob_mala * 100
+
+    st.subheader("Resultado de la Inspección")
+
+    if clasificacion == "APTO":
+        st.success(
+            f"""
+            ✅ **RESULTADO DE LA INSPECCIÓN**
+
+            **Estado:** APTO
+
+            **Confianza:** {confianza:.2f}%
+
+            **Prioridad:** 🟢 Baja
+
+            **Acción recomendada:** Liberar pieza.
+            """
+        )
+
+    elif clasificacion == "NO APTO":
+        st.error(
+            f"""
+            ❌ **RESULTADO DE LA INSPECCIÓN**
+
+            **Estado:** NO APTO
+
+            **Confianza:** {confianza:.2f}%
+
+            **Prioridad:** 🔴 Alta
+
+            **Acción recomendada:** Retener pieza e inspeccionar manualmente.
+            """
+        )
+
+    else:
+        st.warning(
+            f"""
+            ⚠️ **RESULTADO DE LA INSPECCIÓN**
+
+            **Estado:** REVISIÓN MANUAL
+
+            **Confianza:** {confianza:.2f}%
+
+            **Prioridad:** 🟡 Media
+
+            **Acción recomendada:** Validar pieza con operador.
+            """
+        )
+
+    with open(
+        archivo_csv,
+        mode="a",
+        newline="",
+        encoding="utf-8"
+    ) as archivo:
+
+        escritor = csv.writer(archivo)
+
+        escritor.writerow([
+            fecha_hora,
+            clasificacion,
+            f"{confianza:.2f}",
+            nombre_archivo,
+            nombre_original
+        ])
+
+    st.success("Imagen cargada y registrada correctamente")
+
+if foto is not None:
+
+    st.image(foto)
+
+    fecha_hora = datetime.now().strftime(
+        "%d/%m/%Y %H:%M:%S"
+    )
+
+    nombre_archivo = datetime.now().strftime(
+        "inspeccion_%Y%m%d_%H%M%S.jpg"
+    )
+
+    ruta = os.path.join(
+        "inspecciones",
+        nombre_archivo
+    )
+
+    with open(ruta, "wb") as f:
+        f.write(foto.getbuffer())
+
+    # -------- IA --------
+
+    resultado = clasificar_imagen(ruta)
+
+    st.write("Resultado IA:")
+    st.write(resultado)
+
+    prob_buena = resultado[0][0]
+    prob_mala = resultado[0][1]
+
+    diferencia = abs(prob_buena - prob_mala)
+
+    if diferencia < 0.10:
+        clasificacion = "REVISION MANUAL"
+        confianza = max(prob_buena, prob_mala) * 100
+
+    elif prob_buena > prob_mala:
+        clasificacion = "APTO"
+        confianza = prob_buena * 100
+
+    else:
+        clasificacion = "NO APTO"
+        confianza = prob_mala * 100
+
+    st.subheader("Resultado de la Inspección")
+
+    st.write(f"Probabilidad Buena: {prob_buena:.4f}")
+    st.write(f"Probabilidad Mala: {prob_mala:.4f}")
+
+    if clasificacion == "APTO":
+        st.success(
+            f"""
+            ✅ **RESULTADO DE LA INSPECCIÓN**
+
+            **Estado:** APTO
+
+            **Confianza:** {confianza:.2f}%
+
+            **Prioridad:** 🟢 Baja
+
+            **Acción recomendada:** Liberar pieza.
+            """
+        )
+
+    elif clasificacion == "NO APTO":
+        st.error(
+            f"""
+            ❌ **RESULTADO DE LA INSPECCIÓN**
+
+            **Estado:** NO APTO
+
+            **Confianza:** {confianza:.2f}%
+
+            **Prioridad:** 🔴 Alta
+
+            **Acción recomendada:** Retener pieza e inspeccionar manualmente.
+            """
+        )
+
+    else:
+        st.warning(
+            f"""
+            ⚠️ **RESULTADO DE LA INSPECCIÓN**
+
+            **Estado:** REVISIÓN MANUAL
+
+            **Confianza:** {confianza:.2f}%
+
+            **Prioridad:** 🟡 Media
+
+            **Acción recomendada:** Validar pieza con operador.
+            """
+        )
+
+# -------- CSV --------
+
+    archivo_csv = "registro_inspecciones.csv"
+
+    with open(
+        archivo_csv,
+        mode="a",
+        newline="",
+        encoding="utf-8"
+    ) as archivo:
+
+        escritor = csv.writer(archivo)
+
+        escritor.writerow([
+            fecha_hora,
+            clasificacion,
+            f"{confianza:.2f}",
+            nombre_archivo,
+            "Imagen capturada con cámara"
+        ])
+
+    st.success("Imagen capturada y guardada correctamente")
+
+    st.write(f"Fecha y hora: {fecha_hora}")
+
+    st.write(f"Archivo guardado: {nombre_archivo}") 
 
 # -------- GRÁFICA DE PASTEL --------
 
@@ -111,93 +402,75 @@ if inspecciones_validas > 0:
 
     ax.axis("equal")
 
-    st.pyplot(fig)
+    with col_graf2:
+     st.pyplot(fig)
 # -------- ANALIZAR CAUSAS --------
 
-st.subheader("Análisis de Causas")
+st.subheader("Análisis de Causas con IA Generativa")
 
-if st.button("Analizar Causas"):
+# -------- ÚLTIMA INSPECCIÓN --------
+col_g1, col_g2, col_g3 = st.columns(3) 
+if st.button("Analizar Última Inspección con Gemini"):
 
-    if inspecciones_validas > 0:
+    if os.path.exists(archivo_csv):
 
-        porcentaje_rechazo = (
-            no_aptas / inspecciones_validas
-        ) * 100
+        with open(archivo_csv, mode="r", encoding="utf-8") as archivo:
+            lineas = archivo.readlines()
 
-        if porcentaje_rechazo < 20:
+        if len(lineas) > 0:
 
-            st.success(
-                f"""
-                Nivel de rechazo: {porcentaje_rechazo:.1f}%
+            ultima_inspeccion = lineas[-1]
 
-                El proceso presenta una
-                condición estable.
+            with st.spinner("Gemini está analizando la última inspección..."):
 
-                Recomendación:
+                try:
+                    resultado_gemini = analizar_causas(ultima_inspeccion)
 
-                Mantener monitoreo continuo
-                y control del proceso.
-                """
-            )
+                    st.subheader("🧠 Análisis IA de Última Inspección")
+                    st.markdown(resultado_gemini)
 
-        elif porcentaje_rechazo < 40:
-
-            st.warning(
-                f"""
-                Nivel de rechazo: {porcentaje_rechazo:.1f}%
-
-                Se observa una tendencia
-                moderada de defectos.
-
-                Posibles causas:
-
-                • Variación de material.
-                • Ajustes de proceso.
-                • Desgaste parcial de herramienta.
-
-                Recomendación:
-
-                Revisar parámetros críticos.
-                """
-            )
+                except Exception as e:
+                    st.error("Ocurrió un error al conectar con Gemini.")
+                    st.write(e)
 
         else:
+            st.warning("No hay inspecciones registradas.")
 
-            st.error(
-                f"""
-                Nivel de rechazo: {porcentaje_rechazo:.1f}%
-
-                Condición crítica detectada.
-
-                Posibles causas:
-
-                • Herramienta desgastada.
-                • Problemas de calibración.
-                • Variación significativa del proceso.
-
-                Recomendación:
-
-                Realizar análisis de causa raíz
-                utilizando metodología 6M.
-                """
-            )
     else:
+        st.warning("No existe el archivo de inspecciones.")
 
-        st.success(
-            """
-            El proceso presenta una
-            tendencia estable.
 
-            La mayoría de las piezas
-            cumplen con los criterios
-            de calidad establecidos.
+# -------- ÚLTIMAS 10 INSPECCIONES --------
 
-            Recomendación:
+if st.button("Analizar Últimas 10 Inspecciones con Gemini"):
 
-            Mantener monitoreo continuo
-            del proceso.
-            """
-        )
+    if os.path.exists(archivo_csv):
+
+        with open(archivo_csv, mode="r", encoding="utf-8") as archivo:
+            datos = archivo.readlines()
+
+        datos_csv = "".join(datos[-10:])
+
+        if datos_csv.strip() != "":
+
+            with st.spinner("Gemini está analizando las causas..."):
+
+                try:
+                    resultado_gemini = analizar_causas(datos_csv)
+
+                    st.subheader("🧠 Análisis IA - Gemini")
+                    st.write(resultado_gemini)
+
+                except Exception as e:
+                    st.error("Ocurrió un error al conectar con Gemini.")
+                    st.write(e)
+
+        else:
+            st.warning("El archivo de inspecciones está vacío.")
+
+    else:
+        st.warning("No existe el archivo de registro de inspecciones.")
+
 st.button("Iniciar Inspección")
 
 st.subheader("Registro de Inspecciones")
@@ -222,7 +495,7 @@ if os.path.exists(archivo_csv):
 
         st.subheader("Última Inspección")
 
-        if ultima[1] == "APTO":
+        if len(ultima) > 1 and ultima[1] == "APTO":
 
             st.success(
                 f"""
@@ -287,167 +560,3 @@ st.subheader("Información del Proyecto")
 st.write("Versión: 1.0")
 st.write("Proyecto VisionQA - ISSCJ")
 
-# ---------------- CARGA DE ARCHIVO ----------------
-
-st.subheader("Cargar Imagen")
-
-archivo_subido = st.file_uploader(
-    "Selecciona una imagen",
-    type=["jpg", "jpeg", "png"]
-)
-# ---------------- CÁMARA ----------------
-
-st.subheader("Captura de Imagen")
-
-foto = st.camera_input("Toma una fotografía de la pieza")
-
-if archivo_subido is not None:
-
-    nombre_original = archivo_subido.name 
-    st.image(archivo_subido)
-
-    fecha_hora = datetime.now().strftime(
-        "%d/%m/%Y %H:%M:%S"
-    )
-
-    nombre_archivo = datetime.now().strftime(
-        "archivo_%Y%m%d_%H%M%S.jpg"
-    )
-
-    ruta = os.path.join(
-        "inspecciones",
-        nombre_archivo
-    )
-
-    with open(ruta, "wb") as f:
-        f.write(archivo_subido.getbuffer())
-
-    resultado = clasificar_imagen(ruta)
-
-    st.write("Resultado IA:")
-    st.write(resultado)
-
-    prob_buena = resultado[0][0]
-    prob_mala = resultado[0][1]
-
-    st.write("Prob Buena:", prob_buena)
-    st.write("Prob Mala:", prob_mala)
-
-    if prob_buena > prob_mala:
-        clasificacion = "APTO"
-        confianza = prob_buena * 100
-    else:
-        clasificacion = "NO APTO"
-        confianza = prob_mala * 100
-
-    st.subheader("Resultado de la Inspección")
-
-    if clasificacion == "APTO":
-        st.success(
-            f"✅ APTO ({confianza:.2f}%)"
-        )
-    else:
-        st.error(
-            f"❌ NO APTO ({confianza:.2f}%)"
-        )
-
-       # -------- CSV --------
-
-    archivo_csv = "registro_inspecciones.csv"
-
-    with open(
-        archivo_csv,
-        mode="a",
-        newline="",
-        encoding="utf-8"
-    ) as archivo:
-
-        escritor = csv.writer(archivo)
-
-        escritor.writerow([
-            fecha_hora,
-            clasificacion,
-            f"{confianza:.2f}",
-             nombre_archivo,
-            nombre_original
-        ])
-
-    st.success(
-        "Imagen cargada y registrada correctamente"
-    )
-if foto is not None:
-
-    st.image(foto)
-
-    fecha_hora = datetime.now().strftime(
-        "%d/%m/%Y %H:%M:%S"
-    )
-
-    nombre_archivo = datetime.now().strftime(
-        "inspeccion_%Y%m%d_%H%M%S.jpg"
-    )
-
-    ruta = os.path.join(
-        "inspecciones",
-        nombre_archivo
-    )
-
-    with open(ruta, "wb") as f:
-        f.write(foto.getbuffer())
-
-    # -------- IA --------
-
-    resultado = clasificar_imagen(ruta)
-
-    st.write("Resultado IA:")
-    st.write(resultado)
-
-    prob_buena = resultado[0][0]
-    prob_mala = resultado[0][1]
-
-    if prob_buena > prob_mala:
-        clasificacion = "APTO"
-        confianza = prob_buena * 100
-    else:
-        clasificacion = "NO APTO"
-        confianza = prob_mala * 100
-
-    st.subheader("Resultado de la Inspección")
-
-    st.write("Prob Buena:", prob_buena)
-    st.write("Prob Mala:", prob_mala)
-    
-    if clasificacion == "APTO":
-        st.success(
-            f"✅ APTO ({confianza:.2f}%)"
-        )
-    else:
-        st.error(
-            f"❌ NO APTO ({confianza:.2f}%)"
-        )
-
-# -------- CSV --------
-
-    archivo_csv = "registro_inspecciones.csv"
-
-    with open(
-        archivo_csv,
-        mode="a",
-        newline="",
-        encoding="utf-8"
-    ) as archivo:
-
-        escritor = csv.writer(archivo)
-
-        escritor.writerow([
-            fecha_hora,
-            clasificacion,
-            f"{confianza:.2f}",
-            nombre_archivo
-        ])
-
-    st.success("Imagen capturada y guardada correctamente")
-
-    st.write(f"Fecha y hora: {fecha_hora}")
-
-    st.write(f"Archivo guardado: {nombre_archivo}")
