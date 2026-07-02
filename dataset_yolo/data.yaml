@@ -1,0 +1,11 @@
+path: C:/Users/DELL/OneDrive/Desktop/VisionQA/dataset_yolo
+
+train: images/train
+val: images/train
+
+names:
+  0: rayada
+  1: rota
+  2: sin_backplates
+  3: doblada
+  4: manchada
