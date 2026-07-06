@@ -14,7 +14,24 @@ st.set_page_config(
     page_icon="🔍",
     layout="wide"
 )
-st.title("🔍 VisionQA")
+# -------- CARGAR ESTILOS CORPORATIVOS --------
+
+with open("styles/styles.css", encoding="utf-8") as f:
+    st.markdown(
+        f"<style>{f.read()}</style>",
+        unsafe_allow_html=True
+    )
+st.markdown(
+    """
+    <div class="iot-header">
+        <div class="iot-title">VisionQA</div>
+        <div class="iot-subtitle">
+            Sistema inteligente de inspección visual asistido por Inteligencia Artificial
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 st.markdown(
     """
@@ -74,23 +91,42 @@ if os.path.exists(archivo_csv):
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.metric(
-        label="📦 Total de Inspecciones",
-        value=total
+    st.markdown(
+        f"""
+        <div class="kpi-card">
+            <div class="kpi-icon">📦</div>
+            <div class="kpi-value">{total}</div>
+            <div class="kpi-label">Total de inspecciones</div>
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
 with col2:
-    st.metric(
-        label="✅ Piezas Aptas",
-        value=aptas
+    st.markdown(
+        f"""
+        <div class="kpi-card">
+            <div class="kpi-icon">✅</div>
+            <div class="kpi-value">{aptas}</div>
+            <div class="kpi-label">Piezas aptas</div>
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
 with col3:
-    st.metric(
-        label="❌ Piezas No Aptas",
-        value=no_aptas
+    st.markdown(
+        f"""
+        <div class="kpi-card">
+            <div class="kpi-icon">❌</div>
+            <div class="kpi-value">{no_aptas}</div>
+            <div class="kpi-label">Piezas no aptas</div>
+        </div>
+        """,
+        unsafe_allow_html=True
     )
-    st.caption(
+
+st.caption(
     "Actualización automática con base en las inspecciones registradas."
 )
 
@@ -104,7 +140,34 @@ datos_grafica = {
 }
 
 with col_graf1:
-    st.bar_chart(datos_grafica)
+
+    fig, ax = plt.subplots(figsize=(5,4))
+
+    categorias = ["Aptas", "No Aptas"]
+    valores = [aptas, no_aptas]
+
+    ax.bar(
+        categorias,
+        valores,
+        color=["#1D7EAE", "#DC3545"],
+        width=0.55
+    )
+
+    ax.set_title(
+        "Resultados de Inspección",
+        fontsize=14,
+        fontweight="bold",
+        color="#231F20"
+    )
+
+    ax.set_ylabel("Cantidad")
+
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+
+    plt.tight_layout()
+
+    st.pyplot(fig)
 
 # -------- KPIs --------
 
@@ -122,25 +185,49 @@ if inspecciones_validas > 0:
 
     st.subheader("Indicadores de Calidad")
 
-    col4, col5 = st.columns(2)
+col4, col5 = st.columns(2)
 
-    with col4:
-        st.metric(
-            "Tasa de Aprobación",
-            f"{porcentaje_apto:.1f}%"
-        )
+with col4:
+    st.markdown(
+        f"""
+        <div class="kpi-card">
+            <div class="kpi-icon">📈</div>
+            <div class="kpi-value">{porcentaje_apto:.1f}%</div>
+            <div class="kpi-label">Tasa de aprobación</div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-    with col5:
-        st.metric(
-            "Tasa de Rechazo",
-            f"{porcentaje_no_apto:.1f}%"
-        )
+with col5:
+    st.markdown(
+        f"""
+        <div class="kpi-card">
+            <div class="kpi-icon">📉</div>
+            <div class="kpi-value">{porcentaje_no_apto:.1f}%</div>
+            <div class="kpi-label">Tasa de rechazo</div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
 st.divider() 
 
-st.subheader("🔎 Módulo de Inspección")
+st.markdown(
+    """
+    <div class="inspection-card">
+        <div class="inspection-title">🔎 Módulo de Inspección</div>
+        <div class="inspection-subtitle">
+            Selecciona el método de captura para evaluar la pieza.
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 # ---------------- CARGA DE ARCHIVO ----------------
 
-st.subheader("📂 Cargar Imagen para Inspección")
+st.markdown("### 📂 Cargar imagen desde el equipo")
+st.caption("Sube una fotografía de la pieza para realizar la inspección.")
 
 archivo_subido = st.file_uploader(
     "Selecciona una imagen",
@@ -148,9 +235,10 @@ archivo_subido = st.file_uploader(
 )
 
 # ---------------- CÁMARA ----------------
+st.divider()
 
-st.subheader("📷 Captura de Imagen en Tiempo Real")
-
+st.markdown("### 📷 Capturar imagen en tiempo real")
+st.caption("Toma una fotografía directamente desde la cámara conectada.")
 foto = st.camera_input("Toma una fotografía de la pieza")
 
 if archivo_subido is not None:
@@ -202,49 +290,52 @@ if archivo_subido is not None:
     st.subheader("Resultado de la Inspección")
 
     if clasificacion == "APTO":
-        st.success(
-            f"""
-            ✅ **RESULTADO DE LA INSPECCIÓN**
-
-            **Estado:** APTO
-
-            **Confianza:** {confianza:.2f}%
-
-            **Prioridad:** 🟢 Baja
-
-            **Acción recomendada:** Liberar pieza.
-            """
-        )
+        st.markdown(
+        f"""
+        <div class="resultado-card">
+            <div class="resultado-titulo">Resultado de la Inspección</div>
+            <div class="resultado-estado-apto">✅ APTO</div>
+            <div class="resultado-info">
+                <b>Confianza:</b> {confianza:.2f}%<br>
+                <b>Prioridad:</b> Baja<br>
+                <b>Acción recomendada:</b> Liberar pieza.
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     elif clasificacion == "NO APTO":
-        st.error(
-            f"""
-            ❌ **RESULTADO DE LA INSPECCIÓN**
-
-            **Estado:** NO APTO
-
-            **Confianza:** {confianza:.2f}%
-
-            **Prioridad:** 🔴 Alta
-
-            **Acción recomendada:** Retener pieza e inspeccionar manualmente.
-            """
-        )
+        st.markdown(
+        f"""
+        <div class="resultado-card">
+            <div class="resultado-titulo">Resultado de la Inspección</div>
+            <div class="resultado-estado-noapto">❌ NO APTO</div>
+            <div class="resultado-info">
+                <b>Confianza:</b> {confianza:.2f}%<br>
+                <b>Prioridad:</b> Alta<br>
+                <b>Acción recomendada:</b> Retener pieza e inspeccionar manualmente.
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     else:
-        st.warning(
-            f"""
-            ⚠️ **RESULTADO DE LA INSPECCIÓN**
-
-            **Estado:** REVISIÓN MANUAL
-
-            **Confianza:** {confianza:.2f}%
-
-            **Prioridad:** 🟡 Media
-
-            **Acción recomendada:** Validar pieza con operador.
-            """
-        )
+        st.markdown(
+        f"""
+        <div class="resultado-card">
+            <div class="resultado-titulo">Resultado de la Inspección</div>
+            <div class="resultado-estado-revision">⚠️ REVISIÓN MANUAL</div>
+            <div class="resultado-info">
+                <b>Confianza:</b> {confianza:.2f}%<br>
+                <b>Prioridad:</b> Media<br>
+                <b>Acción recomendada:</b> Validar pieza manualmente.
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    ) 
 
     with open(
         archivo_csv,
@@ -289,8 +380,8 @@ if foto is not None:
 
     resultado = clasificar_imagen(ruta)
 
-    st.write("Resultado IA:")
-    st.write(resultado)
+    #st.write("Resultado IA:")
+    #st.write(resultado)
 
     prob_buena = resultado[0][0]
     prob_mala = resultado[0][1]
@@ -315,50 +406,52 @@ if foto is not None:
     st.write(f"Probabilidad Mala: {prob_mala:.4f}")
 
     if clasificacion == "APTO":
-        st.success(
+        st.markdown(
             f"""
-            ✅ **RESULTADO DE LA INSPECCIÓN**
-
-            **Estado:** APTO
-
-            **Confianza:** {confianza:.2f}%
-
-            **Prioridad:** 🟢 Baja
-
-            **Acción recomendada:** Liberar pieza.
-            """
+            <div class="resultado-card">
+                <div class="resultado-titulo">Resultado de la Inspección</div>
+                <div class="resultado-estado-apto">✅ APTO</div>
+                <div class="resultado-info">
+                    <b>Confianza:</b> {confianza:.2f}%<br>
+                    <b>Prioridad:</b> Baja<br>
+                    <b>Acción recomendada:</b> Liberar pieza.
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
     elif clasificacion == "NO APTO":
-        st.error(
+        st.markdown(
             f"""
-            ❌ **RESULTADO DE LA INSPECCIÓN**
-
-            **Estado:** NO APTO
-
-            **Confianza:** {confianza:.2f}%
-
-            **Prioridad:** 🔴 Alta
-
-            **Acción recomendada:** Retener pieza e inspeccionar manualmente.
-            """
+            <div class="resultado-card">
+                <div class="resultado-titulo">Resultado de la Inspección</div>
+                <div class="resultado-estado-noapto">❌ NO APTO</div>
+                <div class="resultado-info">
+                    <b>Confianza:</b> {confianza:.2f}%<br>
+                    <b>Prioridad:</b> Alta<br>
+                    <b>Acción recomendada:</b> Retener pieza e inspeccionar manualmente.
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
     else:
-        st.warning(
+        st.markdown(
             f"""
-            ⚠️ **RESULTADO DE LA INSPECCIÓN**
-
-            **Estado:** REVISIÓN MANUAL
-
-            **Confianza:** {confianza:.2f}%
-
-            **Prioridad:** 🟡 Media
-
-            **Acción recomendada:** Validar pieza con operador.
-            """
-        )
-
+            <div class="resultado-card">
+                <div class="resultado-titulo">Resultado de la Inspección</div>
+                <div class="resultado-estado-revision">⚠️ REVISIÓN MANUAL</div>
+                <div class="resultado-info">
+                    <b>Confianza:</b> {confianza:.2f}%<br>
+                    <b>Prioridad:</b> Media<br>
+                    <b>Acción recomendada:</b> Validar pieza manualmente.
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )        
 # -------- CSV --------
 
     archivo_csv = "registro_inspecciones.csv"
@@ -395,14 +488,24 @@ if inspecciones_validas > 0:
     fig, ax = plt.subplots()
 
     ax.pie(
-        [aptas, no_aptas],
-        labels=["Aptas", "No Aptas"],
-        autopct="%1.1f%%"
-    )
+    [aptas, no_aptas],
+    labels=["Aptas", "No Aptas"],
+    colors=["#1D7EAE", "#DC3545"],
+    autopct="%1.1f%%",
+    startangle=90,
+    textprops={"fontsize":12}
+)
 
-    ax.axis("equal")
+ax.set_title(
+    "Distribución de Resultados",
+    fontsize=14,
+    fontweight="bold",
+    color="#231F20"
+)
 
-    with col_graf2:
+ax.axis("equal")
+
+with col_graf2:
      st.pyplot(fig)
 # -------- ANALIZAR CAUSAS --------
 
@@ -473,7 +576,17 @@ if st.button("Analizar Últimas 10 Inspecciones con Gemini"):
 
 st.button("Iniciar Inspección")
 
-st.subheader("Registro de Inspecciones")
+st.markdown(
+    """
+    <div class="inspection-card">
+        <div class="inspection-title">📋 Registro de Inspecciones</div>
+        <div class="inspection-subtitle">
+            Historial de resultados generados durante las inspecciones.
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # -------- ÚLTIMA INSPECCIÓN --------
 
@@ -493,7 +606,7 @@ if os.path.exists(archivo_csv):
 
         ultima = datos[-1]
 
-        st.subheader("Última Inspección")
+        st.markdown("### Última inspección registrada")
 
         if len(ultima) > 1 and ultima[1] == "APTO":
 
@@ -538,21 +651,28 @@ if os.path.exists(archivo_csv):
     if len(datos) > 0:
 
      df = pd.DataFrame(
-        datos,
-        columns=[
-            "Fecha",
-            "Resultado",
-            "Confianza (%)",
-            "Archivo Guardado",
-            "Imagen Original"
-        ]
-    )
+    datos,
+    columns=[
+        "Fecha",
+        "Resultado",
+        "Confianza (%)",
+        "Archivo Guardado",
+        "Imagen Original"
+    ]
+)
+
+    df = df.rename(columns={
+    "Fecha": "📅 Fecha",
+    "Resultado": "Estado",
+    "Confianza (%)": "🎯 Confianza",
+    "Archivo Guardado": "📁 Archivo",
+    "Imagen Original": "🖼 Imagen"
+})
 
     st.dataframe(
-        df,
-        use_container_width=True
-    )
-
+    df,
+    use_container_width=True
+)
 else:
  st.write("No hay inspecciones registradas")
 
