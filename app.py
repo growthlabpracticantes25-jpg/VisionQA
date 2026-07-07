@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import pandas as pd 
 from modelo_ia import clasificar_imagen
 from gemini_analisis import analizar_causas 
-
+from openpyxl import Workbook
 # ---------------- APP PRINCIPAL ----------------
 st.set_page_config(
     page_title="VisionQA",
@@ -574,7 +574,18 @@ if st.button("Analizar Últimas 10 Inspecciones con Gemini"):
     else:
         st.warning("No existe el archivo de registro de inspecciones.")
 
-st.button("Iniciar Inspección")
+if st.button("Iniciar Inspección"):
+    st.markdown(
+        """
+        <div class="inspection-card">
+            <div class="inspection-title">🚀 Inspección iniciada</div>
+            <div class="inspection-subtitle">
+                Selecciona una imagen desde el equipo o toma una fotografía con la cámara para comenzar el análisis de la pieza.
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 st.markdown(
     """
@@ -608,34 +619,37 @@ if os.path.exists(archivo_csv):
 
         st.markdown("### Última inspección registrada")
 
-        if len(ultima) > 1 and ultima[1] == "APTO":
+estado = ultima[1].strip()
 
-            st.success(
-                f"""
-                ✅ Última Inspección
+if estado == "APTO" or estado == "BUENA":
+    icono = "✅"
+    texto_estado = "APTO"
+    clase_estado = "resultado-estado-apto"
 
-                Fecha: {ultima[0]}
+elif estado == "NO APTO" or estado == "MALA":
+    icono = "❌"
+    texto_estado = "NO APTO"
+    clase_estado = "resultado-estado-noapto"
 
-                Archivo Guardado: {ultima[3]}
+else:
+    icono = "⚠️"
+    texto_estado = "REVISIÓN MANUAL"
+    clase_estado = "resultado-estado-revision"
 
-                Imagen Original: {ultima[4]}
-                """
-            )
-
-        else:
-
-            st.error(
-                f"""
-                ❌ Última Inspección
-
-                Fecha: {ultima[0]}
-
-                Archivo Guardado: {ultima[3]}
-
-                Imagen Original: {ultima[4]}
-                """
-            )
-
+st.markdown(
+    f"""
+    <div class="resultado-card">
+        <div class="resultado-titulo">Última inspección</div>
+       <div class="{clase_estado}">{icono} PIEZA NO APTA</div>
+        <div class="resultado-info">
+            <b>Fecha:</b> {ultima[0]}<br>
+            <b>Archivo guardado:</b> {ultima[3]}<br>
+            <b>Imagen original:</b> {ultima[4]}
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 if os.path.exists(archivo_csv):
 
     with open(
@@ -671,12 +685,50 @@ if os.path.exists(archivo_csv):
 
     st.dataframe(
     df,
-    use_container_width=True
+    use_container_width=True,
+    hide_index=True
 )
+    st.markdown("### 📥 Exportar Registro")
+
+if st.button("Descargar registro en Excel"):
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Registro de Inspecciones"
+
+    # Encabezados
+    ws.append(df.columns.tolist())
+
+    # Datos
+    for fila in df.values.tolist():
+        ws.append(fila)
+
+    nombre_excel = "Registro_Inspecciones.xlsx"
+    wb.save(nombre_excel)
+
+    with open(nombre_excel, "rb") as archivo_excel:
+        st.download_button(
+            label="⬇ Descargar Excel",
+            data=archivo_excel,
+            file_name=nombre_excel,
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
 else:
  st.write("No hay inspecciones registradas")
 
-st.subheader("Información del Proyecto")
-st.write("Versión: 1.0")
-st.write("Proyecto VisionQA - ISSCJ")
+st.divider()
 
+st.markdown(
+"""
+<div class="footer">
+<b>VisionQA v1.0</b><br>
+Sistema Inteligente de Inspección Visual Asistido por Inteligencia Artificial
+<hr>
+Instituto Superior de Ciencias de Ciudad Juárez<br>
+Proyecto desarrollado para IOT Technologies
+<hr>
+© 2026 VisionQA
+</div>
+""",
+unsafe_allow_html=True
+)
