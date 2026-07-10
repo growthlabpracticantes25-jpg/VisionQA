@@ -24,15 +24,15 @@ h1, h2, h3 {
 }
 
 .iot-title {
-    color: #FFFFFF;
+    color: #231F20;
     font-size: 42px;
     font-weight: 800;
     margin-bottom: 6px;
 }
 
 .iot-subtitle {
-    color: #EAF7FB;
-    font-size: 19px;
+    color: #444444;
+    font-size: 20px;
     font-weight: 500;
 }
 

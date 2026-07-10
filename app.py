@@ -14,6 +14,7 @@ st.set_page_config(
     page_icon="🔍",
     layout="wide"
 )
+
 # -------- CARGAR ESTILOS CORPORATIVOS --------
 
 with open("styles/styles.css", encoding="utf-8") as f:
@@ -21,24 +22,31 @@ with open("styles/styles.css", encoding="utf-8") as f:
         f"<style>{f.read()}</style>",
         unsafe_allow_html=True
     )
-st.markdown(
-    """
-    <div class="iot-header">
-        <div class="iot-title">VisionQA</div>
-        <div class="iot-subtitle">
-            Sistema inteligente de inspección visual asistido por Inteligencia Artificial
-        </div>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
 
-st.markdown(
-    """
-    ### Sistema de Control de Calidad Asistido por IA
-    Inspección visual de piezas mediante inteligencia artificial, registro automático y análisis de causas.
-    """
-)
+# -------- ENCABEZADO --------
+
+col_logo, col_texto = st.columns([2, 4])
+
+with col_logo:
+    st.image(
+        "assets/logo_iot.png",
+        width=280
+    )
+
+with col_texto:
+
+    st.markdown(
+        """
+        <div class="iot-title">
+            VisionQA
+        </div>
+
+        <div class="iot-subtitle">
+            Sistema Inteligente de Inspección Visual Asistido por Inteligencia Artificial
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 st.divider()
 
