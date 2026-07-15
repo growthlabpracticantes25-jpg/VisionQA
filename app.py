@@ -23,26 +23,28 @@ with open("styles/styles.css", encoding="utf-8") as f:
         unsafe_allow_html=True
     )
 
+    # -------- ESTADO DE LA INSPECCIÓN --------
+
+if "inspeccion" not in st.session_state:
+    st.session_state.inspeccion = False
 # -------- ENCABEZADO --------
 
-col_logo, col_texto = st.columns([2, 4])
+col_logo, col_texto = st.columns([1.2, 5.2])
 
 with col_logo:
     st.image(
         "assets/logo_iot.png",
-        width=280
+        width=230
     )
 
 with col_texto:
+    st.markdown("<div style='padding-top:12px'></div>", unsafe_allow_html=True)
 
     st.markdown(
         """
-        <div class="iot-title">
-            VisionQA
-        </div>
-
+        <div class="iot-title">VisionQA</div>
         <div class="iot-subtitle">
-            Sistema Inteligente de Inspección Visual Asistido por Inteligencia Artificial
+        Sistema Inteligente de Inspección Visual Asistido por Inteligencia Artificial
         </div>
         """,
         unsafe_allow_html=True
@@ -63,6 +65,10 @@ st.success(
     ✔ Registro de inspecciones disponible
     """
 )
+
+st.divider()
+
+# -------- BOTÓN PRINCIPAL --------
 
 st.divider()
 
@@ -137,6 +143,12 @@ with col3:
 st.caption(
     "Actualización automática con base en las inspecciones registradas."
 )
+
+st.subheader("🚀 Inspección")
+
+if st.button("Iniciar Inspección"):
+    st.session_state.inspeccion = True
+    st.rerun()
 
 st.divider()
 st.subheader("Estadísticas de Inspección")
@@ -232,260 +244,233 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-# ---------------- CARGA DE ARCHIVO ----------------
+# ---------------- MÓDULO DE INSPECCIÓN ----------------
 
-st.markdown("### 📂 Cargar imagen desde el equipo")
-st.caption("Sube una fotografía de la pieza para realizar la inspección.")
+if st.session_state.inspeccion:
 
-archivo_subido = st.file_uploader(
-    "Selecciona una imagen",
-    type=["jpg", "jpeg", "png"]
-)
+    # ---------------- CARGA DE ARCHIVO ----------------
 
-# ---------------- CÁMARA ----------------
-st.divider()
+    st.markdown("### 📂 Cargar imagen desde el equipo")
+    st.caption("Sube una fotografía de la pieza para realizar la inspección.")
 
-st.markdown("### 📷 Capturar imagen en tiempo real")
-st.caption("Toma una fotografía directamente desde la cámara conectada.")
-foto = st.camera_input("Toma una fotografía de la pieza")
-
-if archivo_subido is not None:
-
-    nombre_original = archivo_subido.name 
-    st.image(archivo_subido)
-
-    fecha_hora = datetime.now().strftime(
-        "%d/%m/%Y %H:%M:%S"
-    )
-
-    nombre_archivo = datetime.now().strftime(
-        "archivo_%Y%m%d_%H%M%S.jpg"
-    )
-
-    ruta = os.path.join(
-        "inspecciones",
-        nombre_archivo
-    )
-
-    with open(ruta, "wb") as f:
-        f.write(archivo_subido.getbuffer())
-
-    resultado = clasificar_imagen(ruta)
-
-    st.write("Resultado IA:")
-    st.write(resultado)
-
-    prob_buena = resultado[0][0]
-    prob_mala = resultado[0][1]
-
-    st.write("Prob Buena:", prob_buena)
-    st.write("Prob Mala:", prob_mala)
-
-    diferencia = abs(prob_buena - prob_mala)
-
-    if diferencia < 0.10:
-        clasificacion = "REVISION MANUAL"
-        confianza = max(prob_buena, prob_mala) * 100
-
-    elif prob_buena > prob_mala:
-        clasificacion = "APTO"
-        confianza = prob_buena * 100
-
-    else:
-        clasificacion = "NO APTO"
-        confianza = prob_mala * 100
-
-    st.subheader("Resultado de la Inspección")
-
-    if clasificacion == "APTO":
-        st.markdown(
-        f"""
-        <div class="resultado-card">
-            <div class="resultado-titulo">Resultado de la Inspección</div>
-            <div class="resultado-estado-apto">✅ APTO</div>
-            <div class="resultado-info">
-                <b>Confianza:</b> {confianza:.2f}%<br>
-                <b>Prioridad:</b> Baja<br>
-                <b>Acción recomendada:</b> Liberar pieza.
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    elif clasificacion == "NO APTO":
-        st.markdown(
-        f"""
-        <div class="resultado-card">
-            <div class="resultado-titulo">Resultado de la Inspección</div>
-            <div class="resultado-estado-noapto">❌ NO APTO</div>
-            <div class="resultado-info">
-                <b>Confianza:</b> {confianza:.2f}%<br>
-                <b>Prioridad:</b> Alta<br>
-                <b>Acción recomendada:</b> Retener pieza e inspeccionar manualmente.
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    else:
-        st.markdown(
-        f"""
-        <div class="resultado-card">
-            <div class="resultado-titulo">Resultado de la Inspección</div>
-            <div class="resultado-estado-revision">⚠️ REVISIÓN MANUAL</div>
-            <div class="resultado-info">
-                <b>Confianza:</b> {confianza:.2f}%<br>
-                <b>Prioridad:</b> Media<br>
-                <b>Acción recomendada:</b> Validar pieza manualmente.
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True
+    archivo_subido = st.file_uploader(
+        "Selecciona una imagen",
+        type=["jpg", "jpeg", "png"]
     ) 
+    # ---------------- CÁMARA ----------------
+    st.divider()
 
-    with open(
-        archivo_csv,
-        mode="a",
-        newline="",
-        encoding="utf-8"
-    ) as archivo:
+    st.markdown("### 📷 Capturar imagen en tiempo real")
+    st.caption("Toma una fotografía directamente desde la cámara conectada.")
+    foto = st.camera_input("Toma una fotografía de la pieza")
 
-        escritor = csv.writer(archivo)
+    if archivo_subido is not None:
 
-        escritor.writerow([
-            fecha_hora,
-            clasificacion,
-            f"{confianza:.2f}",
-            nombre_archivo,
-            nombre_original
-        ])
+        nombre_original = archivo_subido.name 
+        st.image(archivo_subido)
 
-    st.success("Imagen cargada y registrada correctamente")
-
-if foto is not None:
-
-    st.image(foto)
-
-    fecha_hora = datetime.now().strftime(
-        "%d/%m/%Y %H:%M:%S"
-    )
-
-    nombre_archivo = datetime.now().strftime(
-        "inspeccion_%Y%m%d_%H%M%S.jpg"
-    )
-
-    ruta = os.path.join(
-        "inspecciones",
-        nombre_archivo
-    )
-
-    with open(ruta, "wb") as f:
-        f.write(foto.getbuffer())
-
-    # -------- IA --------
-
-    resultado = clasificar_imagen(ruta)
-
-    #st.write("Resultado IA:")
-    #st.write(resultado)
-
-    prob_buena = resultado[0][0]
-    prob_mala = resultado[0][1]
-
-    diferencia = abs(prob_buena - prob_mala)
-
-    if diferencia < 0.10:
-        clasificacion = "REVISION MANUAL"
-        confianza = max(prob_buena, prob_mala) * 100
-
-    elif prob_buena > prob_mala:
-        clasificacion = "APTO"
-        confianza = prob_buena * 100
-
-    else:
-        clasificacion = "NO APTO"
-        confianza = prob_mala * 100
-
-    st.subheader("Resultado de la Inspección")
-
-    st.write(f"Probabilidad Buena: {prob_buena:.4f}")
-    st.write(f"Probabilidad Mala: {prob_mala:.4f}")
-
-    if clasificacion == "APTO":
-        st.markdown(
-            f"""
-            <div class="resultado-card">
-                <div class="resultado-titulo">Resultado de la Inspección</div>
-                <div class="resultado-estado-apto">✅ APTO</div>
-                <div class="resultado-info">
-                    <b>Confianza:</b> {confianza:.2f}%<br>
-                    <b>Prioridad:</b> Baja<br>
-                    <b>Acción recomendada:</b> Liberar pieza.
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True
+        fecha_hora = datetime.now().strftime(
+            "%d/%m/%Y %H:%M:%S"
         )
 
-    elif clasificacion == "NO APTO":
-        st.markdown(
-            f"""
-            <div class="resultado-card">
-                <div class="resultado-titulo">Resultado de la Inspección</div>
-                <div class="resultado-estado-noapto">❌ NO APTO</div>
-                <div class="resultado-info">
-                    <b>Confianza:</b> {confianza:.2f}%<br>
-                    <b>Prioridad:</b> Alta<br>
-                    <b>Acción recomendada:</b> Retener pieza e inspeccionar manualmente.
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True
+        nombre_archivo = datetime.now().strftime(
+            "archivo_%Y%m%d_%H%M%S.jpg"
         )
 
-    else:
-        st.markdown(
-            f"""
-            <div class="resultado-card">
-                <div class="resultado-titulo">Resultado de la Inspección</div>
-                <div class="resultado-estado-revision">⚠️ REVISIÓN MANUAL</div>
-                <div class="resultado-info">
-                    <b>Confianza:</b> {confianza:.2f}%<br>
-                    <b>Prioridad:</b> Media<br>
-                    <b>Acción recomendada:</b> Validar pieza manualmente.
+        ruta = os.path.join(
+            "inspecciones",
+            nombre_archivo
+        )
+
+        with open(ruta, "wb") as f:
+            f.write(archivo_subido.getbuffer())
+
+        resultado = clasificar_imagen(ruta)
+
+
+        clasificacion = resultado["estado"]
+        defecto = resultado["defecto"]
+        confianza = resultado["confianza"]
+        resultado_yolo = resultado["resultado_yolo"]
+
+        st.subheader("Resultado de la Inspección")
+
+        imagen_anotada = resultado_yolo.plot()
+
+        imagen_anotada = cv2.cvtColor(
+        imagen_anotada,
+        cv2.COLOR_BGR2RGB
+    )
+
+        imagen_anotada = cv2.resize(
+        imagen_anotada,
+        (800, 600)
+    )
+
+        st.image(
+        imagen_anotada,
+        caption="Resultado de detección YOLO",
+        use_container_width=False
+    )
+        if clasificacion == "APTO":
+            st.markdown(
+                f"""
+                <div class="resultado-card">
+                    <div class="resultado-titulo">Resultado de la Inspección</div>
+                    <div class="resultado-estado-apto">✅ APTO</div>
+                    <div class="resultado-info">
+                        <b>Defecto detectado:</b> Ninguno<br>
+                        <b>Confianza:</b> {confianza:.2f}%<br>
+                        <b>Prioridad:</b> Baja<br>
+                        <b>Acción recomendada:</b> Liberar pieza.
+                    </div>
                 </div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )        
-# -------- CSV --------
+                """,
+                unsafe_allow_html=True
+            )
 
-    archivo_csv = "registro_inspecciones.csv"
+        else:
+            st.markdown(
+                f"""
+                <div class="resultado-card">
+                    <div class="resultado-titulo">Resultado de la Inspección</div>
+                    <div class="resultado-estado-noapto">❌ NO APTO</div>
+                    <div class="resultado-info">
+                        <b>Defecto detectado:</b> {defecto}<br>
+                        <b>Confianza:</b> {confianza:.2f}%<br>
+                        <b>Prioridad:</b> Alta<br>
+                        <b>Acción recomendada:</b> Retener pieza e inspeccionar manualmente.
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
-    with open(
-        archivo_csv,
-        mode="a",
-        newline="",
-        encoding="utf-8"
-    ) as archivo:
+        with open(
+            archivo_csv,
+            mode="a",
+            newline="",
+            encoding="utf-8"
+        ) as archivo:
 
-        escritor = csv.writer(archivo)
+            escritor = csv.writer(archivo)
 
-        escritor.writerow([
-            fecha_hora,
-            clasificacion,
-            f"{confianza:.2f}",
-            nombre_archivo,
-            "Imagen capturada con cámara"
-        ])
+            escritor.writerow([
+                fecha_hora,
+                clasificacion,
+                f"{confianza:.2f}",
+                nombre_archivo,
+                nombre_original
+            ])
 
-    st.success("Imagen capturada y guardada correctamente")
+        st.success("Imagen cargada y registrada correctamente")
 
-    st.write(f"Fecha y hora: {fecha_hora}")
 
-    st.write(f"Archivo guardado: {nombre_archivo}") 
+    if foto is not None:
+
+        st.image(foto)
+
+        fecha_hora = datetime.now().strftime(
+            "%d/%m/%Y %H:%M:%S"
+        )
+
+        nombre_archivo = datetime.now().strftime(
+            "inspeccion_%Y%m%d_%H%M%S.jpg"
+        )
+
+        ruta = os.path.join(
+            "inspecciones",
+            nombre_archivo
+        )
+
+        with open(ruta, "wb") as f:
+            f.write(foto.getbuffer())
+
+        # -------- IA --------
+
+        resultado = clasificar_imagen(ruta)
+
+        clasificacion = resultado["estado"]
+        defecto = resultado["defecto"]
+        confianza = resultado["confianza"]
+        resultado_yolo = resultado["resultado_yolo"]
+
+        st.subheader("Resultado de la Inspección")
+
+        imagen_anotada = resultado_yolo.plot()
+
+        imagen_anotada = cv2.cvtColor(
+            imagen_anotada,
+            cv2.COLOR_BGR2RGB
+        )
+
+        st.image(
+            imagen_anotada,
+            caption="Resultado de detección YOLO",
+            use_container_width=True
+        )
+
+        if clasificacion == "APTO":
+
+            st.markdown(
+                f"""
+                <div class="resultado-card">
+                    <div class="resultado-titulo">Resultado de la Inspección</div>
+                    <div class="resultado-estado-apto">✅ APTO</div>
+                    <div class="resultado-info">
+                        <b>Defecto detectado:</b> Ninguno<br>
+                        <b>Confianza:</b> {confianza:.2f}%<br>
+                        <b>Prioridad:</b> Baja<br>
+                        <b>Acción recomendada:</b> Liberar pieza.
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        else:
+
+            st.markdown(
+                f"""
+                <div class="resultado-card">
+                    <div class="resultado-titulo">Resultado de la Inspección</div>
+                    <div class="resultado-estado-noapto">❌ NO APTO</div>
+                    <div class="resultado-info">
+                        <b>Defecto detectado:</b> {defecto}<br>
+                        <b>Confianza:</b> {confianza:.2f}%<br>
+                        <b>Prioridad:</b> Alta<br>
+                        <b>Acción recomendada:</b> Retener pieza e inspeccionar manualmente.
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+    # -------- CSV --------
+
+        archivo_csv = "registro_inspecciones.csv"
+
+        with open(
+            archivo_csv,
+            mode="a",
+            newline="",
+            encoding="utf-8"
+        ) as archivo:
+
+            escritor = csv.writer(archivo)
+
+            escritor.writerow([
+                fecha_hora,
+                clasificacion,
+                f"{confianza:.2f}",
+                nombre_archivo,
+                "Imagen capturada con cámara"
+            ])
+
+        st.success("Imagen capturada y guardada correctamente")
+
+        st.write(f"Fecha y hora: {fecha_hora}")
+
+        st.write(f"Archivo guardado: {nombre_archivo}") 
 
 # -------- GRÁFICA DE PASTEL --------
 
@@ -582,7 +567,6 @@ if st.button("Analizar Últimas 10 Inspecciones con Gemini"):
     else:
         st.warning("No existe el archivo de registro de inspecciones.")
 
-if st.button("Iniciar Inspección"):
     st.markdown(
         """
         <div class="inspection-card">
