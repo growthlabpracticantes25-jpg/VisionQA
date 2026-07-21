@@ -21,3 +21,15 @@ backend/db.sqlite3
 .DS_Store
 
 runs/
+# Modelos y pesos generados
+yolov8n.pt
+*.pt
+
+# Datos de entrenamiento y validación pesados
+dataset_yolo_v2/imagenes_reentrenamiento/
+dataset_yolo_v2/imagenes_validacion_yolo/
+dataset_yolo_v2/images/
+dataset_yolo_v2/labels/
+
+# Modelos exportados
+modelo IA/yolo/

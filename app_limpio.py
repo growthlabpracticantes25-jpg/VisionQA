@@ -1,11 +1,12 @@
 import os
 import csv
 from datetime import datetime
-
+import requests
 import streamlit as st
 import cv2
 import matplotlib.pyplot as plt
 import pandas as pd
+from io import BytesIO
 from openpyxl import Workbook
 
 from modelo_ia import clasificar_imagen
@@ -45,7 +46,61 @@ os.makedirs(
 if "inspeccion" not in st.session_state:
     st.session_state.inspeccion = False
 # ---------------- FUNCIONES ----------------
+def guardar_inspeccion_api(
+    resultado,
+    defecto,
+    confianza,
+    archivo,
+    origen
+):
+    url_api = "http://127.0.0.1:8000/api/inspecciones/"
 
+    datos = {
+        "resultado": resultado,
+        "defecto": defecto,
+        "confianza": float(confianza),
+        "archivo": archivo,
+        "origen": origen
+    }
+
+    try:
+        respuesta = requests.post(
+            url_api,
+            json=datos,
+            timeout=10
+        )
+
+        if respuesta.status_code == 201:
+            return True, "Inspección guardada en Django."
+
+        return False, f"Error de API {respuesta.status_code}: {respuesta.text}"
+
+    except requests.exceptions.ConnectionError:
+        return False, "No se pudo conectar con Django."
+
+    except requests.exceptions.RequestException as error:
+        return False, f"Error al enviar la inspección: {error}"
+
+def obtener_inspecciones_api():
+
+    url_api = "http://127.0.0.1:8000/api/inspecciones/"
+
+    try:
+
+        respuesta = requests.get(
+            url_api,
+            timeout=10
+        )
+
+        if respuesta.status_code == 200:
+
+            return respuesta.json()
+
+    except requests.exceptions.RequestException:
+
+        pass
+
+    return []
 
 def mostrar_titulo(titulo, subtitulo):
 
@@ -95,33 +150,53 @@ def mostrar_estado_sistema():
 
 def cargar_datos_registro():
 
-    total = 0
-    aptas = 0
-    no_aptas = 0
+    url_api = "http://127.0.0.1:8000/api/inspecciones/"
 
-    if os.path.exists(archivo_csv):
+    try:
 
-        with open(
-            archivo_csv,
-            mode="r",
-            encoding="utf-8"
-        ) as archivo:
+        respuesta = requests.get(
+            url_api,
+            timeout=10
+        )
 
-            lector = csv.reader(archivo)
+        if respuesta.status_code != 200:
 
-            for fila in lector:
+            return 0, 0, 0
 
-                total += 1
+        registros = respuesta.json()
 
-                if len(fila) > 1:
+        total = len(registros)
+        aptas = 0
+        no_aptas = 0
 
-                    if fila[1] in ["APTO", "BUENA"]:
-                        aptas += 1
+        for registro in registros:
 
-                    elif fila[1] in ["NO APTO", "MALA"]:
-                        no_aptas += 1
+            resultado = str(
+                registro.get(
+                    "resultado",
+                    ""
+                )
+            ).strip().upper()
 
-    return total, aptas, no_aptas
+            if resultado in [
+                "APTO",
+                "BUENA"
+            ]:
+
+                aptas += 1
+
+            elif resultado in [
+                "NO APTO",
+                "MALA"
+            ]:
+
+                no_aptas += 1
+
+        return total, aptas, no_aptas
+
+    except requests.exceptions.RequestException:
+
+        return 0, 0, 0
 
 def mostrar_modulo_inspeccion():
 
@@ -274,6 +349,21 @@ def mostrar_modulo_inspeccion():
         else:
             confianza_porcentaje = confianza_numero
 
+        # -------- GUARDAR EN DJANGO --------
+
+        guardado_api, mensaje_api = guardar_inspeccion_api(
+            resultado=resultado_registro,
+            defecto=defecto or "",
+            confianza=confianza_porcentaje,
+            archivo=ruta_imagen,
+            origen=origen
+        )
+
+        if guardado_api:
+            st.success(mensaje_api)
+        else:
+            st.warning(mensaje_api)
+
         st.metric(
             "Confianza del modelo",
             f"{confianza_porcentaje:.2f}%"
@@ -312,6 +402,7 @@ def mostrar_modulo_inspeccion():
         nueva_fila = [
             fecha_hora,
             resultado_registro,
+            defecto or "",
             f"{confianza_porcentaje:.2f}",
             nombre_archivo,
             origen
@@ -327,8 +418,8 @@ def mostrar_modulo_inspeccion():
             escritor = csv.writer(archivo)
             escritor.writerow(nueva_fila)
 
-        st.success(
-            "La inspección fue registrada correctamente."
+        st.caption(
+            "Registro local CSV actualizado."
         )
 
     # -------- CARGAR IMAGEN --------
@@ -647,42 +738,35 @@ def mostrar_indicadores(aptas, no_aptas):
         )
 
     st.divider()
-
 def mostrar_registro():
 
     st.subheader("📋 Registro de Inspecciones")
 
-    if not os.path.exists(archivo_csv):
-
-        st.info(
-            "Todavía no hay inspecciones registradas."
-        )
-
-        st.divider()
-        return
+    url_api = "http://127.0.0.1:8000/api/inspecciones/"
 
     try:
 
-        columnas = [
-            "Fecha",
-            "Resultado",
-            "Confianza (%)",
-            "Archivo Guardado",
-            "Origen"
-        ]
-
-        datos = pd.read_csv(
-            archivo_csv,
-            header=None,
-            names=columnas,
-            encoding="utf-8"
+        respuesta = requests.get(
+            url_api,
+            timeout=10
         )
 
-        datos = datos.dropna(
-            how="all"
-        )
+        if respuesta.status_code != 200:
 
-        if datos.empty:
+            st.error(
+                "No fue posible consultar el registro en Django."
+            )
+
+            st.caption(
+                f"Error de API: {respuesta.status_code}"
+            )
+
+            st.divider()
+            return
+
+        registros = respuesta.json()
+
+        if not registros:
 
             st.info(
                 "Todavía no hay inspecciones registradas."
@@ -690,6 +774,38 @@ def mostrar_registro():
 
             st.divider()
             return
+
+        datos = pd.DataFrame(registros)
+
+        # Cambiar nombres de las columnas de Django
+        # por nombres visibles en Streamlit
+        datos = datos.rename(
+            columns={
+                "fecha": "Fecha",
+                "resultado": "Resultado",
+                "defecto": "Defecto",
+                "confianza": "Confianza (%)",
+                "archivo": "Archivo Guardado",
+                "origen": "Origen"
+            }
+        )
+
+        # Convertir y ordenar las fechas
+        datos["Fecha"] = pd.to_datetime(
+            datos["Fecha"],
+            errors="coerce"
+        )
+
+        datos = datos.sort_values(
+            by="Fecha",
+            ascending=True
+        ).reset_index(
+            drop=True
+        )
+
+        datos["Fecha"] = datos["Fecha"].dt.strftime(
+            "%d/%m/%Y %H:%M:%S"
+        )
 
         # -------- ÚLTIMA INSPECCIÓN --------
 
@@ -740,13 +856,25 @@ def mostrar_registro():
 
         with col3:
 
-            confianza = ultima_inspeccion[
-                "Confianza (%)"
-            ]
+            confianza = float(
+                ultima_inspeccion["Confianza (%)"]
+            )
 
             st.metric(
                 "Confianza",
-                f"{confianza}%"
+                f"{confianza:.2f}%"
+            )
+
+        defecto = ultima_inspeccion.get(
+            "Defecto",
+            ""
+        )
+
+        if pd.notna(defecto) and str(defecto).strip():
+
+            st.caption(
+                "Defecto detectado: "
+                f"{str(defecto).replace('_', ' ').title()}"
             )
 
         st.caption(
@@ -758,9 +886,18 @@ def mostrar_registro():
 
         st.markdown("### Historial de inspecciones")
 
-        datos_mostrados = datos.iloc[
-            ::-1
-        ].reset_index(
+        columnas_mostradas = [
+            "Fecha",
+            "Resultado",
+            "Defecto",
+            "Confianza (%)",
+            "Archivo Guardado",
+            "Origen"
+        ]
+
+        datos_mostrados = datos[
+            columnas_mostradas
+        ].iloc[::-1].reset_index(
             drop=True
         )
 
@@ -774,10 +911,25 @@ def mostrar_registro():
             f"Total de registros mostrados: {len(datos)}"
         )
 
-    except pd.errors.EmptyDataError:
+    except requests.exceptions.ConnectionError:
+
+        st.error(
+            "No se pudo conectar con Django."
+        )
 
         st.info(
-            "El archivo de registro está vacío."
+            "Verifica que esté ejecutándose: "
+            "python manage.py runserver"
+        )
+
+    except requests.exceptions.RequestException as error:
+
+        st.error(
+            "Ocurrió un error al consultar la API."
+        )
+
+        st.caption(
+            f"Detalle técnico: {error}"
         )
 
     except Exception as error:
@@ -796,7 +948,9 @@ def mostrar_exportar():
 
     st.subheader("📤 Exportar Registro")
 
-    if not os.path.exists(archivo_csv):
+    registros = obtener_inspecciones_api()
+
+    if not registros:
 
         st.info(
             "No existen inspecciones para exportar."
@@ -805,57 +959,65 @@ def mostrar_exportar():
         st.divider()
         return
 
-    if st.button(
-        "📥 Exportar a Excel",
-        use_container_width=True
-    ):
+    try:
 
-        try:
+        datos = pd.DataFrame(registros)
 
-            columnas = [
-                "Fecha",
-                "Resultado",
-                "Confianza (%)",
-                "Archivo Guardado",
-                "Origen"
-            ]
+        datos = datos.rename(
+            columns={
+                "fecha": "Fecha",
+                "resultado": "Resultado",
+                "defecto": "Defecto",
+                "confianza": "Confianza (%)",
+                "archivo": "Archivo Guardado",
+                "origen": "Origen"
+            }
+        )
 
-            datos = pd.read_csv(
-                archivo_csv,
-                header=None,
-                names=columnas,
-                encoding="utf-8"
-            )
+        columnas = [
+            "Fecha",
+            "Resultado",
+            "Defecto",
+            "Confianza (%)",
+            "Archivo Guardado",
+            "Origen"
+        ]
 
-            wb = Workbook()
+        datos = datos[columnas]
 
-            ws = wb.active
+        wb = Workbook()
 
-            ws.title = "Registro VisionQA"
+        ws = wb.active
 
-            ws.append(columnas)
+        ws.title = "Registro VisionQA"
 
-            for fila in datos.itertuples(index=False):
+        ws.append(columnas)
 
-                ws.append(list(fila))
+        for fila in datos.itertuples(index=False):
 
-            nombre_excel = (
-                "Registro_VisionQA.xlsx"
-            )
+            ws.append(list(fila))
 
-            wb.save(nombre_excel)
+        archivo_excel = BytesIO()
 
-            st.success(
-                f"Archivo exportado correctamente: {nombre_excel}"
-            )
+        wb.save(archivo_excel)
 
-        except Exception as error:
+        archivo_excel.seek(0)
 
-            st.error(
-                "No fue posible exportar el archivo."
-            )
+        st.download_button(
+            label="📥 Descargar Excel",
+            data=archivo_excel,
+            file_name="Registro_VisionQA.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            use_container_width=True
+        )
 
-            st.caption(error)
+    except Exception as error:
+
+        st.error(
+            "No fue posible exportar el archivo."
+        )
+
+        st.caption(error)
 
     st.divider()
 
@@ -872,56 +1034,49 @@ def mostrar_gemini():
 
     col1, col2 = st.columns(2)
 
-    # -------- ÚLTIMA INSPECCIÓN --------
-
+# -------- ÚLTIMA INSPECCIÓN --------
     with col1:
 
-        if st.button(
-            "Analizar última inspección",
-            use_container_width=True
-        ):
+     if st.button(
+        "Analizar última inspección",
+        use_container_width=True
+    ):
 
-            if not os.path.exists(archivo_csv):
+        registros = obtener_inspecciones_api()
 
-                st.warning(
-                    "No existe el registro de inspecciones."
+        if not registros:
+
+            st.warning(
+                "No hay inspecciones registradas."
+            )
+
+        else:
+
+            ultima = registros[-1]
+
+            datos = f"""
+Fecha: {ultima['fecha']}
+Resultado: {ultima['resultado']}
+Defecto: {ultima['defecto']}
+Confianza: {ultima['confianza']}%
+Origen: {ultima['origen']}
+"""
+
+            with st.spinner(
+                "Gemini está analizando..."
+            ):
+
+                resultado = analizar_causas(
+                    datos
                 )
 
-            else:
+            st.success(
+                "Análisis completado."
+            )
 
-                with open(
-                    archivo_csv,
-                    "r",
-                    encoding="utf-8"
-                ) as archivo:
+            st.markdown(resultado)
 
-                    lineas = archivo.readlines()
-
-                if len(lineas) == 0:
-
-                    st.warning(
-                        "No hay inspecciones registradas."
-                    )
-
-                else:
-
-                    ultima = lineas[-1]
-
-                    with st.spinner(
-                        "Gemini está analizando..."
-                    ):
-
-                        resultado = analizar_causas(
-                            ultima
-                        )
-
-                    st.success(
-                        "Análisis completado."
-                    )
-
-                    st.markdown(resultado)
-
-    # -------- ÚLTIMAS 10 INSPECCIONES --------
+        # -------- ÚLTIMAS 10 INSPECCIONES --------
 
     with col2:
 
@@ -930,50 +1085,44 @@ def mostrar_gemini():
             use_container_width=True
         ):
 
-            if not os.path.exists(archivo_csv):
+            registros = obtener_inspecciones_api()
+
+            if not registros:
 
                 st.warning(
-                    "No existe el registro de inspecciones."
+                    "No hay inspecciones registradas."
                 )
 
             else:
 
-                with open(
-                    archivo_csv,
-                    "r",
-                    encoding="utf-8"
-                ) as archivo:
+                ultimas = registros[:10]
 
-                    lineas = archivo.readlines()
+                texto = ""
 
-                if len(lineas) == 0:
+                for registro in ultimas:
 
-                    st.warning(
-                        "No hay inspecciones registradas."
+                    texto += f"""
+Fecha: {registro['fecha']}
+Resultado: {registro['resultado']}
+Defecto: {registro['defecto']}
+Confianza: {registro['confianza']}%
+Origen: {registro['origen']}
+
+"""
+
+                with st.spinner(
+                    "Gemini está analizando..."
+                ):
+
+                    resultado = analizar_causas(
+                        texto
                     )
 
-                else:
+                st.success(
+                    "Análisis completado."
+                )
 
-                    ultimas = "".join(
-                        lineas[-10:]
-                    )
-
-                    with st.spinner(
-                        "Gemini está analizando..."
-                    ):
-
-                        resultado = analizar_causas(
-                            ultimas
-                        )
-
-                    st.success(
-                        "Análisis completado."
-                    )
-
-                    st.markdown(resultado)
-
-    st.divider()
-
+                st.markdown(resultado)
 def mostrar_footer():
 
     st.markdown(
