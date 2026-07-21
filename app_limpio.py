@@ -10,6 +10,7 @@ from openpyxl import Workbook
 
 from modelo_ia import clasificar_imagen
 from gemini_analisis import analizar_causas
+from streamlit_option_menu import option_menu
 
 # ---------------- APP PRINCIPAL ----------------
 
@@ -25,6 +26,13 @@ with open("styles/styles.css", encoding="utf-8") as f:
         f"<style>{f.read()}</style>",
         unsafe_allow_html=True
     )
+    st.markdown(
+    """
+    <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    """,
+    unsafe_allow_html=True
+)
 # ---------------- VARIABLES GLOBALES ----------------
 
 archivo_csv = "registro_inspecciones.csv"
@@ -115,23 +123,42 @@ def cargar_datos_registro():
 
     return total, aptas, no_aptas
 
-
 def mostrar_modulo_inspeccion():
 
-    st.subheader("🔍 Módulo de Inspección")
-
-    st.write(
-        "Selecciona el método que deseas utilizar para inspeccionar la pieza."
+    mostrar_titulo(
+        "Inspección Visual",
+        "Analiza una pieza mediante una imagen local o una fotografía."
     )
 
-    opcion = st.radio(
-        "Método de inspección:",
-        [
+    mostrar_encabezado_seccion(
+        "Método de inspección",
+        "Selecciona cómo deseas capturar la pieza para iniciar el análisis."
+    )
+
+    col_metodo_1, col_metodo_2 = st.columns(2)
+
+    with col_metodo_1:
+
+        if st.button(
             "Cargar imagen",
-            "Tomar fotografía"
-        ],
-        horizontal=True
-    )
+            key="seleccionar_carga",
+            use_container_width=True
+        ):
+            st.session_state["metodo_inspeccion"] = "Cargar imagen"
+
+    with col_metodo_2:
+
+        if st.button(
+            "Tomar fotografía",
+            key="seleccionar_camara",
+            use_container_width=True
+        ):
+            st.session_state["metodo_inspeccion"] = "Tomar fotografía"
+
+    if "metodo_inspeccion" not in st.session_state:
+        st.session_state["metodo_inspeccion"] = "Cargar imagen"
+
+    opcion = st.session_state["metodo_inspeccion"]
 
     # -------- PROCESAR Y REGISTRAR INSPECCIÓN --------
 
@@ -162,38 +189,40 @@ def mostrar_modulo_inspeccion():
             respuesta_modelo = clasificar_imagen(
                 ruta_imagen
             )
+        
+        # -------- INTERPRETAR RESPUESTA DEL MODELO --------
 
-        # Permite trabajar si el modelo devuelve
-        # dos o tres resultados
+        if isinstance(respuesta_modelo, dict):
 
-        if isinstance(
-            respuesta_modelo,
-            tuple
-        ):
+            resultado = respuesta_modelo.get(
+                "estado",
+                "DESCONOCIDO"
+            )
 
-            if len(respuesta_modelo) == 3:
+            confianza = respuesta_modelo.get(
+                "confianza",
+                0.0
+            )
 
-                resultado, confianza, imagen_resultado = respuesta_modelo
+            defecto = respuesta_modelo.get(
+                "defecto",
+                None
+            )
 
-            elif len(respuesta_modelo) == 2:
+            resultado_yolo = respuesta_modelo.get(
+                "resultado_yolo"
+            )
 
-                resultado, confianza = respuesta_modelo
-                imagen_resultado = None
-
+            if resultado_yolo is not None:
+                imagen_resultado = resultado_yolo.plot()
             else:
-
-                st.error(
-                    "El modelo devolvió un resultado con una estructura no reconocida."
-                )
-
-                return
+                imagen_resultado = None
 
         else:
 
             st.error(
                 "No fue posible interpretar la respuesta del modelo."
             )
-
             return
 
         # -------- MOSTRAR RESULTADO --------
@@ -210,10 +239,7 @@ def mostrar_modulo_inspeccion():
         ]:
 
             resultado_registro = "APTO"
-
-            st.success(
-                "✅ PIEZA APTA"
-            )
+            st.success("✅ PIEZA APTA")
 
         elif resultado_normalizado in [
             "NO APTO",
@@ -221,43 +247,31 @@ def mostrar_modulo_inspeccion():
         ]:
 
             resultado_registro = "NO APTO"
+            st.error("❌ PIEZA NO APTA")
 
-            st.error(
-                "❌ PIEZA NO APTA"
-            )
+            if defecto:
+                st.markdown(
+                    f"**Defecto detectado:** "
+                    f"{str(defecto).replace('_', ' ').title()}"
+                )
 
         else:
 
             resultado_registro = resultado_normalizado
-
             st.warning(
                 f"⚠ Resultado: {resultado_normalizado}"
             )
 
         try:
-
-            confianza_numero = float(
-                confianza
-            )
-
-        except (
-            TypeError,
-            ValueError
-        ):
-
+            confianza_numero = float(confianza)
+        except (TypeError, ValueError):
             confianza_numero = 0.0
 
         # Si la confianza viene entre 0 y 1,
         # se convierte a porcentaje
-
         if confianza_numero <= 1:
-
-            confianza_porcentaje = (
-                confianza_numero * 100
-            )
-
+            confianza_porcentaje = confianza_numero * 100
         else:
-
             confianza_porcentaje = confianza_numero
 
         st.metric(
@@ -269,43 +283,25 @@ def mostrar_modulo_inspeccion():
 
         if imagen_resultado is not None:
 
-            if isinstance(
-                imagen_resultado,
-                str
-            ):
+            try:
+                imagen_rgb = cv2.cvtColor(
+                    imagen_resultado,
+                    cv2.COLOR_BGR2RGB
+                )
 
-                if os.path.exists(
-                    imagen_resultado
-                ):
+                st.image(
+                    imagen_rgb,
+                    caption="Resultado procesado por VisionQA",
+                    use_container_width=True
+                )
 
-                    st.image(
-                        imagen_resultado,
-                        caption="Resultado procesado por VisionQA",
-                        use_container_width=True
-                    )
+            except Exception:
 
-            else:
-
-                try:
-
-                    imagen_rgb = cv2.cvtColor(
-                        imagen_resultado,
-                        cv2.COLOR_BGR2RGB
-                    )
-
-                    st.image(
-                        imagen_rgb,
-                        caption="Resultado procesado por VisionQA",
-                        use_container_width=True
-                    )
-
-                except Exception:
-
-                    st.image(
-                        imagen_resultado,
-                        caption="Resultado procesado por VisionQA",
-                        use_container_width=True
-                    )
+                st.image(
+                    imagen_resultado,
+                    caption="Resultado procesado por VisionQA",
+                    use_container_width=True
+                )
 
         # -------- GUARDAR EN CSV --------
 
@@ -328,13 +324,8 @@ def mostrar_modulo_inspeccion():
             encoding="utf-8"
         ) as archivo:
 
-            escritor = csv.writer(
-                archivo
-            )
-
-            escritor.writerow(
-                nueva_fila
-            )
+            escritor = csv.writer(archivo)
+            escritor.writerow(nueva_fila)
 
         st.success(
             "La inspección fue registrada correctamente."
@@ -415,11 +406,26 @@ def mostrar_resumen(total, aptas, no_aptas):
     )
 
     col1, col2, col3 = st.columns(3)
-   
+
     tarjetas = [
-        ("📦", total, "Total de inspecciones", "Registros almacenados"),
-        ("✅", aptas, "Piezas aptas", "Cumplen con calidad"),
-        ("❌", no_aptas, "Piezas no aptas", "Requieren revisión"),
+        (
+            "bi bi-clipboard-data",
+            total,
+            "Total de inspecciones",
+            "Registros almacenados"
+        ),
+        (
+            "bi bi-check-circle",
+            aptas,
+            "Piezas aptas",
+            "Cumplen con calidad"
+        ),
+        (
+            "bi bi-exclamation-triangle",
+            no_aptas,
+            "Piezas no aptas",
+            "Requieren revisión"
+        ),
     ]
 
     for columna, (icono, valor, titulo, descripcion) in zip(
@@ -431,7 +437,9 @@ def mostrar_resumen(total, aptas, no_aptas):
 
             html = (
                 f'<div class="kpi-card">'
-                f'<div class="kpi-icon">{icono}</div>'
+                f'<div class="kpi-icon">'
+                f'<i class="{icono}"></i>'
+                f'</div>'
                 f'<div class="kpi-title">{titulo}</div>'
                 f'<div class="kpi-value">{valor}</div>'
                 f'<div class="kpi-description">{descripcion}</div>'
@@ -452,9 +460,9 @@ def mostrar_resumen(total, aptas, no_aptas):
 def mostrar_graficas(aptas, no_aptas):
 
     mostrar_encabezado_seccion(
-    "Análisis de inspección",
-    "Comparación visual entre piezas aptas y no aptas."
-)
+        "Análisis de inspección",
+        "Comparación visual entre piezas aptas y no aptas."
+    )
 
     col_graf1, col_graf2 = st.columns(2)
 
@@ -462,81 +470,133 @@ def mostrar_graficas(aptas, no_aptas):
 
     with col_graf1:
 
-        fig, ax = plt.subplots(figsize=(5, 4))
+        with st.container(border=True):
 
-        categorias = [
-            "Aptas",
-            "No Aptas"
-        ]
+            st.markdown(
+                '<div class="chart-title">Resultados de Inspección</div>',
+                unsafe_allow_html=True
+            )
 
-        valores = [
-            aptas,
-            no_aptas
-        ]
+            fig, ax = plt.subplots(figsize=(5, 3.2))
 
-        ax.bar(
-            categorias,
-            valores,
-            color=["#1D7EAE", "#DC3545"],
-            width=0.55
-        )
+            categorias = [
+                "Aptas",
+                "No Aptas"
+            ]
 
-        ax.set_title(
-            "Resultados de Inspección",
-            fontsize=14,
-            fontweight="bold",
-            color="#231F20"
-        )
+            valores = [
+                aptas,
+                no_aptas
+            ]
 
-        ax.set_ylabel("Cantidad")
+            barras = ax.bar(
+                categorias,
+                valores,
+                color=["#1D7EAE", "#DC3545"],
+                width=0.55
+            )
 
-        ax.spines["top"].set_visible(False)
-        ax.spines["right"].set_visible(False)
+            ax.set_ylabel(
+                "Cantidad",
+                fontsize=10,
+                color="#5F6368"
+            )
 
-        plt.tight_layout()
+            ax.tick_params(
+                axis="both",
+                labelsize=10
+            )
 
-        st.pyplot(fig)
+            ax.spines["top"].set_visible(False)
+            ax.spines["right"].set_visible(False)
+            ax.spines["left"].set_color("#D9D9D9")
+            ax.spines["bottom"].set_color("#D9D9D9")
+
+            ax.grid(
+                axis="y",
+                linestyle="--",
+                alpha=0.25
+            )
+
+            for barra in barras:
+
+                altura = barra.get_height()
+
+                ax.text(
+                    barra.get_x() + barra.get_width() / 2,
+                    altura,
+                    f"{int(altura)}",
+                    ha="center",
+                    va="bottom",
+                    fontsize=10,
+                    fontweight="bold"
+                )
+
+            plt.tight_layout()
+
+            st.pyplot(
+                fig,
+                use_container_width=True
+            )
+
+            plt.close(fig)
 
     # -------- GRÁFICA DE PASTEL --------
 
     inspecciones = aptas + no_aptas
 
-    if inspecciones > 0:
+    with col_graf2:
 
-        with col_graf2:
+        with st.container(border=True):
 
-            fig, ax = plt.subplots()
-
-            ax.pie(
-                [aptas, no_aptas],
-                labels=[
-                    "Aptas",
-                    "No Aptas"
-                ],
-                colors=[
-                    "#1D7EAE",
-                    "#DC3545"
-                ],
-                autopct="%1.1f%%",
-                startangle=90,
-                textprops={
-                    "fontsize": 12
-                }
+            st.markdown(
+                '<div class="chart-title">Distribución de Resultados</div>',
+                unsafe_allow_html=True
             )
 
-            ax.set_title(
-                "Distribución de Resultados",
-                fontsize=14,
-                fontweight="bold",
-                color="#231F20"
-            )
+            if inspecciones > 0:
 
-            ax.axis("equal")
+                fig, ax = plt.subplots(figsize=(5, 3.2))
 
-            st.pyplot(fig)
+                ax.pie(
+                    [aptas, no_aptas],
+                    labels=[
+                        "Aptas",
+                        "No Aptas"
+                    ],
+                    colors=[
+                        "#1D7EAE",
+                        "#DC3545"
+                    ],
+                    autopct="%1.1f%%",
+                    startangle=90,
+                    wedgeprops={
+                        "width": 0.55,
+                        "edgecolor": "white"
+                    },
+                    textprops={
+                        "fontsize": 10
+                    }
+                )
+
+                ax.axis("equal")
+
+                plt.tight_layout()
+
+                st.pyplot(
+                    fig,
+                    use_container_width=True
+                )
+
+                plt.close(fig)
+
+            else:
+
+                st.info(
+                    "Todavía no hay inspecciones registradas."
+                )
 
     st.divider()
-
 
 def mostrar_indicadores(aptas, no_aptas):
 
@@ -943,42 +1003,85 @@ def main():
         )
 
         st.markdown(
-    '<div class="sidebar-brand">'
-    '<div class="sidebar-title">VisionQA</div>'
-    '<div class="sidebar-subtitle">'
-    'AI Visual Inspection System'
-    '</div>'
-    '</div>',
-    unsafe_allow_html=True
-)
+            '<div class="sidebar-brand">'
+            '<div class="sidebar-title">VisionQA</div>'
+            '<div class="sidebar-subtitle">'
+            'Sistema Inteligente de Inspección Visual'
+            '</div>'
+            '</div>',
+            unsafe_allow_html=True
+        )
+
         st.markdown(
             '<div class="sidebar-separator"></div>',
             unsafe_allow_html=True
         )
 
-        pagina = st.radio(
-            "Navegación",
-            [
-                "🏠 Dashboard",
-                "🔍 Inspección",
-                "📋 Registro",
-                "🧠 IA Generativa",
-                "📤 Reportes",
-                "ℹ️ Acerca de"
-            ],
-            label_visibility="collapsed"
-        )
+        pagina = option_menu(
+    menu_title=None,
+    options=[
+        "Dashboard",
+        "Inspección",
+        "Registro",
+        "IA Generativa",
+        "Reportes",
+        "Acerca de"
+    ],
+    icons=[
+        "speedometer2",
+        "search",
+        "clipboard-data",
+        "cpu",
+        "file-earmark-bar-graph",
+        "info-circle"
+    ],
+    menu_icon=None,
+    default_index=0,
+    orientation="vertical",
+    styles={
+        "container": {
+            "padding": "10px",
+            "background-color": "#FFFFFF",
+            "border": "1px solid #D9E2E8",
+            "border-radius": "16px",
+            "box-shadow": "0 6px 18px rgba(35, 31, 32, 0.06)"
+        },
+        "icon": {
+            "color": "#1D7EAE",
+            "font-size": "22px"
+        },
+        "nav-link": {
+            "font-size": "15px",
+            "font-weight": "500",
+            "color": "#231F20",
+            "text-align": "left",
+            "margin": "5px 0",
+            "padding": "15px 16px",
+            "border-radius": "11px"
+        },
+        "nav-link-hover": {
+            "background-color": "#F2F8FC",
+            "color": "#0032A0"
+        },
+        "nav-link-selected": {
+            "background-color": "#EAF5FB",
+            "color": "#0032A0",
+            "font-weight": "700",
+            "border-left": "4px solid #1D7EAE"
+        }
+    }
+)
 
         st.markdown(
-            """
-            <div class="sidebar-footer">
-                <strong>VisionQA</strong><br>
-                Versión 1.0<br>
-                IOT Technologies
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+                """
+                <div class="sidebar-footer">
+                    <strong>VisionQA</strong><br>
+                    Versión 1.0<br>
+                    IOT Technologies
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
     # -------- DATOS DEL REGISTRO --------
 
@@ -986,7 +1089,7 @@ def main():
 
     # -------- DASHBOARD --------
 
-    if pagina == "🏠 Dashboard":
+    if pagina == "Dashboard":
 
         mostrar_titulo(
             "📊 Dashboard Ejecutivo",
@@ -1011,7 +1114,7 @@ def main():
 
     # -------- INSPECCIÓN --------
 
-    elif pagina == "🔍 Inspección":
+    elif pagina == "Inspección":
 
         mostrar_titulo(
             "🔍 Inspección Visual",
@@ -1023,7 +1126,7 @@ def main():
 
     # -------- REGISTRO --------
 
-    elif pagina == "📋 Registro":
+    elif pagina == "Registro":
 
         mostrar_titulo(
             "📋 Registro de Inspecciones",
@@ -1034,7 +1137,7 @@ def main():
 
     # -------- IA GENERATIVA --------
 
-    elif pagina == "🧠 IA Generativa":
+    elif pagina == "IA Generativa":
 
         mostrar_titulo(
             "🧠 Análisis Inteligente",
@@ -1045,7 +1148,7 @@ def main():
 
     # -------- REPORTES --------
 
-    elif pagina == "📤 Reportes":
+    elif pagina == "Reportes":
 
         mostrar_titulo(
             "📤 Exportación de Reportes",
@@ -1056,7 +1159,7 @@ def main():
 
     # -------- ACERCA DE --------
 
-    elif pagina == "ℹ️ Acerca de":
+    elif pagina == " Acerca de":
 
         mostrar_titulo(
             "ℹ️ Acerca de VisionQA",

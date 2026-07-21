@@ -2,5 +2,22 @@ visionqa_env/
 __pycache__/
 *.pyc
 
-Inspecciones/
+/Inspecciones/
 registro_inspecciones.csv
+
+# Variables de entorno
+.env
+
+# Base de datos local de Django
+backend/db.sqlite3
+
+# Reportes generados
+*.xlsx
+
+# Caché de YOLO
+*.cache
+
+# Archivos temporales
+.DS_Store
+
+runs/
