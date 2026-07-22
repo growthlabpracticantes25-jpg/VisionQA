@@ -1,0 +1,9 @@
+path: C:/Users/pogon/OneDrive/Escritorio/VisionQA_Entrenamiento/VisionQA_Entrenamiento/VisionQA/dataset_yolo_v2
+
+train: images/train
+val: images/val
+
+names:
+  0: Rota
+  1: Manchada
+  2: Sin_backplate

@@ -149,101 +149,6 @@ st.subheader("🚀 Inspección")
 if st.button("Iniciar Inspección"):
     st.session_state.inspeccion = True
     st.rerun()
-
-st.divider()
-st.subheader("Estadísticas de Inspección")
-col_graf1, col_graf2 = st.columns(2)
-
-datos_grafica = {
-    "Aptas": aptas,
-    "No Aptas": no_aptas
-}
-
-with col_graf1:
-
-    fig, ax = plt.subplots(figsize=(5,4))
-
-    categorias = ["Aptas", "No Aptas"]
-    valores = [aptas, no_aptas]
-
-    ax.bar(
-        categorias,
-        valores,
-        color=["#1D7EAE", "#DC3545"],
-        width=0.55
-    )
-
-    ax.set_title(
-        "Resultados de Inspección",
-        fontsize=14,
-        fontweight="bold",
-        color="#231F20"
-    )
-
-    ax.set_ylabel("Cantidad")
-
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
-
-    plt.tight_layout()
-
-    st.pyplot(fig)
-
-# -------- KPIs --------
-
-inspecciones_validas = aptas + no_aptas
-
-if inspecciones_validas > 0:
-
-    porcentaje_apto = (
-        aptas / inspecciones_validas
-    ) * 100
-
-    porcentaje_no_apto = (
-        no_aptas / inspecciones_validas
-    ) * 100
-
-    st.subheader("Indicadores de Calidad")
-
-col4, col5 = st.columns(2)
-
-with col4:
-    st.markdown(
-        f"""
-        <div class="kpi-card">
-            <div class="kpi-icon">📈</div>
-            <div class="kpi-value">{porcentaje_apto:.1f}%</div>
-            <div class="kpi-label">Tasa de aprobación</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-with col5:
-    st.markdown(
-        f"""
-        <div class="kpi-card">
-            <div class="kpi-icon">📉</div>
-            <div class="kpi-value">{porcentaje_no_apto:.1f}%</div>
-            <div class="kpi-label">Tasa de rechazo</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-st.divider() 
-
-st.markdown(
-    """
-    <div class="inspection-card">
-        <div class="inspection-title">🔎 Módulo de Inspección</div>
-        <div class="inspection-subtitle">
-            Selecciona el método de captura para evaluar la pieza.
-        </div>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
 # ---------------- MÓDULO DE INSPECCIÓN ----------------
 
 if st.session_state.inspeccion:
@@ -471,6 +376,102 @@ if st.session_state.inspeccion:
         st.write(f"Fecha y hora: {fecha_hora}")
 
         st.write(f"Archivo guardado: {nombre_archivo}") 
+
+        
+st.divider()
+st.subheader("Estadísticas de Inspección")
+col_graf1, col_graf2 = st.columns(2)
+
+datos_grafica = {
+    "Aptas": aptas,
+    "No Aptas": no_aptas
+}
+
+with col_graf1:
+
+    fig, ax = plt.subplots(figsize=(5,4))
+
+    categorias = ["Aptas", "No Aptas"]
+    valores = [aptas, no_aptas]
+
+    ax.bar(
+        categorias,
+        valores,
+        color=["#1D7EAE", "#DC3545"],
+        width=0.55
+    )
+
+    ax.set_title(
+        "Resultados de Inspección",
+        fontsize=14,
+        fontweight="bold",
+        color="#231F20"
+    )
+
+    ax.set_ylabel("Cantidad")
+
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+
+    plt.tight_layout()
+
+    st.pyplot(fig)
+
+# -------- KPIs --------
+
+inspecciones_validas = aptas + no_aptas
+
+if inspecciones_validas > 0:
+
+    porcentaje_apto = (
+        aptas / inspecciones_validas
+    ) * 100
+
+    porcentaje_no_apto = (
+        no_aptas / inspecciones_validas
+    ) * 100
+
+    st.subheader("Indicadores de Calidad")
+
+col4, col5 = st.columns(2)
+
+with col4:
+    st.markdown(
+        f"""
+        <div class="kpi-card">
+            <div class="kpi-icon">📈</div>
+            <div class="kpi-value">{porcentaje_apto:.1f}%</div>
+            <div class="kpi-label">Tasa de aprobación</div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+with col5:
+    st.markdown(
+        f"""
+        <div class="kpi-card">
+            <div class="kpi-icon">📉</div>
+            <div class="kpi-value">{porcentaje_no_apto:.1f}%</div>
+            <div class="kpi-label">Tasa de rechazo</div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+st.divider() 
+
+st.markdown(
+    """
+    <div class="inspection-card">
+        <div class="inspection-title">🔎 Módulo de Inspección</div>
+        <div class="inspection-subtitle">
+            Selecciona el método de captura para evaluar la pieza.
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # -------- GRÁFICA DE PASTEL --------
 
