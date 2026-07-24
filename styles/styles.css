@@ -57,55 +57,155 @@ h2 {
     color: var(--iot-gray);
     font-weight: 400;
 }
-/* =========================
-   KPI CARDS
-   ========================= */
+/* =========================================
+   TARJETAS KPI MODERNAS
+   ========================================= */
 
 .kpi-card {
-    background: var(--iot-white);
-    border: 1px solid var(--iot-border);
-    border-left: 6px solid var(--iot-blue);
+    min-height: 220px;
+    padding: 24px;
+
+    background: #ffffff;
+    border: 1px solid #d9e2e8;
     border-radius: 18px;
-    padding:2rem;
-    min-height: 250px;
-    box-shadow: 0 6px 20px rgba(35, 31, 32, 0.08);
-    transition: all 0.25s ease;
+
+    box-shadow: 0 8px 22px rgba(35, 31, 32, 0.08);
+
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     justify-content: center;
-    align-items: center;
-    text-align: center;
+
+    position: relative;
+    overflow: hidden;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.kpi-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 6px;
+    height: 100%;
+    background: #1d7eae;
 }
 
 .kpi-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 28px rgba(35, 31, 32, 0.12);
+    transform: translateY(-6px);
+    box-shadow: 0 14px 32px rgba(35, 31, 32, 0.14);
+}
+
+.kpi-card-top {
+    width: 100%;
+    margin-bottom: 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .kpi-icon {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
+    width: 52px;
+    height: 52px;
+
+    border-radius: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #eaf5fb;
+    color: #1d7eae;
 }
 
-.kpi-title {
-     font-size: 18px;
-    font-weight: 600;
-    color: #6B7280;
-    margin-bottom: 0.8rem;
+.kpi-icon i {
+    font-size: 25px;
+}
+
+.kpi-detail {
+    padding: 6px 10px;
+
+    border-radius: 999px;
+
+    background: #f4f7f9;
+    color: #6b7280;
+
+    font-size: 12px;
+    font-weight: 700;
 }
 
 .kpi-value {
-    font-size: 58px;
-    font-weight: 800;
-    color: var(--iot-blue);
+    margin-bottom: 8px;
+
+    color: #1d7eae;
+
+    font-size: 52px;
     line-height: 1;
-    margin-bottom: 0.8rem;
-}
-.kpi-description {
-     font-size: 15px;
-    color: #9CA3AF;
+    font-weight: 800;
 }
 
+.kpi-title {
+    margin-bottom: 6px;
+
+    color: #231f20;
+
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.kpi-description {
+    color: #7b8491;
+
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Tarjeta total */
+.kpi-total::before {
+    background: #1d7eae;
+}
+
+/* Tarjeta aptas */
+.kpi-success::before {
+    background: #1f9d62;
+}
+
+.kpi-success .kpi-icon {
+    background: #e8f7ef;
+    color: #1f9d62;
+}
+
+.kpi-success .kpi-value {
+    color: #1f9d62;
+}
+
+.kpi-success .kpi-detail {
+    background: #e8f7ef;
+    color: #197b4d;
+}
+
+/* Tarjeta no aptas */
+.kpi-danger::before {
+    background: #d94343;
+}
+
+.kpi-danger .kpi-icon {
+    background: #fdecec;
+    color: #d94343;
+}
+
+.kpi-danger .kpi-value {
+    color: #d94343;
+}
+
+.kpi-danger .kpi-detail {
+    background: #fdecec;
+    color: #b83232;
+}
 /* Botones */
 
 .stButton > button {
@@ -280,7 +380,7 @@ header {
 }
 
 /* =========================================
-   SIDEBAR IOT TECHNOLOGIES - STREAMLIT 1.59
+   SIDEBAR VISIONQA
    ========================================= */
 
 section[data-testid="stSidebar"] {
@@ -288,22 +388,33 @@ section[data-testid="stSidebar"] {
     min-width: 340px !important;
     max-width: 340px !important;
     flex: 0 0 340px !important;
-    background-color: #FFFFFF !important;
-    border-right: 1px solid #D9E2E8 !important;
+
+    background: linear-gradient(
+        180deg,
+        #178fb4 0%,
+        #1b9fc0 55%,
+        #167fa5 100%
+    ) !important;
+
+    border-right: none !important;
+    box-shadow: 4px 0 18px rgba(15, 66, 90, 0.18);
 }
 
+/* Contenido interior */
 section[data-testid="stSidebar"]
 [data-testid="stSidebarContent"] {
     width: 340px !important;
     min-width: 340px !important;
     max-width: 340px !important;
     padding: 26px 24px !important;
+    background: transparent !important;
 }
 
-section[data-testid="stSidebar"] > div {
-    width: 340px !important;
-    min-width: 340px !important;
-    max-width: 340px !important;
+/* Evitar contenedores blancos dentro de la barra */
+section[data-testid="stSidebar"] > div,
+section[data-testid="stSidebar"] [data-testid="stVerticalBlock"],
+section[data-testid="stSidebar"] [data-testid="stElementContainer"] {
+    background: transparent !important;
 }
 
 /* Logo IOT */
@@ -314,7 +425,7 @@ section[data-testid="stSidebar"] img {
     margin: 16px auto 34px auto !important;
 }
 
-/* Identidad del sistema */
+/* Identidad VisionQA */
 .sidebar-brand {
     text-align: center;
     margin-bottom: 26px;
@@ -323,7 +434,7 @@ section[data-testid="stSidebar"] img {
 .sidebar-title {
     font-size: 42px;
     font-weight: 800;
-    color: #231F20;
+    color: #ffffff !important;
     margin-bottom: 8px;
 }
 
@@ -332,68 +443,216 @@ section[data-testid="stSidebar"] img {
     margin: 0 auto;
     font-size: 18px;
     line-height: 1.6;
-    color: #6B7280;
+    color: rgba(255, 255, 255, 0.92) !important;
 }
 
+/* Separadores */
 .sidebar-separator {
     height: 1px;
-    background-color: #D9E2E8;
+    background-color: rgba(255, 255, 255, 0.55);
     margin: 24px 0;
 }
 
-/* Footer */
+/* Menú de navegación */
+section[data-testid="stSidebar"] nav {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Pie de barra */
 .sidebar-footer {
     margin-top: 40px;
     padding-top: 24px;
-    border-top: 1px solid #D9E2E8;
+    border-top: 1px solid rgba(255, 255, 255, 0.55);
     text-align: center;
     font-size: 13px;
     line-height: 1.8;
-    color: #6B7280;
+    color: rgba(255, 255, 255, 0.88) !important;
 }
 
 .sidebar-footer strong {
-    color: #231F20;
+    color: #ffffff !important;
     font-size: 14px;
 }
-/* =========================================
-   ICONOGRAFÍA KPI - ESTILO IOT
-   ========================================= */
 
-.kpi-icon {
-    width: 54px;
-    height: 54px;
-    margin-bottom: 1rem;
-    border-radius: 14px;
-    background-color: #EAF5FB;
-    color: #1D7EAE;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Botón para contraer */
+button[data-testid="stSidebarCollapseButton"] {
+    color: #ffffff !important;
 }
 
-.kpi-icon i {
-    font-size: 30px;
-    line-height: 1;
-}
 /* =========================================
    SELECTOR DE MÉTODO DE INSPECCIÓN
    ========================================= */
 
 div[data-testid="stButton"] > button {
-    min-height: 64px;
-    background-color: #FFFFFF;
-    color: #231F20;
-    border: 1px solid #D9E2E8;
-    border-radius: 14px;
-    font-size: 16px;
-    font-weight: 700;
-    box-shadow: 0 4px 14px rgba(35, 31, 32, 0.05);
+
+    min-height:70px;
+
+    border-radius:14px;
+
+    border:1px solid #D8E3EB;
+
+    background:#FFFFFF;
+
+    color:#1F2937;
+
+    font-size:16px;
+
+    font-weight:700;
+
+    transition:all .25s ease;
+
+    box-shadow:0 6px 16px rgba(0,0,0,.06);
+
+}
+div[data-testid="stButton"] > button:hover{
+
+    background:#1998B7;
+
+    color:white;
+
+    border-color:#1998B7;
+
+    transform:translateY(-2px);
+
+    box-shadow:0 10px 20px rgba(25,152,183,.25);
+
 }
 
-div[data-testid="stButton"] > button:hover {
-    background-color: #EAF5FB;
-    color: #0032A0;
-    border-color: #1D7EAE;
-    transform: translateY(-1px);
+/* Contenido interior de la barra */
+section[data-testid="stSidebar"] > div {
+    background: transparent;
+}
+
+/* Texto general de la barra */
+section[data-testid="stSidebar"] * {
+    color: #ffffff;
+}
+
+/* Separadores */
+section[data-testid="stSidebar"] hr {
+    border-color: rgba(255, 255, 255, 0.22);
+}
+
+/* Botones del menú */
+section[data-testid="stSidebar"] button {
+    width: 100%;
+    min-height: 46px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: white;
+    font-weight: 500;
+    text-align: left;
+    justify-content: flex-start;
+    padding-left: 14px;
+    transition: all 0.2s ease;
+}
+
+/* Efecto al pasar el cursor */
+section[data-testid="stSidebar"] button:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: white;
+    transform: translateX(3px);
+}
+
+/* Radio buttons usados como navegación */
+section[data-testid="stSidebar"] div[role="radiogroup"] label {
+    background: transparent;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 5px;
+    transition: all 0.2s ease;
+}
+
+/* Hover del menú */
+section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {
+    background: rgba(255, 255, 255, 0.14);
+}
+
+/* Opción seleccionada */
+section[data-testid="stSidebar"] div[role="radiogroup"] label:has(
+    input:checked
+) {
+    background: #084a92;
+    box-shadow: 0 5px 12px rgba(4, 49, 102, 0.25);
+}
+
+/* Oculta el círculo del radio */
+section[data-testid="stSidebar"] div[role="radiogroup"] input {
+    display: none;
+}
+
+/* Texto de las opciones */
+section[data-testid="stSidebar"] div[role="radiogroup"] p {
+    color: white;
+    font-weight: 500;
+}
+
+/* Botón para contraer la barra */
+button[data-testid="stSidebarCollapseButton"] {
+    color: white;
+}
+
+/* Texto pequeño inferior */
+section[data-testid="stSidebar"] small {
+    color: rgba(255, 255, 255, 0.80);
+}
+/* Quitar bordes y fondos claros alrededor del option_menu */
+section[data-testid="stSidebar"] .nav,
+section[data-testid="stSidebar"] .nav-pills,
+section[data-testid="stSidebar"] ul,
+section[data-testid="stSidebar"] li,
+section[data-testid="stSidebar"] nav {
+    background: #1998B7 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Eliminar líneas blancas laterales del menú */
+section[data-testid="stSidebar"] .nav-link {
+    border: none !important;
+    outline: none !important;
+}
+
+/* Asegurar que el bloque completo del menú tenga el mismo color */
+section[data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
+    background: transparent !important;
+}
+.sidebar-footer {
+    background: transparent !important;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.55);
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.88) !important;
+}
+
+.sidebar-footer strong {
+    color: #ffffff !important;
+}
+/* ===========================
+   SECCIONES DEL MENÚ
+   =========================== */
+
+.sidebar-section{
+
+    margin-top:22px;
+    margin-bottom:10px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    letter-spacing:1.5px;
+
+    text-transform:uppercase;
+
+    color:rgba(255,255,255,.70);
+
+    padding-left:8px;
+
 }
