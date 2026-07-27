@@ -1,121 +1,24 @@
 import os
 import csv
 from datetime import datetime
-from datetime import datetime
 import requests
 import streamlit as st
 import cv2
-from textwrap import dedent
 import matplotlib.pyplot as plt
 import pandas as pd
 from io import BytesIO
-from pathlib import Path
 from openpyxl import Workbook
 
 from modelo_ia import clasificar_imagen
 from gemini_analisis import analizar_causas
 from streamlit_option_menu import option_menu
 
-def cargar_css(nombre_archivo):
-    ruta = Path(__file__).parent / "assets" / "css" / nombre_archivo
-
-    if ruta.exists():
-        with open(ruta, "r", encoding="utf-8") as archivo:
-            st.markdown(
-                f"<style>{archivo.read()}</style>",
-                unsafe_allow_html=True
-            )
-    else:
-        st.warning(
-            f"No se encontró el archivo CSS: {ruta}"
-        )
 # ---------------- APP PRINCIPAL ----------------
 
 st.set_page_config(
     page_title="VisionQA",
     page_icon="🔍",
     layout="wide"
-)
-
-st.markdown(
-    """
-    <style>
-
-    /* Fondo general */
-    .stApp {
-        background-color: #f4f7fb;
-    }
-
-    /* Ocultar elementos predeterminados de Streamlit */
-    #MainMenu {
-        visibility: hidden;
-    }
-
-    footer {
-        visibility: hidden;
-    }
-
-    header {
-        visibility: hidden;
-    }
-
-    /* Espacio del contenido principal */
-    .block-container {
-        padding-top: 1rem;
-        padding-bottom: 2rem;
-        max-width: 100%;
-    }
-
-    /* Barra superior del Dashboard */
-    .visionqa-header {
-    background: linear-gradient(90deg, #168db5, #24a0c1);
-    border-radius: 10px;
-    padding: 18px 24px;
-    margin-bottom: 22px;
-    color: white;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.visionqa-header-left {
-    display: flex;
-    flex-direction: column;
-}
-
-.visionqa-header-right {
-    text-align: right;
-    color: white;
-}
-
-.visionqa-saludo {
-    color: white;
-    font-size: 20px;
-    font-weight: 700;
-}
-
-.visionqa-subtitulo {
-    color: white;
-    font-size: 13px;
-    margin-top: 5px;
-    opacity: 0.92;
-}
-
-.visionqa-fecha {
-    color: white;
-    font-size: 13px;
-}
-
-.visionqa-hora {
-    color: white;
-    font-size: 18px;
-    font-weight: 700;
-    margin-top: 2px;
-}
-    </style>
-    """,
-    unsafe_allow_html=True
 )
 # ---------------- ESTILOS ----------------
 
@@ -297,6 +200,11 @@ def cargar_datos_registro():
 
 def mostrar_modulo_inspeccion():
 
+    mostrar_titulo(
+        "Inspección Visual",
+        "Analiza una pieza mediante una imagen local o una fotografía."
+    )
+
     mostrar_encabezado_seccion(
         "Método de inspección",
         "Selecciona cómo deseas capturar la pieza para iniciar el análisis."
@@ -321,14 +229,9 @@ def mostrar_modulo_inspeccion():
             use_container_width=True
         ):
             st.session_state["metodo_inspeccion"] = "Tomar fotografía"
-        else:
-
-            st.info(
-        "👆 Selecciona un método de inspección para comenzar."
-    )
 
     if "metodo_inspeccion" not in st.session_state:
-        st.session_state["metodo_inspeccion"] = None
+        st.session_state["metodo_inspeccion"] = "Cargar imagen"
 
     opcion = st.session_state["metodo_inspeccion"]
 
@@ -340,15 +243,11 @@ def mostrar_modulo_inspeccion():
         origen
     ):
 
-        os.makedirs(
-            "inspecciones",
-            exist_ok=True
-        )
-
         ruta_imagen = os.path.join(
             "inspecciones",
             nombre_archivo
         )
+
         with open(
             ruta_imagen,
             "wb"
@@ -403,10 +302,7 @@ def mostrar_modulo_inspeccion():
 
         # -------- MOSTRAR RESULTADO --------
 
-        mostrar_encabezado_seccion(
-        "Resultado de la inspección",
-        "Clasificación y nivel de confianza obtenido por el modelo."
-)
+        st.subheader("Resultado de la Inspección")
 
         resultado_normalizado = str(
             resultado
@@ -464,23 +360,14 @@ def mostrar_modulo_inspeccion():
         )
 
         if guardado_api:
-            st.caption(f"✅ {mensaje_api}")
+            st.success(mensaje_api)
         else:
             st.warning(mensaje_api)
 
-        col_confianza, col_origen = st.columns(2)
-
-        with col_confianza:
-         st.metric(
-                "Confianza del modelo",
-                f"{confianza_porcentaje:.2f}%"
-            )
-
-        with col_origen:
-            st.metric(
-                "Origen de la imagen",
-                origen
-            )
+        st.metric(
+            "Confianza del modelo",
+            f"{confianza_porcentaje:.2f}%"
+        )
 
         # -------- MOSTRAR IMAGEN PROCESADA --------
 
@@ -609,80 +496,51 @@ def mostrar_resumen(total, aptas, no_aptas):
         "Indicadores principales de las inspecciones registradas."
     )
 
-    porcentaje_aptas = (
-        (aptas / total) * 100
-        if total > 0
-        else 0
-    )
-
-    porcentaje_no_aptas = (
-        (no_aptas / total) * 100
-        if total > 0
-        else 0
-    )
-
     col1, col2, col3 = st.columns(3)
 
     tarjetas = [
-        {
-            "icono": "bi bi-clipboard-data",
-            "valor": total,
-            "titulo": "Total de inspecciones",
-            "descripcion": "Registros almacenados",
-            "detalle": "Base de datos actualizada",
-            "clase": "kpi-total"
-        },
-        {
-            "icono": "bi bi-check-circle",
-            "valor": aptas,
-            "titulo": "Piezas aptas",
-            "descripcion": "Cumplen con calidad",
-            "detalle": f"{porcentaje_aptas:.1f}% del total",
-            "clase": "kpi-success"
-        },
-        {
-            "icono": "bi bi-exclamation-triangle",
-            "valor": no_aptas,
-            "titulo": "Piezas no aptas",
-            "descripcion": "Requieren revisión",
-            "detalle": f"{porcentaje_no_aptas:.1f}% del total",
-            "clase": "kpi-danger"
-        }
+        (
+            "bi bi-clipboard-data",
+            total,
+            "Total de inspecciones",
+            "Registros almacenados"
+        ),
+        (
+            "bi bi-check-circle",
+            aptas,
+            "Piezas aptas",
+            "Cumplen con calidad"
+        ),
+        (
+            "bi bi-exclamation-triangle",
+            no_aptas,
+            "Piezas no aptas",
+            "Requieren revisión"
+        ),
     ]
 
-    for columna, tarjeta in zip(
-    [col1, col2, col3],
-    tarjetas
-):
+    for columna, (icono, valor, titulo, descripcion) in zip(
+        [col1, col2, col3],
+        tarjetas
+    ):
 
-     with columna:
+        with columna:
 
-        html = (
-            f'<div class="kpi-card {tarjeta["clase"]}">'
-                '<div class="kpi-card-top">'
-                    '<div class="kpi-icon">'
-                        f'<i class="{tarjeta["icono"]}"></i>'
-                    '</div>'
-                    '<div class="kpi-detail">'
-                        f'{tarjeta["detalle"]}'
-                    '</div>'
-                '</div>'
-                '<div class="kpi-value">'
-                    f'{tarjeta["valor"]}'
-                '</div>'
-                '<div class="kpi-title">'
-                    f'{tarjeta["titulo"]}'
-                '</div>'
-                '<div class="kpi-description">'
-                    f'{tarjeta["descripcion"]}'
-                '</div>'
-            '</div>'
-        )
+            html = (
+                f'<div class="kpi-card">'
+                f'<div class="kpi-icon">'
+                f'<i class="{icono}"></i>'
+                f'</div>'
+                f'<div class="kpi-title">{titulo}</div>'
+                f'<div class="kpi-value">{valor}</div>'
+                f'<div class="kpi-description">{descripcion}</div>'
+                f'</div>'
+            )
 
-        st.markdown(
-            html,
-            unsafe_allow_html=True
-        )
+            st.markdown(
+                html,
+                unsafe_allow_html=True
+            )
 
     st.caption(
         "Actualización automática basada en las inspecciones registradas."
@@ -697,66 +555,137 @@ def mostrar_graficas(aptas, no_aptas):
         "Comparación visual entre piezas aptas y no aptas."
     )
 
-    col1, col2 = st.columns(2)
+    col_graf1, col_graf2 = st.columns(2)
 
-    etiquetas = ["Aptas", "No aptas"]
-    valores = [aptas, no_aptas]
+    # -------- GRÁFICA DE BARRAS --------
 
-    with col1:
+    with col_graf1:
 
-        st.markdown("### Resultados de inspección")
+        with st.container(border=True):
 
-        fig_barras, ax_barras = plt.subplots()
-
-        barras = ax_barras.bar(
-            etiquetas,
-            valores
-        )
-
-        ax_barras.set_ylabel("Cantidad")
-        ax_barras.set_title("Piezas inspeccionadas")
-
-        for barra, valor in zip(barras, valores):
-
-            ax_barras.text(
-                barra.get_x() + barra.get_width() / 2,
-                barra.get_height(),
-                str(valor),
-                ha="center",
-                va="bottom"
+            st.markdown(
+                '<div class="chart-title">Resultados de Inspección</div>',
+                unsafe_allow_html=True
             )
 
-        st.pyplot(fig_barras)
+            fig, ax = plt.subplots(figsize=(5, 3.2))
 
-    with col2:
+            categorias = [
+                "Aptas",
+                "No Aptas"
+            ]
 
-        st.markdown("### Distribución de resultados")
+            valores = [
+                aptas,
+                no_aptas
+            ]
 
-        total = aptas + no_aptas
-
-        if total > 0:
-
-            fig_dona, ax_dona = plt.subplots()
-
-            ax_dona.pie(
+            barras = ax.bar(
+                categorias,
                 valores,
-                labels=etiquetas,
-                autopct="%1.1f%%",
-                startangle=90,
-                wedgeprops={
-                    "width": 0.40
-                }
+                color=["#1D7EAE", "#DC3545"],
+                width=0.55
             )
 
-            ax_dona.axis("equal")
-
-            st.pyplot(fig_dona)
-
-        else:
-
-            st.info(
-                "Todavía no hay inspecciones para mostrar la distribución."
+            ax.set_ylabel(
+                "Cantidad",
+                fontsize=10,
+                color="#5F6368"
             )
+
+            ax.tick_params(
+                axis="both",
+                labelsize=10
+            )
+
+            ax.spines["top"].set_visible(False)
+            ax.spines["right"].set_visible(False)
+            ax.spines["left"].set_color("#D9D9D9")
+            ax.spines["bottom"].set_color("#D9D9D9")
+
+            ax.grid(
+                axis="y",
+                linestyle="--",
+                alpha=0.25
+            )
+
+            for barra in barras:
+
+                altura = barra.get_height()
+
+                ax.text(
+                    barra.get_x() + barra.get_width() / 2,
+                    altura,
+                    f"{int(altura)}",
+                    ha="center",
+                    va="bottom",
+                    fontsize=10,
+                    fontweight="bold"
+                )
+
+            plt.tight_layout()
+
+            st.pyplot(
+                fig,
+                use_container_width=True
+            )
+
+            plt.close(fig)
+
+    # -------- GRÁFICA DE PASTEL --------
+
+    inspecciones = aptas + no_aptas
+
+    with col_graf2:
+
+        with st.container(border=True):
+
+            st.markdown(
+                '<div class="chart-title">Distribución de Resultados</div>',
+                unsafe_allow_html=True
+            )
+
+            if inspecciones > 0:
+
+                fig, ax = plt.subplots(figsize=(5, 3.2))
+
+                ax.pie(
+                    [aptas, no_aptas],
+                    labels=[
+                        "Aptas",
+                        "No Aptas"
+                    ],
+                    colors=[
+                        "#1D7EAE",
+                        "#DC3545"
+                    ],
+                    autopct="%1.1f%%",
+                    startangle=90,
+                    wedgeprops={
+                        "width": 0.55,
+                        "edgecolor": "white"
+                    },
+                    textprops={
+                        "fontsize": 10
+                    }
+                )
+
+                ax.axis("equal")
+
+                plt.tight_layout()
+
+                st.pyplot(
+                    fig,
+                    use_container_width=True
+                )
+
+                plt.close(fig)
+
+            else:
+
+                st.info(
+                    "Todavía no hay inspecciones registradas."
+                )
 
     st.divider()
 
@@ -1210,420 +1139,12 @@ Proyecto desarrollado para IOT Technologies
 """,
 unsafe_allow_html=True
 )
-    
-cargar_css("global.css")
-def mostrar_login():
-
-    st.markdown(
-        """
-        <style>
-        [data-testid="stSidebar"] {
-            display: none;
-        }
-
-        [data-testid="stHeader"] {
-            background: transparent;
-        }
-
-        .block-container {
-            max-width: 1180px;
-            padding-top: 3rem;
-            padding-bottom: 3rem;
-        }
-
-        .login-panel {
-            min-height: 620px;
-            border-radius: 28px;
-            overflow: hidden;
-            box-shadow: 0 20px 55px rgba(35, 31, 32, 0.16);
-            background: #FFFFFF;
-            border: 1px solid rgba(189, 198, 195, 0.55);
-        }
-
-        .login-brand {
-            min-height: 620px;
-            padding: 58px 48px;
-            border-radius: 28px 0 0 28px;
-            background:
-                radial-gradient(
-                    circle at 15% 20%,
-                    rgba(152, 218, 233, 0.38),
-                    transparent 28%
-                ),
-                radial-gradient(
-                    circle at 90% 82%,
-                    rgba(255, 255, 255, 0.14),
-                    transparent 30%
-                ),
-                linear-gradient(
-                    145deg,
-                    #0032A0 0%,
-                    #1D7EAE 58%,
-                    #1998B7 100%
-                );
-            color: white;
-        }
-
-        .iot-mark {
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: 1.4px;
-            margin-bottom: 95px;
-        }
-
-        .brand-symbol {
-            width: 72px;
-            height: 72px;
-            border: 3px solid #98DAE9;
-            border-radius: 50%;
-            position: relative;
-            margin-bottom: 28px;
-        }
-
-        .brand-symbol::before,
-        .brand-symbol::after {
-            content: "";
-            position: absolute;
-            border: 3px solid #98DAE9;
-            border-radius: 50%;
-        }
-
-        .brand-symbol::before {
-            inset: 10px;
-        }
-
-        .brand-symbol::after {
-            inset: 22px;
-            background: #98DAE9;
-        }
-
-        .brand-title {
-            font-size: 46px;
-            line-height: 1;
-            font-weight: 800;
-            margin-bottom: 18px;
-        }
-
-        .brand-subtitle {
-            font-size: 21px;
-            line-height: 1.45;
-            font-weight: 500;
-            max-width: 420px;
-            margin-bottom: 22px;
-        }
-
-        .brand-copy {
-            font-size: 15px;
-            line-height: 1.65;
-            max-width: 440px;
-            color: rgba(255, 255, 255, 0.82);
-        }
-
-        .brand-badge {
-            display: inline-block;
-            margin-top: 38px;
-            padding: 10px 16px;
-            border-radius: 999px;
-            border: 1px solid rgba(255, 255, 255, 0.30);
-            background: rgba(255, 255, 255, 0.10);
-            font-size: 13px;
-        }
-
-        .login-form-header {
-            margin-top: 85px;
-            margin-bottom: 28px;
-        }
-
-        .login-form-header h1 {
-            color: #231F20;
-            font-size: 38px;
-            margin: 0 0 10px 0;
-        }
-
-        .login-form-header p {
-            color: #667085;
-            font-size: 15px;
-            margin: 0;
-        }
-
-        div[data-testid="stTextInput"] label {
-            color: #231F20;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        div[data-testid="stTextInput"] input {
-            border-radius: 14px;
-            min-height: 48px;
-            border: 1px solid #BDC6C3;
-            background: #FFFFFF;
-        }
-
-        div[data-testid="stTextInput"] input:focus {
-            border-color: #1D7EAE;
-            box-shadow: 0 0 0 3px rgba(29, 126, 174, 0.13);
-        }
-
-        div[data-testid="stButton"] > button {
-            width: 100%;
-            min-height: 50px;
-            border: none;
-            border-radius: 14px;
-            background: linear-gradient(
-                90deg,
-                #0032A0 0%,
-                #1D7EAE 100%
-            );
-            color: white;
-            font-weight: 700;
-            font-size: 15px;
-            box-shadow: 0 8px 20px rgba(0, 50, 160, 0.22);
-        }
-
-        div[data-testid="stButton"] > button:hover {
-            border: none;
-            color: white;
-            background: linear-gradient(
-                90deg,
-                #1D7EAE 0%,
-                #0032A0 100%
-            );
-        }
-
-        .login-help {
-            margin-top: 24px;
-            padding-top: 20px;
-            border-top: 1px solid #E8ECEB;
-            color: #667085;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        .login-footer {
-            margin-top: 42px;
-            color: #98A2B3;
-            font-size: 12px;
-        }
-
-        @media (max-width: 900px) {
-            .login-brand {
-                min-height: 420px;
-                border-radius: 28px 28px 0 0;
-                padding: 42px 32px;
-            }
-
-            .login-form-header {
-                margin-top: 20px;
-            }
-
-            .iot-mark {
-                margin-bottom: 45px;
-            }
-
-            .brand-title {
-                font-size: 38px;
-            }
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-    columna_marca, columna_formulario = st.columns(
-        [1.15, 0.85],
-        gap="large"
-    )
-
-    with columna_marca:
-
-        st.markdown(
-            """
-            <div class="login-brand">
-                <div class="iot-mark">
-                    IOT TECHNOLOGIES
-                </div>
-
-                <div class="brand-symbol"></div>
-
-                <div class="brand-title">
-                    VisionQA
-                </div>
-
-                <div class="brand-subtitle">
-                    Sistema Inteligente de Inspección Visual
-                </div>
-
-                <div class="brand-copy">
-                    Plataforma de control de calidad orientada a la
-                    detección de defectos, gestión de inspecciones y
-                    análisis de resultados para procesos industriales.
-                </div>
-
-                <div class="brand-badge">
-                    Conectividad · Confiabilidad · Eficiencia
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    with columna_formulario:
-
-        st.markdown(
-            """
-            <div class="login-form-header">
-                <h1>Iniciar sesión</h1>
-                <p>
-                    Ingresa tus credenciales para acceder a VisionQA.
-                </p>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-        usuario = st.text_input(
-            "Usuario",
-            placeholder="Escribe tu usuario",
-            key="login_usuario"
-        )
-
-        contraseña = st.text_input(
-            "Contraseña",
-            type="password",
-            placeholder="Escribe tu contraseña",
-            key="login_contrasena"
-        )
-
-        iniciar = st.button(
-            "Iniciar sesión",
-            key="login_boton"
-        )
-
-        if iniciar:
-
-            if not usuario.strip() or not contraseña:
-
-                st.warning(
-                    "Escribe el usuario y la contraseña."
-                )
-
-            else:
-
-                try:
-
-                    with st.spinner(
-                        "Validando credenciales..."
-                    ):
-
-                        respuesta = requests.post(
-                            "http://127.0.0.1:8000/api/login/",
-                            json={
-                                "username": usuario.strip(),
-                                "password": contraseña
-                            },
-                            timeout=10
-                        )
-
-                    if respuesta.status_code == 200:
-
-                        datos = respuesta.json()
-
-                        if datos.get("success"):
-
-                            st.session_state["logueado"] = True
-                            st.session_state["usuario"] = datos.get(
-                                "username",
-                                usuario
-                            )
-                            st.session_state["is_staff"] = datos.get(
-                                "is_staff",
-                                False
-                            )
-                            st.session_state["is_superuser"] = datos.get(
-                                "is_superuser",
-                                False
-                            )
-
-                            st.rerun()
-
-                        else:
-
-                            st.error(
-                                "Usuario o contraseña incorrectos."
-                            )
-
-                    else:
-
-                        st.error(
-                            "El servidor no pudo validar el acceso."
-                        )
-
-                except requests.exceptions.ConnectionError:
-
-                    st.error(
-                        "No fue posible conectar con el servidor de "
-                        "VisionQA. Verifica que Django esté ejecutándose."
-                    )
-
-                except requests.exceptions.Timeout:
-
-                    st.error(
-                        "El servidor tardó demasiado en responder."
-                    )
-
-                except ValueError:
-
-                    st.error(
-                        "El servidor devolvió una respuesta no válida."
-                    )
-
-                except Exception as error:
-
-                    st.error(
-                        f"Ocurrió un error inesperado: {error}"
-                    )
-
-        st.markdown(
-            """
-            <div class="login-help">
-                Acceso autorizado exclusivamente para personal
-                registrado en el sistema.
-            </div>
-
-            <div class="login-footer">
-                VisionQA v1.0 · IOT Technologies · 2026
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
 
 def main():
 
-    if "logueado" not in st.session_state:
-        st.session_state["logueado"] = False
-
-    if not st.session_state["logueado"]:
-        mostrar_login()
-        return
     # -------- MENÚ LATERAL --------
 
     with st.sidebar:
-        st.markdown(
-            f"""
-            <div style="
-                background:#0d6efd20;
-                border:1px solid #0d6efd40;
-                border-radius:10px;
-                padding:10px;
-                margin-bottom:15px;
-                text-align:center;
-            ">
-                <b>👤 Usuario conectado</b><br>
-                {st.session_state["usuario"]}
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
 
         st.image(
             "assets/logo_iot.png",
@@ -1645,7 +1166,6 @@ def main():
             unsafe_allow_html=True
         )
 
- 
         pagina = option_menu(
     menu_title=None,
     options=[
@@ -1668,44 +1188,38 @@ def main():
     default_index=0,
     orientation="vertical",
     styles={
-    "container": {
-        "padding": "12px 10px",
-        "margin": "0px",
-        "background-color": "#1998B7",
-        "border": "none",
-        "border-radius": "0px",
-        "box-shadow": "none"
-    },
-    "icon": {
-        "color": "#FFFFFF",
-        "font-size": "18px"
-    },
-    "nav-link": {
-        "font-size": "15px",
-        "font-weight": "500",
-        "color": "#FFFFFF",
-        "text-align": "left",
-        "margin": "6px 0",
-        "padding": "14px 16px",
-        "border-radius": "10px",
-        "background-color": "#1998B7",
-        "border": "none"
-    },
-    "nav-link-hover": {
-        "background-color": "rgba(255,255,255,0.16)",
-        "color": "#FFFFFF"
-    },
-    "nav-link-selected": {
-        "background-color": "#0A4E95",
-        "color": "#FFFFFF",
-        "font-weight": "700",
-        "border-radius": "10px",
-        "box-shadow": "0 4px 10px rgba(0,0,0,0.18)"
+        "container": {
+            "padding": "10px",
+            "background-color": "#FFFFFF",
+            "border": "1px solid #D9E2E8",
+            "border-radius": "16px",
+            "box-shadow": "0 6px 18px rgba(35, 31, 32, 0.06)"
+        },
+        "icon": {
+            "color": "#1D7EAE",
+            "font-size": "22px"
+        },
+        "nav-link": {
+            "font-size": "15px",
+            "font-weight": "500",
+            "color": "#231F20",
+            "text-align": "left",
+            "margin": "5px 0",
+            "padding": "15px 16px",
+            "border-radius": "11px"
+        },
+        "nav-link-hover": {
+            "background-color": "#F2F8FC",
+            "color": "#0032A0"
+        },
+        "nav-link-selected": {
+            "background-color": "#EAF5FB",
+            "color": "#0032A0",
+            "font-weight": "700",
+            "border-left": "4px solid #1D7EAE"
+        }
     }
-}
 )
-        st.markdown("---")
-
 
         st.markdown(
                 """
@@ -1718,75 +1232,18 @@ def main():
                 unsafe_allow_html=True
             )
 
-        # -------- DATOS DEL REGISTRO --------
-    espacio, col_usuario, col_logout = st.columns(
-        [7, 2, 1.3]
-    )
+    # -------- DATOS DEL REGISTRO --------
 
-    with col_usuario:
-        st.markdown(
-            f"""
-            <div style="
-                text-align:right;
-                font-size:15px;
-                color:#334155;
-                padding-top:8px;
-            ">
-                👤 <b>{st.session_state["usuario"]}</b>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    with col_logout:
-
-        if st.button(
-            "🚪 Cerrar sesión",
-            key="logout",
-            width="stretch"
-        ):
-
-            st.session_state["logueado"] = False
-            st.session_state.pop("usuario", None)
-
-            st.rerun()
     total, aptas, no_aptas = cargar_datos_registro()
 
     # -------- DASHBOARD --------
 
     if pagina == "Dashboard":
 
-        ahora = datetime.now()
-
-        fecha_actual = ahora.strftime("%d/%m/%Y")
-        hora_actual = ahora.strftime("%I:%M:%S %p")
-
-        html_header = (
-            '<div class="visionqa-header">'
-                '<div class="header-left">'
-                    '<div class="header-greeting">Buenos días, Dorcas</div>'
-                    '<div class="header-description">'
-                        'Sistema Inteligente de Inspección Visual'
-                    '</div>'
-                    '<div class="header-status">'
-                        '<span class="status-dot"></span>'
-                        'Sistema conectado'
-                    '</div>'
-                '</div>'
-                '<div class="header-right">'
-                    '<div class="header-label">Última actualización</div>'
-                    f'<div class="header-date">{fecha_actual}</div>'
-                    f'<div class="header-time">{hora_actual}</div>'
-                '</div>'
-            '</div>'
+        mostrar_titulo(
+            "📊 Dashboard Ejecutivo",
+            "Indicadores generales del sistema de inspección visual."
         )
-
-        st.markdown(
-            html_header,
-            unsafe_allow_html=True
-        )
-
-        st.markdown("## 🏠 Dashboard Operativo")
 
         mostrar_resumen(
             total,
@@ -1851,7 +1308,7 @@ def main():
 
     # -------- ACERCA DE --------
 
-    elif pagina == "Acerca de":
+    elif pagina == " Acerca de":
 
         mostrar_titulo(
             "ℹ️ Acerca de VisionQA",
@@ -1880,6 +1337,7 @@ def main():
         col1, col2 = st.columns(2)
 
         with col1:
+
             st.markdown(
                 """
                 **Proyecto:** VisionQA
@@ -1891,6 +1349,7 @@ def main():
             )
 
         with col2:
+
             st.markdown(
                 """
                 **Desarrolladora:** Dorcas Tabita Perez Martinez
@@ -1904,6 +1363,7 @@ def main():
         st.divider()
 
     mostrar_footer()
-    
+
+
 if __name__ == "__main__":
     main()

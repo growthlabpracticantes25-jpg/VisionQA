@@ -1,0 +1,62 @@
+[
+{
+  "model": "inspecciones.inspeccion",
+  "pk": 1,
+  "fields": {
+    "fecha": "2026-07-21T15:27:56.866Z",
+    "resultado": "NO APTO",
+    "defecto": "Sin_backplate",
+    "confianza": 95.8,
+    "archivo": "prueba.jpg",
+    "origen": "Prueba Manual"
+  }
+},
+{
+  "model": "inspecciones.inspeccion",
+  "pk": 2,
+  "fields": {
+    "fecha": "2026-07-21T16:34:52.771Z",
+    "resultado": "NO APTO",
+    "defecto": "Sin_backplate",
+    "confianza": 58.53518843650818,
+    "archivo": "inspecciones\\archivo_20260721_103451.jpg",
+    "origen": "Archivo local"
+  }
+},
+{
+  "model": "inspecciones.inspeccion",
+  "pk": 3,
+  "fields": {
+    "fecha": "2026-07-21T16:36:02.716Z",
+    "resultado": "NO APTO",
+    "defecto": "Sin_backplate",
+    "confianza": 95.8,
+    "archivo": "prueba.jpg",
+    "origen": "Prueba Manual"
+  }
+},
+{
+  "model": "inspecciones.inspeccion",
+  "pk": 4,
+  "fields": {
+    "fecha": "2026-07-22T16:20:19.773Z",
+    "resultado": "NO APTO",
+    "defecto": "Sin_backplate",
+    "confianza": 85.31925678253174,
+    "archivo": "inspecciones\\archivo_20260722_102017.jpg",
+    "origen": "Archivo local"
+  }
+},
+{
+  "model": "inspecciones.inspeccion",
+  "pk": 5,
+  "fields": {
+    "fecha": "2026-07-22T16:21:02.817Z",
+    "resultado": "APTO",
+    "defecto": "",
+    "confianza": 100.0,
+    "archivo": "inspecciones\\archivo_20260722_102102.jpg",
+    "origen": "Archivo local"
+  }
+}
+]
