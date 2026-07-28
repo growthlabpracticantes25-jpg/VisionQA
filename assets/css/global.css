@@ -1,0 +1,26 @@
+:root {
+    --visionqa-blue-dark: #0032A0;
+    --visionqa-blue: #1D7EAE;
+    --visionqa-blue-light: #98DAE9;
+    --visionqa-black: #231F20;
+    --visionqa-gray: #BDC6C3;
+    --visionqa-orange: #FF661B;
+    --visionqa-white: #FFFFFF;
+
+    --visionqa-radius-small: 12px;
+    --visionqa-radius-medium: 16px;
+    --visionqa-radius-large: 20px;
+
+    --visionqa-shadow:
+        0 8px 25px rgba(35, 31, 32, 0.08);
+}
+
+html,
+body,
+[class*="css"] {
+    font-family: Arial, sans-serif;
+}
+
+.stApp {
+    background: #F6F8FB;
+}

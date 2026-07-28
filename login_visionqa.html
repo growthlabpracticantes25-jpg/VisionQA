@@ -1,0 +1,290 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Iniciar sesión - VisionQA</title>
+
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <section class="left-panel">
+
+            <div class="brand">
+                <img src="{% static 'img/iot-circlelogo.png' %}" class="brand-logo" alt="IOT Technologies">
+            </div>
+
+            <h1>
+                Bienvenido a
+            </h1>
+
+            <div class="line"></div>
+
+            <h2>
+                VisionQA
+            </h2>
+
+            <p class="description">
+                Plataforma inteligente de inspección visual que utiliza
+                inteligencia artificial para detectar defectos en piezas
+                manufacturadas, optimizando el control de calidad y apoyando
+                la toma de decisiones en la industria.
+            </p>
+
+            <button type="button" class="learn-btn" id="abrir-proyecto" aria-controls="proyecto-modal"
+                aria-expanded="false">
+                Conocer proyecto
+            </button>
+
+        </section>
+
+        <section class="login-card">
+
+            <h2>
+                Iniciar <span>sesión</span>
+            </h2>
+
+            {% if error %}
+            <p class="error">
+                {{ error }}
+            </p>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <label for="username">
+                    Nombre de usuario
+                </label>
+
+                <div class="input-box">
+
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5
+                        2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10
+                        1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z" />
+                    </svg>
+
+                    <input type="text" name="username" id="username" placeholder="Ingresa tu usuario"
+                        autocomplete="username" required>
+
+                </div>
+
+                <label for="password">
+                    Contraseña
+                </label>
+
+                <div class="input-box">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M17 8h-1V6c0-2.8-2.2-5-5-5S6 3.2
+            6 6v2H5c-1.1 0-2 .9-2 2v10c0 1.1.9
+            2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z
+            M8 6c0-1.7 1.3-3 3-3s3 1.3 3 3v2H8V6z" />
+                    </svg>
+
+                    <input type="password" name="password" id="password" placeholder="Ingresa tu contraseña"
+                        autocomplete="current-password" required>
+
+                    <button type="button" class="password-toggle" id="password-toggle" aria-label="Mostrar contraseña">
+                        <svg id="eye-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path
+                                d="M12 5c-5.5 0-9.5 4.5-10.8 6.2a1.3 1.3 0 0 0 0 1.6C2.5 14.5 6.5 19 12 19s9.5-4.5 10.8-6.2a1.3 1.3 0 0 0 0-1.6C21.5 9.5 17.5 5 12 5zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-2a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="options">
+
+                    <label class="remember">
+                        <input type="checkbox" name="remember">
+                        Recordarme
+                    </label>
+
+                    <a href="#">
+                        ¿Olvidaste tu contraseña?
+                    </a>
+
+                </div>
+
+                <button type="submit">
+                    Iniciar sesión
+                </button>
+
+            </form>
+
+            <p class="register-link">
+                ¿No tienes una cuenta?
+
+                <a href="{% url 'registro' %}">
+                    Crear cuenta
+                </a>
+            </p>
+            <p class="privacy-link">
+                Al utilizar VisionQA aceptas nuestra
+                <a href="#" id="abrir-privacidad">
+                    Política de privacidad
+                </a>
+            </p>
+
+        </section>
+
+    </div>
+
+    <div class="proyecto-modal" id="proyecto-modal" aria-hidden="true">
+        <div class="proyecto-modal-fondo" id="proyecto-modal-fondo"></div>
+
+        <section class="proyecto-modal-contenido" role="dialog" aria-modal="true"
+            aria-labelledby="proyecto-modal-titulo" tabindex="-1">
+
+            <button type="button" class="proyecto-modal-cerrar" id="cerrar-proyecto" aria-label="Cerrar ventana">
+                ×
+            </button>
+
+            <div class="proyecto-modal-icono">
+                <span>VQ</span>
+            </div>
+
+            <p class="proyecto-modal-etiqueta">
+                Plataforma inteligente para inspección y control de calidad
+            </p>
+
+            <h2 id="proyecto-modal-titulo">
+                VisionQA
+            </h2>
+
+            <p class="proyecto-modal-descripcion">
+                VisionQA es una aplicación web de inspección visual asistida por
+                inteligencia artificial. Permite analizar piezas manufacturadas,
+                detectar defectos, registrar resultados y generar información útil
+                para apoyar la mejora continua de los procesos de calidad.
+            </p>
+
+            <div class="proyecto-modal-grid">
+
+                <article class="proyecto-modal-item">
+                    <h3>Detección inteligente</h3>
+                    <p>
+                        Identifica defectos como piezas rotas, manchadas o sin backplate
+                        mediante un modelo de visión artificial basado en YOLOv8.
+                    </p>
+                </article>
+
+                <article class="proyecto-modal-item">
+                    <h3>Inspección visual</h3>
+                    <p>
+                        Permite analizar imágenes cargadas desde archivo o capturadas
+                        mediante una cámara conectada al sistema.
+                    </p>
+                </article>
+
+                <article class="proyecto-modal-item">
+                    <h3>Registro y trazabilidad</h3>
+                    <p>
+                        Conserva los resultados de cada inspección, incluyendo fecha,
+                        clasificación, confianza y evidencia visual.
+                    </p>
+                </article>
+
+                <article class="proyecto-modal-item">
+                    <h3>Análisis con IA</h3>
+                    <p>
+                        Utiliza inteligencia artificial generativa para proponer posibles
+                        causas, acciones correctivas y recomendaciones de mejora.
+                    </p>
+                </article>
+
+            </div>
+            <div class="proyecto-modal-acciones">
+
+                <button type="button" class="proyecto-modal-boton" id="cerrar-proyecto-secundario">
+                    Regresar al inicio de sesión
+                </button>
+
+                <a href="{% url 'registro' %}" class="proyecto-modal-registro">
+                    Crear cuenta
+                </a>
+
+            </div>
+
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const modal = document.getElementById("proyecto-modal");
+            const contenido = modal.querySelector(
+                ".proyecto-modal-contenido"
+            );
+            const abrir = document.getElementById("abrir-proyecto");
+            const cerrar = document.getElementById("cerrar-proyecto");
+            const cerrarSecundario = document.getElementById(
+                "cerrar-proyecto-secundario"
+            );
+            const fondo = document.getElementById(
+                "proyecto-modal-fondo"
+            );
+
+            let ultimoElementoActivo = null;
+            let temporizadorCierre = null;
+
+            function abrirModal() {
+                if (temporizadorCierre) {
+                    clearTimeout(temporizadorCierre);
+                }
+
+                ultimoElementoActivo = document.activeElement;
+
+                modal.classList.add("proyecto-modal-visible");
+                modal.setAttribute("aria-hidden", "false");
+                abrir.setAttribute("aria-expanded", "true");
+                document.body.classList.add("modal-abierto");
+
+                requestAnimationFrame(function () {
+                    modal.classList.add("proyecto-modal-activo");
+                    contenido.focus();
+                });
+            }
+
+            function cerrarModal() {
+                modal.classList.remove("proyecto-modal-activo");
+                abrir.setAttribute("aria-expanded", "false");
+
+                temporizadorCierre = setTimeout(function () {
+                    modal.classList.remove("proyecto-modal-visible");
+                    modal.setAttribute("aria-hidden", "true");
+                    document.body.classList.remove("modal-abierto");
+
+                    if (ultimoElementoActivo) {
+                        ultimoElementoActivo.focus();
+                    }
+                }, 360);
+            }
+
+            abrir.addEventListener("click", abrirModal);
+            cerrar.addEventListener("click", cerrarModal);
+            cerrarSecundario.addEventListener("click", cerrarModal);
+            fondo.addEventListener("click", cerrarModal);
+
+            document.addEventListener("keydown", function (event) {
+                if (
+                    event.key === "Escape" &&
+                    modal.classList.contains("proyecto-modal-visible")
+                ) {
+                    cerrarModal();
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

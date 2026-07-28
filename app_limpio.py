@@ -1436,36 +1436,36 @@ def mostrar_login():
 
     with columna_marca:
 
-        st.markdown(
-            """
-            <div class="login-brand">
-                <div class="iot-mark">
-                    IOT TECHNOLOGIES
-                </div>
+     st.markdown(
+        """
+<div class="login-brand">
+    <div class="iot-mark">
+        IOT TECHNOLOGIES
+    </div>
 
-                <div class="brand-symbol"></div>
+    <div class="brand-symbol"></div>
 
-                <div class="brand-title">
-                    VisionQA
-                </div>
+    <div class="brand-title">
+        VisionQA
+    </div>
 
-                <div class="brand-subtitle">
-                    Sistema Inteligente de Inspección Visual
-                </div>
+    <div class="brand-subtitle">
+        Sistema Inteligente de Inspección Visual
+    </div>
 
-                <div class="brand-copy">
-                    Plataforma de control de calidad orientada a la
-                    detección de defectos, gestión de inspecciones y
-                    análisis de resultados para procesos industriales.
-                </div>
+    <div class="brand-copy">
+        Plataforma de control de calidad orientada a la
+        detección de defectos, gestión de inspecciones y
+        análisis de resultados para procesos industriales.
+    </div>
 
-                <div class="brand-badge">
-                    Conectividad · Confiabilidad · Eficiencia
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+    <div class="brand-badge">
+        Conectividad · Confiabilidad · Eficiencia
+    </div>
+</div>
+        """,
+        unsafe_allow_html=True
+    )
 
     with columna_formulario:
 
