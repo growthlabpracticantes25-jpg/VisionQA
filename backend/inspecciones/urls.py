@@ -2,7 +2,9 @@ from django.urls import path
 
 from .views import (
     InspeccionListCreateView,
-    login_usuario
+    login_usuario,
+    pagina_login,
+    recuperar_password,
 )
 
 urlpatterns = [
@@ -14,7 +16,19 @@ urlpatterns = [
 
     path(
         "login/",
-        login_usuario,
+        pagina_login,
         name="login",
+    ),
+
+    path(
+        "recuperar-password/",
+        recuperar_password,
+        name="recuperar-password",
+    ),
+
+    path(
+        "login-api/",
+        login_usuario,
+        name="api-login",
     ),
 ]

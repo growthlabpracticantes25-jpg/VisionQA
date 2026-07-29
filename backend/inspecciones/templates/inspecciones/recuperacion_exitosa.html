@@ -1,0 +1,52 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Solicitud registrada - VisionQA</title>
+
+    <link rel="stylesheet" href="{% static 'css/login.css' %}?v=5">
+</head>
+
+<body>
+
+    <main class="success-page-card">
+        <div class="success-brand">
+
+            <h1 class="visionqa-title">
+                VisionQA
+            </h1>
+
+            <p class="visionqa-subtitle">
+                Sistema de inspección visual asistido por IA
+            </p>
+
+        </div>
+
+        <h1>
+            Solicitud registrada
+        </h1>
+
+        <p>
+            Hemos recibido correctamente tu solicitud de recuperación.
+        </p>
+
+        <p>
+            El administrador del sistema revisará la solicitud y te ayudará
+            a restablecer el acceso a VisionQA.
+        </p>
+
+        <a href="{% url 'login' %}" class="success-page-button">
+            Volver al inicio de sesión
+        </a>
+
+    </main>
+
+</body>
+
+</html>
