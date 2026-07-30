@@ -1,0 +1,950 @@
+/* ==========================================================
+   VISIONQA — LOGIN V2
+   Diseño principal basado en la identidad de IOT Technologies
+   ========================================================== */
+
+:root {
+    --azul-institucional: #1d7eae;
+    --azul-profundo: #0032a0;
+    --azul-claro: #98dae9;
+
+    --fondo-oscuro: #00142f;
+    --fondo-medio: #002b60;
+    --fondo-claro: #075f9a;
+
+    --blanco: #ffffff;
+    --texto-oscuro: #101b32;
+    --texto-gris: #758194;
+    --borde-claro: #d5dde6;
+
+    --naranja-acento: #ff661b;
+
+    --sombra-principal:
+        0 35px 90px rgba(0, 12, 40, 0.48);
+}
+
+/* ==========================================================
+   BASE
+   ========================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    position: relative;
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 36px;
+    overflow-x: hidden;
+
+    font-family:
+        "Segoe UI",
+        "Open Sans",
+        Arial,
+        sans-serif;
+
+    color: var(--blanco);
+
+    background:
+        radial-gradient(circle at 18% 18%,
+            rgba(29, 126, 174, 0.18),
+            transparent 24%),
+        radial-gradient(circle at 82% 78%,
+            rgba(0, 50, 160, 0.24),
+            transparent 28%),
+        linear-gradient(135deg,
+            #00142f 0%,
+            #00285b 50%,
+            #063f79 100%);
+}
+
+/* Onda superior izquierda */
+
+body::before {
+    content: "";
+    position: fixed;
+    z-index: 0;
+
+    top: -245px;
+    left: -165px;
+
+    width: 650px;
+    height: 470px;
+
+    border-radius:
+        42% 58% 68% 32% / 58% 40% 60% 42%;
+
+    background:
+        linear-gradient(145deg,
+            #209bd4,
+            #0879c5 48%,
+            var(--azul-profundo));
+
+    transform: rotate(-12deg);
+    opacity: 0.96;
+    pointer-events: none;
+}
+
+/* Onda inferior derecha */
+
+body::after {
+    content: "";
+    position: fixed;
+    z-index: 0;
+
+    right: -210px;
+    bottom: -250px;
+
+    width: 900px;
+    height: 560px;
+
+    border-radius:
+        63% 37% 44% 56%
+        /
+        42% 58% 42% 58%;
+
+    background:
+        linear-gradient(
+            145deg,
+            #0032a0 0%,
+            #0b72ba 48%,
+            #1d7eae 100%
+        );
+
+    transform: rotate(-8deg);
+    opacity: 0.88;
+    pointer-events: none;
+}
+
+/* ==========================================================
+   CONTENEDOR PRINCIPAL
+   ========================================================== */
+
+.login-container {
+    position: relative;
+    z-index: 2;
+
+    width: min(1280px, 92vw);
+    min-height: 720px;
+
+    display: grid;
+    grid-template-columns: 1.08fr 0.92fr;
+    gap: 0;
+
+    padding: 0;
+    overflow: hidden;
+
+    border: 1px solid rgba(152, 218, 233, 0.38);
+    border-radius: 25px;
+
+    background: var(--blanco);
+    box-shadow: var(--sombra-principal);
+}
+
+/* Desactiva las franjas del diseño anterior */
+
+.login-container::before,
+.login-container::after {
+    content: none;
+}
+
+/* ==========================================================
+   PANEL IZQUIERDO
+   ========================================================== */
+
+.left-panel {
+    position: relative;
+    z-index: 1;
+
+    min-height: 690px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    padding: 62px 110px 62px 72px;
+
+    overflow: hidden;
+    color: var(--blanco);
+
+    background:
+        radial-gradient(circle at 28% 15%,
+            rgba(29, 126, 174, 0.30),
+            transparent 34%),
+        linear-gradient(145deg,
+            #00152f 0%,
+            #00285b 58%,
+            #003b80 100%);
+
+    border-right: 1px solid rgba(152, 218, 233, 0.18);
+}
+
+/* Puntos tecnológicos */
+
+.left-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+
+    opacity: 0.14;
+
+    background-image:
+        radial-gradient(circle,
+            rgba(152, 218, 233, 0.85) 1px,
+            transparent 1.5px);
+
+    background-size: 24px 24px;
+
+    mask-image:
+        linear-gradient(to bottom,
+            transparent,
+            #000 15%,
+            #000 85%,
+            transparent);
+
+    pointer-events: none;
+}
+
+/* Onda decorativa dentro del panel */
+
+.left-panel::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+
+    left: -180px;
+    bottom: -190px;
+
+    width: 530px;
+    height: 390px;
+
+    border-radius:
+        58% 42% 66% 34% / 45% 58% 42% 55%;
+
+    background:
+        linear-gradient(145deg,
+            rgba(0, 50, 160, 0.70),
+            rgba(29, 126, 174, 0.20));
+
+    transform: rotate(-18deg);
+    pointer-events: none;
+}
+
+/* ==========================================================
+   NOMBRE VISIONQA
+   ========================================================== */
+
+.visionqa-brand {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    margin-bottom: 34px;
+}
+
+.brand-placeholder {
+    display: none;
+}
+
+.visionqa-brand h1 {
+    margin: 0;
+
+    font-size: clamp(40px, 4vw, 52px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -1.8px;
+
+    color: var(--blanco);
+}
+
+.visionqa-brand h1 span {
+    color: #19a8f3;
+}
+
+/* ==========================================================
+   PRESENTACIÓN
+   ========================================================== */
+
+.intro {
+    position: relative;
+    z-index: 2;
+}
+
+.eyebrow {
+    margin: 0 0 7px;
+
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+
+    color: #e0ebf4;
+}
+
+.left-panel .intro h2 {
+    margin: 0 0 15px;
+
+    font-size: clamp(27px, 3vw, 36px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+
+    color: #1baaf3;
+}
+
+.left-panel .line {
+    width: 72px;
+    height: 3px;
+
+    margin: 0 0 26px;
+
+    border-radius: 20px;
+    background: #1baaf3;
+}
+
+.left-panel .description {
+    max-width: 520px;
+
+    margin: 0 0 27px;
+
+    font-size: 14px;
+    line-height: 1.75;
+
+    color: #d9e6ef;
+}
+
+/* ==========================================================
+   FUNCIONES
+   ========================================================== */
+
+.feature-list {
+    position: relative;
+    z-index: 2;
+
+    display: grid;
+    gap: 12px;
+
+    margin-bottom: 32px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    color: #f1f7fb;
+}
+
+.feature-icon {
+    width: 39px;
+    height: 39px;
+
+    display: grid;
+    place-items: center;
+    flex: 0 0 39px;
+
+    border: 1px solid rgba(25, 168, 243, 0.62);
+    border-radius: 50%;
+
+    color: #19a8f3;
+    background: rgba(25, 168, 243, 0.08);
+}
+
+/* Evita los iconos negros gigantes */
+
+.feature-icon svg {
+    width: 20px !important;
+    height: 20px !important;
+
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ==========================================================
+   BOTÓN CONOCER PROYECTO
+   ========================================================== */
+
+.left-panel .learn-btn {
+    position: relative;
+    z-index: 2;
+
+    width: 100%;
+    min-height: 56px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+
+    padding: 14px 24px;
+
+    border: none;
+    border-radius: 11px;
+
+    font-size: 15px;
+    font-weight: 800;
+
+    color: var(--blanco);
+    cursor: pointer;
+
+    background:
+        linear-gradient(90deg,
+            #159edc 0%,
+            #087ed1 48%,
+            var(--azul-profundo) 100%);
+
+    box-shadow:
+        0 13px 28px rgba(0, 50, 160, 0.32);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+}
+
+.left-panel .learn-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+
+    box-shadow:
+        0 17px 34px rgba(0, 50, 160, 0.42);
+}
+
+.button-arrow {
+    font-size: 22px;
+    font-weight: 400;
+}
+
+/* ==========================================================
+   PANEL DERECHO
+   ========================================================== */
+
+.login-card {
+    position: relative;
+    z-index: 3;
+
+    align-self: stretch;
+    width: 100%;
+    min-height: 720px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    padding: 68px 74px 52px;
+
+    border: none;
+    border-radius: 0;
+
+    color: var(--texto-oscuro);
+    background: var(--blanco);
+
+    box-shadow: none;
+    backdrop-filter: none;
+}
+
+/* División recta central */
+
+.login-card::before {
+    display: none;
+}
+
+/* ==========================================================
+   CABECERA DEL FORMULARIO
+   ========================================================== */
+
+.login-header {
+    margin-bottom: 34px;
+}
+
+.login-card .login-header h2 {
+    margin: 0;
+
+    text-align: left;
+
+    font-size: clamp(37px, 4vw, 47px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+
+    color: var(--texto-oscuro);
+}
+
+.login-title-line {
+    width: 72px;
+    height: 3px;
+
+    margin-top: 16px;
+
+    border-radius: 20px;
+    background: #159edc;
+}
+
+/* ==========================================================
+   FORMULARIO
+   ========================================================== */
+
+.login-card form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-card form>label {
+    margin-bottom: 9px;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    color: #172238;
+}
+
+.login-card .input-box {
+    position: relative;
+
+    min-height: 56px;
+
+    display: flex;
+    align-items: center;
+
+    margin-bottom: 23px;
+
+    border: 1px solid var(--borde-claro);
+    border-radius: 11px;
+
+    background: #fafbfd;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.login-card .input-box:focus-within {
+    border-color: var(--azul-institucional);
+    background: var(--blanco);
+
+    box-shadow:
+        0 0 0 4px rgba(29, 126, 174, 0.12);
+}
+
+/* Iconos de usuario y contraseña */
+
+.login-card .input-box>svg {
+    width: 21px !important;
+    height: 21px !important;
+
+    flex: 0 0 21px;
+
+    margin-left: 17px;
+
+    fill: none !important;
+    stroke: #1b2943 !important;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.login-card .input-box input {
+    width: 100%;
+    min-width: 0;
+
+    padding: 16px 50px 16px 15px;
+
+    border: none;
+    outline: none;
+
+    font-size: 15px;
+
+    color: #182337;
+    background: transparent;
+}
+
+.login-card .input-box input::placeholder {
+    color: #929baa;
+}
+
+/* ==========================================================
+   OJO DE CONTRASEÑA
+   ========================================================== */
+
+.login-card .password-toggle {
+    position: absolute;
+
+    top: 50%;
+    right: 11px;
+
+    width: 39px;
+    height: 39px;
+
+    display: grid;
+    place-items: center;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    cursor: pointer;
+    background: transparent;
+}
+
+.login-card .password-toggle:hover {
+    background: rgba(29, 126, 174, 0.10);
+}
+
+.login-card .password-toggle svg {
+    width: 20px !important;
+    height: 20px !important;
+
+    fill: none !important;
+    stroke: #747f91 !important;
+    stroke-width: 1.8;
+}
+
+/* ==========================================================
+   RECORDAR Y RECUPERAR
+   ========================================================== */
+
+.login-card .options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+
+    margin: 0 1px 27px;
+}
+
+.login-card .remember {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    margin: 0 !important;
+
+    font-size: 14px;
+    color: #1a2538;
+
+    cursor: pointer;
+}
+
+.login-card .remember input {
+    width: 17px;
+    height: 17px;
+
+    accent-color: var(--azul-institucional);
+}
+
+.login-card .options a {
+    font-size: 14px;
+    font-weight: 700;
+
+    color: #0072ce;
+    text-decoration: none;
+}
+
+.login-card .options a:hover {
+    color: var(--azul-profundo);
+    text-decoration: underline;
+}
+
+/* ==========================================================
+   BOTÓN INICIAR SESIÓN
+   ========================================================== */
+
+.login-card .login-submit {
+    min-height: 57px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 11px;
+
+    padding: 13px 22px;
+
+    border: none;
+    border-radius: 11px;
+
+    font-size: 16px;
+    font-weight: 800;
+
+    color: var(--blanco);
+    cursor: pointer;
+
+    background:
+        linear-gradient(90deg,
+            #159edc 0%,
+            #087ed1 45%,
+            var(--azul-profundo) 100%);
+
+    box-shadow:
+        0 12px 25px rgba(0, 50, 160, 0.24);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+}
+
+.login-card .login-submit:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.06);
+
+    box-shadow:
+        0 16px 31px rgba(0, 50, 160, 0.33);
+}
+
+.login-card .login-submit svg {
+    width: 19px !important;
+    height: 19px !important;
+
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ==========================================================
+   ENLACES INFERIORES
+   ========================================================== */
+
+.login-card .register-link {
+    margin-top: 27px;
+
+    text-align: center;
+
+    font-size: 14px;
+    color: #3f4a5b;
+}
+
+.login-card .register-link a {
+    font-weight: 800;
+
+    color: #006dcc;
+    text-decoration: none;
+}
+
+.login-card .register-link a:hover {
+    color: var(--azul-profundo);
+    text-decoration: underline;
+}
+
+.login-card .privacy-link {
+    margin-top: 12px;
+
+    text-align: center;
+
+    font-size: 11px;
+}
+
+.login-card .privacy-link a {
+    color: #748092;
+    text-decoration: none;
+}
+
+.login-card .privacy-link a:hover {
+    color: var(--azul-profundo);
+    text-decoration: underline;
+}
+
+/* Mensajes de error */
+
+.login-card .error {
+    margin: -13px 0 22px;
+    padding: 12px 15px;
+
+    border: 1px solid rgba(255, 102, 27, 0.45);
+    border-radius: 10px;
+
+    color: #992f08;
+    background: rgba(255, 102, 27, 0.10);
+}
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+
+@media (max-width: 980px) {
+    body {
+        align-items: flex-start;
+        padding: 22px;
+        overflow-y: auto;
+    }
+
+    .login-container {
+        max-width: 700px;
+        grid-template-columns: 1fr;
+    }
+
+    .left-panel {
+        min-height: auto;
+        padding: 48px;
+    }
+
+    .login-card {
+        min-height: auto;
+        padding: 54px 48px;
+    }
+
+    .login-card::before {
+        display: none;
+    }
+}
+
+@media (max-width: 620px) {
+    body {
+        padding: 12px;
+    }
+
+    .login-container {
+        border-radius: 19px;
+    }
+
+    .left-panel {
+        padding: 38px 24px;
+    }
+
+    .visionqa-brand {
+        margin-bottom: 30px;
+    }
+
+    .visionqa-brand h1 {
+        font-size: 37px;
+    }
+
+    .left-panel .intro h2 {
+        font-size: 27px;
+    }
+
+    .feature-item {
+        font-size: 13px;
+    }
+
+    .login-card {
+        padding: 42px 23px 34px;
+    }
+
+    .login-card .login-header h2 {
+        font-size: 35px;
+    }
+
+    .login-card .options {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+/* ==========================================================
+   AJUSTE FINAL DE TAMAÑO DEL LOGIN
+   ========================================================== */
+
+.login-container {
+    width: min(1220px, 90vw) !important;
+    min-height: 680px !important;
+}
+
+.left-panel,
+.login-card {
+    min-height: 680px !important;
+}
+
+.left-panel {
+    padding: 58px 64px !important;
+}
+
+.login-card {
+    padding: 62px 68px 48px !important;
+}
+
+.visionqa-brand h1 {
+    font-size: 50px !important;
+}
+
+.left-panel .intro h2 {
+    font-size: 34px !important;
+}
+
+.left-panel .description {
+    max-width: 480px !important;
+    font-size: 15px !important;
+}
+
+.feature-item {
+    font-size: 14px !important;
+}
+
+.login-card .login-header h2 {
+    font-size: 46px !important;
+}
+/* Circuitos decorativos del fondo */
+
+html::before,
+html::after {
+    content: "";
+    position: fixed;
+    z-index: 0;
+
+    width: 320px;
+    height: 260px;
+
+    opacity: 0.18;
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent 0 12%,
+            rgba(29, 126, 174, 0.8) 12% 13%,
+            transparent 13% 100%
+        ),
+        linear-gradient(
+            0deg,
+            transparent 0 22%,
+            rgba(29, 126, 174, 0.65) 22% 23%,
+            transparent 23% 100%
+        ),
+        radial-gradient(
+            circle,
+            rgba(29, 126, 174, 0.95) 0 3px,
+            transparent 4px
+        );
+
+    background-size:
+        120px 70px,
+        90px 100px,
+        58px 58px;
+}
+
+html::before {
+    left: 0;
+    top: 190px;
+}
+
+html::after {
+    right: 0;
+    bottom: 90px;
+
+    transform: scaleX(-1);
+}

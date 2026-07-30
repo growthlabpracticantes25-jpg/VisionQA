@@ -29,12 +29,15 @@ body,
     color: var(--iot-dark);
 }
 
-/* Encabezados */
+/* Encabezados de Streamlit */
 
-h1,
-h2,
-h3 {
-    color: var(--iot-dark);
+.stApp h1,
+.stApp h2,
+.stApp h3,
+[data-testid="stMarkdownContainer"] h1,
+[data-testid="stMarkdownContainer"] h2,
+[data-testid="stMarkdownContainer"] h3 {
+    color: #231F20 !important;
     font-weight: 700;
 }
 
@@ -47,7 +50,7 @@ h2 {
 .iot-title {
     font-size: 2.6rem;
     font-weight: 800;
-    color: var(--iot-dark);
+    color: #231F20 !important;
     line-height: 1.1;
 }
 

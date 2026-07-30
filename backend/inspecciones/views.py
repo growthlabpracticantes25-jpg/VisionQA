@@ -1,6 +1,10 @@
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import (
+    authenticate,
+    login as auth_login,
+    logout as auth_logout,
+)
 from django.shortcuts import redirect, render
-
+from django.contrib.auth.decorators import login_required 
 from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -43,7 +47,7 @@ def pagina_login(request):
 
                 return redirect(
                     "http://127.0.0.1:8501"
-                )
+            )
 
     return render(
         request,
@@ -51,6 +55,16 @@ def pagina_login(request):
         {
             "error": error,
         },
+    )
+@login_required
+def cerrar_sesion(request):
+    auth_logout(request)
+
+    return redirect("login")
+def dashboard(request):
+    return render(
+        request,
+        "inspecciones/dashboard.html",
     )
 def recuperar_password(request):
 

@@ -5,6 +5,7 @@ from datetime import datetime
 import requests
 import streamlit as st
 import cv2
+import streamlit.components.v1 as components
 from textwrap import dedent
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -1404,6 +1405,27 @@ def mostrar_login():
             color: #98A2B3;
             font-size: 12px;
         }
+        div[data-testid="stHorizontalBlock"]
+        > div[data-testid="column"]:first-child {
+            background: linear-gradient(
+                145deg,
+                #0032A0 0%,
+                #1D7EAE 58%,
+                #1998B7 100%
+            ) !important;
+ 
+            min-height: 620px;
+            padding: 58px 48px;
+            border-radius: 28px 0 0 28px;
+        }
+
+        div[data-testid="stHorizontalBlock"]
+        > div[data-testid="column"]:nth-child(2) {
+            min-height: 620px;
+            padding: 30px 42px;
+            background: #FFFFFF;
+            border-radius: 0 28px 28px 0;
+        }
 
         @media (max-width: 900px) {
             .login-brand {
@@ -1428,7 +1450,6 @@ def mostrar_login():
         """,
         unsafe_allow_html=True
     )
-
     columna_marca, columna_formulario = st.columns(
         [1.15, 0.85],
         gap="large"
@@ -1436,36 +1457,49 @@ def mostrar_login():
 
     with columna_marca:
 
-     st.markdown(
-        """
-<div class="login-brand">
-    <div class="iot-mark">
-        IOT TECHNOLOGIES
-    </div>
+        st.markdown(
+            "<p class='iot-mark'>IOT TECHNOLOGIES</p>",
+            unsafe_allow_html=True
+        )
 
-    <div class="brand-symbol"></div>
+        st.markdown(
+            "<div class='brand-symbol'></div>",
+            unsafe_allow_html=True
+        )
 
-    <div class="brand-title">
-        VisionQA
-    </div>
+        st.markdown(
+            "<h1 class='brand-title'>VisionQA</h1>",
+            unsafe_allow_html=True
+        )
 
-    <div class="brand-subtitle">
-        Sistema Inteligente de Inspección Visual
-    </div>
+        st.markdown(
+            """
+            <p class="brand-subtitle">
+                Sistema Inteligente de Inspección Visual
+            </p>
+            """,
+            unsafe_allow_html=True
+        )
 
-    <div class="brand-copy">
-        Plataforma de control de calidad orientada a la
-        detección de defectos, gestión de inspecciones y
-        análisis de resultados para procesos industriales.
-    </div>
+        st.markdown(
+            """
+            <p class="brand-copy">
+                Plataforma de control de calidad orientada a la
+                detección de defectos, gestión de inspecciones y
+                análisis de resultados para procesos industriales.
+            </p>
+            """,
+            unsafe_allow_html=True
+        )
 
-    <div class="brand-badge">
-        Conectividad · Confiabilidad · Eficiencia
-    </div>
-</div>
-        """,
-        unsafe_allow_html=True
-    )
+        st.markdown(
+            """
+            <div class="brand-badge">
+                Conectividad · Confiabilidad · Eficiencia
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
     with columna_formulario:
 
@@ -1596,15 +1630,14 @@ def mostrar_login():
             """,
             unsafe_allow_html=True
         )
-
 def main():
 
     if "logueado" not in st.session_state:
-        st.session_state["logueado"] = False
+        st.session_state["logueado"] = True
 
-    if not st.session_state["logueado"]:
-        mostrar_login()
-        return
+    if "usuario" not in st.session_state:
+        st.session_state["usuario"] = "admin"
+
     # -------- MENÚ LATERAL --------
 
     with st.sidebar:
@@ -1738,24 +1771,29 @@ def main():
             unsafe_allow_html=True
         )
 
-    with col_logout:
-
-        if st.button(
-            "🚪 Cerrar sesión",
-            key="logout",
-            width="stretch"
-        ):
-
-            st.session_state["logueado"] = False
-            st.session_state.pop("usuario", None)
-
-            st.rerun()
+    st.markdown(
+        """
+        <a href="http://127.0.0.1:8000/api/logout/"
+           target="_self"
+           style="
+               display:block;
+               width:100%;
+               padding:12px;
+               text-align:center;
+               text-decoration:none;
+               border-radius:8px;
+               background-color:white;
+               color:#231F20;
+               border:1px solid #d9d9d9;
+           ">
+           🚪 Cerrar sesión
+        </a>
+        """,
+        unsafe_allow_html=True,
+    )
     total, aptas, no_aptas = cargar_datos_registro()
-
     # -------- DASHBOARD --------
-
     if pagina == "Dashboard":
-
         ahora = datetime.now()
 
         fecha_actual = ahora.strftime("%d/%m/%Y")
@@ -1786,7 +1824,20 @@ def main():
             unsafe_allow_html=True
         )
 
-        st.markdown("## 🏠 Dashboard Operativo")
+        st.markdown(
+            """
+            <h2 style="
+                color: #231F20 !important;
+                font-size: 32px;
+                font-weight: 700;
+                margin-top: 28px;
+                margin-bottom: 18px;
+            ">
+                🏠 Dashboard Operativo
+            </h2>
+            """,
+             unsafe_allow_html=True
+        )
 
         mostrar_resumen(
             total,
