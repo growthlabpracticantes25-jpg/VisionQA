@@ -1,3 +1,5 @@
+from urllib.parse import quote
+from django.contrib.auth.models import User 
 from django.contrib.auth import (
     authenticate,
     login as auth_login,
@@ -45,9 +47,11 @@ def pagina_login(request):
             else:
                 auth_login(request, usuario)
 
+                nombre_usuario = quote(usuario.username)
+
                 return redirect(
-                    "http://127.0.0.1:8501"
-            )
+                    f"http://127.0.0.1:8501/?usuario={nombre_usuario}"
+                ) 
 
     return render(
         request,
@@ -56,7 +60,54 @@ def pagina_login(request):
             "error": error,
         },
     )
-@login_required
+def registrar_usuario(request):
+    error = None
+
+    if request.method == "POST":
+        nombre = request.POST.get("nombre", "").strip()
+        username = request.POST.get("nuevo_usuario", "").strip()
+        email = request.POST.get("email", "").strip()
+        password = request.POST.get("password", "")
+        confirmar_password = request.POST.get(
+            "confirmar_password",
+            ""
+        )
+
+        if not nombre or not username or not email:
+            error = "Todos los campos son obligatorios."
+
+        elif not password or not confirmar_password:
+            error = "Debes ingresar y confirmar la contraseña."
+
+        elif password != confirmar_password:
+            error = "Las contraseñas no coinciden."
+
+        elif User.objects.filter(username=username).exists():
+            error = "El nombre de usuario ya está registrado."
+
+        elif User.objects.filter(email=email).exists():
+            error = "El correo electrónico ya está registrado."
+
+        else:
+            usuario = User.objects.create_user(
+                username=username,
+                email=email,
+                password=password,
+            )
+
+            usuario.first_name = nombre
+            usuario.save()
+
+            return redirect("login")
+
+    return render(
+        request,
+        "inspecciones/registro.html",
+        {
+            "error": error,
+        },
+    )
+
 def cerrar_sesion(request):
     auth_logout(request)
 

@@ -5,8 +5,9 @@ from .views import (
     cerrar_sesion,
     dashboard,
     login_usuario,
-    pagina_login,
+    pagina_login, 
     recuperar_password,
+    registrar_usuario, 
 )
 
 urlpatterns = [
@@ -15,7 +16,11 @@ urlpatterns = [
         InspeccionListCreateView.as_view(),
         name="inspecciones-list-create",
     ),
-
+    path(
+        "registro/",
+        registrar_usuario,
+        name="registro",
+    ),
     path(
         "login/",
         pagina_login,

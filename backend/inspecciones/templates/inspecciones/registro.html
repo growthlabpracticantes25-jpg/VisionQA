@@ -8,7 +8,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Iniciar sesión - VisionQA</title>
+    <title>Crear cuenta - VisionQA</title>
 
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
     <link rel="stylesheet" href="{% static 'css/login_v2.css' %}">
@@ -108,36 +108,43 @@
         <!-- PANEL DERECHO -->
         <section class="login-card">
 
-            <div class="login-header">
-                <h2>
-                    Iniciar sesión
-                </h2>
-
-                <div class="login-title-line"></div>
-            </div>
-
-            {% if error %}
-            <p class="error">
-                {{ error }}
-            </p>
-            {% endif %}
-
-            <form method="POST" autocomplete="off">
+            <form method="POST">
                 {% csrf_token %}
+
+                {% if error %}
+                <p class="error">
+                    {{ error }}
+                </p>
+                {% endif %}
+
+                <div class="login-header">
+                    <h2>Crear cuenta</h2>
+                    <div class="login-title-line"></div>
+                </div>
+
+                <label for="nombre">
+                    Nombre completo
+                </label>
+
+                <div class="input-box">
+                    <input type="text" name="nombre" id="nombre" placeholder="Ingresa tu nombre completo" required>
+                </div>
 
                 <label for="username">
                     Usuario
                 </label>
 
                 <div class="input-box">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <circle cx="12" cy="8" r="4"></circle>
-                        <path d="M4 21v-2c0-4 3.6-6 8-6s8 2 8 6v2"></path>
-                    </svg>
+                    <input type="text" name="nuevo_usuario" id="username" placeholder="Crea un nombre de usuario"
+                        autocomplete="off" required>
+                </div>
 
-                    <input type="text" name="username" id="username" placeholder="Crea un nombre de usuario"
-                        autocomplete="off" value="" required>
-                    >
+                <label for="email">
+                    Correo electrónico
+                </label>
+
+                <div class="input-box">
+                    <input type="email" name="email" id="email" placeholder="Ingresa tu correo electrónico" required>
                 </div>
 
                 <label for="password">
@@ -145,47 +152,29 @@
                 </label>
 
                 <div class="input-box">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <rect x="4" y="10" width="16" height="11" rx="2"></rect>
-                        <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
-                    </svg>
-
-                    <input type="password" name="password" id="password" placeholder="Ingresa tu contraseña"
-                        autocomplete="new-password" value="">
-
-                    <button type="button" class="password-toggle" id="password-toggle" aria-label="Mostrar contraseña">
-                        <svg id="eye-icon" viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                    </button>
+                    <input type="password" name="password" id="password" placeholder="Crea una contraseña"
+                        autocomplete="new-password" required>
                 </div>
 
-                <div class="options">
-                    <label class="remember">
-                        <input type="checkbox" name="remember">
-                        <span>Recordarme</span>
-                    </label>
+                <label for="confirmar_password">
+                    Confirmar contraseña
+                </label>
 
-                    <a href="{% url 'recuperar-password' %}">
-                        ¿Olvidaste tu contraseña?
-                    </a>
+                <div class="input-box">
+                    <input type="password" name="confirmar_password" id="confirmar_password"
+                        placeholder="Confirma tu contraseña" autocomplete="new-password" required>
                 </div>
 
                 <button type="submit" class="login-submit">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <rect x="5" y="10" width="14" height="11" rx="2"></rect>
-                        <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
-                    </svg>
-
-                    <span>Iniciar sesión</span>
+                    Crear cuenta
                 </button>
-
             </form>
 
             <p class="register-link">
-                ¿No tienes una cuenta?
-                <a href="{% url 'registro' %}">Crear cuenta</a>
+                ¿Ya tienes una cuenta?
+                <a href="{% url 'login' %}">
+                    Iniciar sesión
+                </a>
             </p>
 
             <p class="privacy-link">

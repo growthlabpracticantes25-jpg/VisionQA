@@ -1630,13 +1630,18 @@ def mostrar_login():
             """,
             unsafe_allow_html=True
         )
-def main():
 
+def main():
     if "logueado" not in st.session_state:
         st.session_state["logueado"] = True
 
-    if "usuario" not in st.session_state:
-        st.session_state["usuario"] = "admin"
+    usuario_url = st.query_params.get("usuario")
+
+    if usuario_url:
+        st.session_state["usuario"] = usuario_url
+
+    elif "usuario" not in st.session_state:
+        st.session_state["usuario"] = "Usuario"
 
     # -------- MENÚ LATERAL --------
 
