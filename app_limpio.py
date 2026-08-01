@@ -17,26 +17,20 @@ from modelo_ia import clasificar_imagen
 from gemini_analisis import analizar_causas
 from streamlit_option_menu import option_menu
 
+
 def cargar_css(nombre_archivo):
     ruta = Path(__file__).parent / "assets" / "css" / nombre_archivo
 
     if ruta.exists():
         with open(ruta, "r", encoding="utf-8") as archivo:
-            st.markdown(
-                f"<style>{archivo.read()}</style>",
-                unsafe_allow_html=True
-            )
+            st.markdown(f"<style>{archivo.read()}</style>", unsafe_allow_html=True)
     else:
-        st.warning(
-            f"No se encontró el archivo CSS: {ruta}"
-        )
+        st.warning(f"No se encontró el archivo CSS: {ruta}")
+
+
 # ---------------- APP PRINCIPAL ----------------
 
-st.set_page_config(
-    page_title="VisionQA",
-    page_icon="🔍",
-    layout="wide"
-)
+st.set_page_config(page_title="VisionQA", page_icon="🔍", layout="wide")
 
 st.markdown(
     """
@@ -116,41 +110,31 @@ st.markdown(
 }
     </style>
     """,
-    unsafe_allow_html=True
+    unsafe_allow_html=True,
 )
 # ---------------- ESTILOS ----------------
 
 with open("styles/styles.css", encoding="utf-8") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
     st.markdown(
-        f"<style>{f.read()}</style>",
-        unsafe_allow_html=True
-    )
-    st.markdown(
-    """
+        """
     <link rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     """,
-    unsafe_allow_html=True
-)
+        unsafe_allow_html=True,
+    )
 # ---------------- VARIABLES GLOBALES ----------------
 
 archivo_csv = "registro_inspecciones.csv"
 
-os.makedirs(
-    "inspecciones",
-    exist_ok=True
-)
+os.makedirs("inspecciones", exist_ok=True)
 
 if "inspeccion" not in st.session_state:
     st.session_state.inspeccion = False
+
+
 # ---------------- FUNCIONES ----------------
-def guardar_inspeccion_api(
-    resultado,
-    defecto,
-    confianza,
-    archivo,
-    origen
-):
+def guardar_inspeccion_api(resultado, defecto, confianza, archivo, origen):
     url_api = "http://127.0.0.1:8000/api/inspecciones/"
 
     datos = {
@@ -158,15 +142,11 @@ def guardar_inspeccion_api(
         "defecto": defecto,
         "confianza": float(confianza),
         "archivo": archivo,
-        "origen": origen
+        "origen": origen,
     }
 
     try:
-        respuesta = requests.post(
-            url_api,
-            json=datos,
-            timeout=10
-        )
+        respuesta = requests.post(url_api, json=datos, timeout=10)
 
         if respuesta.status_code == 201:
             return True, "Inspección guardada en Django."
@@ -179,16 +159,14 @@ def guardar_inspeccion_api(
     except requests.exceptions.RequestException as error:
         return False, f"Error al enviar la inspección: {error}"
 
+
 def obtener_inspecciones_api():
 
     url_api = "http://127.0.0.1:8000/api/inspecciones/"
 
     try:
 
-        respuesta = requests.get(
-            url_api,
-            timeout=10
-        )
+        respuesta = requests.get(url_api, timeout=10)
 
         if respuesta.status_code == 200:
 
@@ -200,51 +178,70 @@ def obtener_inspecciones_api():
 
     return []
 
+
 def mostrar_titulo(titulo, subtitulo):
 
     html = (
         f'<div class="page-header">'
         f'<div class="page-title">{titulo}</div>'
         f'<div class="page-subtitle">{subtitulo}</div>'
-        f'</div>'
+        f"</div>"
     )
 
-    st.markdown(
-        html,
-        unsafe_allow_html=True
-    )
+    st.markdown(html, unsafe_allow_html=True)
 
     st.divider()
+
+
 def mostrar_encabezado_seccion(titulo, descripcion=""):
 
     html = (
         '<div class="section-header">'
         f'<div class="section-title">{titulo}</div>'
         f'<div class="section-description">{descripcion}</div>'
-        '</div>'
+        "</div>"
     )
 
-    st.markdown(
-        html,
-        unsafe_allow_html=True
-    )
+    st.markdown(html, unsafe_allow_html=True)
+
+
 def mostrar_estado_sistema():
-
     st.subheader("🟢 Estado del Sistema")
 
-    st.success(
-        """
-        **Sistema listo para inspección**
+    col1, col2, col3 = st.columns(3)
 
-        ✔ Modelo de IA cargado correctamente
+    with col1:
+        with st.container(border=True):
+            st.markdown("""
+    ### 🤖 Modelo IA
 
-        ✔ Gemini conectado
+    **Estado:** Conectado
 
-        ✔ Registro de inspecciones disponible
-        """
-    )
+    🟢 Cargado correctamente
+    """)
+
+    with col2:
+        with st.container(border=True):
+            st.markdown("""
+    ### 🧠 Gemini
+
+    **Estado:** Disponible
+
+    🟢 Conectado
+    """)
+
+    with col3:
+        with st.container(border=True):
+            st.markdown("""
+    ### 💾 Base de datos
+
+    **Estado:** Disponible
+
+    🟢 Registro listo
+    """)
 
     st.divider()
+
 
 def cargar_datos_registro():
 
@@ -252,10 +249,7 @@ def cargar_datos_registro():
 
     try:
 
-        respuesta = requests.get(
-            url_api,
-            timeout=10
-        )
+        respuesta = requests.get(url_api, timeout=10)
 
         if respuesta.status_code != 200:
 
@@ -269,24 +263,13 @@ def cargar_datos_registro():
 
         for registro in registros:
 
-            resultado = str(
-                registro.get(
-                    "resultado",
-                    ""
-                )
-            ).strip().upper()
+            resultado = str(registro.get("resultado", "")).strip().upper()
 
-            if resultado in [
-                "APTO",
-                "BUENA"
-            ]:
+            if resultado in ["APTO", "BUENA"]:
 
                 aptas += 1
 
-            elif resultado in [
-                "NO APTO",
-                "MALA"
-            ]:
+            elif resultado in ["NO APTO", "MALA"]:
 
                 no_aptas += 1
 
@@ -296,99 +279,111 @@ def cargar_datos_registro():
 
         return 0, 0, 0
 
+
 def mostrar_modulo_inspeccion():
 
     mostrar_encabezado_seccion(
         "Método de inspección",
-        "Selecciona cómo deseas capturar la pieza para iniciar el análisis."
-    )
-
-    col_metodo_1, col_metodo_2 = st.columns(2)
-
-    with col_metodo_1:
-
-        if st.button(
-            "Cargar imagen",
-            key="seleccionar_carga",
-            use_container_width=True
-        ):
-            st.session_state["metodo_inspeccion"] = "Cargar imagen"
-
-    with col_metodo_2:
-
-        if st.button(
-            "Tomar fotografía",
-            key="seleccionar_camara",
-            use_container_width=True
-        ):
-            st.session_state["metodo_inspeccion"] = "Tomar fotografía"
-        else:
-
-            st.info(
-        "👆 Selecciona un método de inspección para comenzar."
+        "Selecciona cómo deseas capturar la pieza para iniciar el análisis.",
     )
 
     if "metodo_inspeccion" not in st.session_state:
         st.session_state["metodo_inspeccion"] = None
 
+    # Primero se crean las columnas
+    col_metodo_1, col_metodo_2 = st.columns(2)
+
+    # Después se usan
+    with col_metodo_1:
+        with st.container(border=True):
+
+            st.markdown(
+                """
+                <div style="text-align:center; padding:15px;">
+                    <div style="font-size:50px;">📂</div>
+                    <h4 style="margin:6px 0;">Cargar imagen</h4>
+                    <p style="color:#6c757d; margin:0;">
+                        Selecciona una imagen desde tu computadora.
+                    </p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+            carga_activa = st.session_state["metodo_inspeccion"] == "Cargar imagen"
+
+            if st.button(
+                "✓ Imagen seleccionada" if carga_activa else "Seleccionar imagen",
+                key="seleccionar_carga",
+                use_container_width=True,
+                type="primary" if carga_activa else "secondary",
+            ):
+                st.session_state["metodo_inspeccion"] = "Cargar imagen"
+                st.rerun()
+
+    with col_metodo_2:
+        with st.container(border=True):
+
+            st.markdown(
+                """
+                <div style="text-align:center; padding:15px;">
+                    <div style="font-size:50px;">📷</div>
+                    <h4 style="margin:6px 0;">Tomar fotografía</h4>
+                    <p style="color:#6c757d; margin:0;">
+                        Captura una imagen utilizando la cámara.
+                    </p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+            camara_activa = st.session_state["metodo_inspeccion"] == "Tomar fotografía"
+
+            if st.button(
+                "✓ Cámara seleccionada" if camara_activa else "Abrir cámara",
+                key="seleccionar_camara",
+                use_container_width=True,
+                type="primary" if camara_activa else "secondary",
+            ):
+                st.session_state["metodo_inspeccion"] = "Tomar fotografía"
+                st.rerun()
+
     opcion = st.session_state["metodo_inspeccion"]
 
+    if opcion == "Cargar imagen":
+        st.success("📂 Método seleccionado: Cargar imagen")
+
+    elif opcion == "Tomar fotografía":
+        st.success("📷 Método seleccionado: Tomar fotografía")
+
+    else:
+        st.info("👆 Selecciona un método de inspección para comenzar.")
     # -------- PROCESAR Y REGISTRAR INSPECCIÓN --------
 
-    def procesar_inspeccion(
-        imagen,
-        nombre_archivo,
-        origen
-    ):
+    def procesar_inspeccion(imagen, nombre_archivo, origen):
 
-        os.makedirs(
-            "inspecciones",
-            exist_ok=True
-        )
+        os.makedirs("inspecciones", exist_ok=True)
 
-        ruta_imagen = os.path.join(
-            "inspecciones",
-            nombre_archivo
-        )
-        with open(
-            ruta_imagen,
-            "wb"
-        ) as archivo:
+        ruta_imagen = os.path.join("inspecciones", nombre_archivo)
+        with open(ruta_imagen, "wb") as archivo:
 
-            archivo.write(
-                imagen.getbuffer()
-            )
+            archivo.write(imagen.getbuffer())
 
-        with st.spinner(
-            "La inteligencia artificial está analizando la pieza..."
-        ):
+        with st.spinner("La inteligencia artificial está analizando la pieza..."):
 
-            respuesta_modelo = clasificar_imagen(
-                ruta_imagen
-            )
-        
+            respuesta_modelo = clasificar_imagen(ruta_imagen)
+
         # -------- INTERPRETAR RESPUESTA DEL MODELO --------
 
         if isinstance(respuesta_modelo, dict):
 
-            resultado = respuesta_modelo.get(
-                "estado",
-                "DESCONOCIDO"
-            )
+            resultado = respuesta_modelo.get("estado", "DESCONOCIDO")
 
-            confianza = respuesta_modelo.get(
-                "confianza",
-                0.0
-            )
+            confianza = respuesta_modelo.get("confianza", 0.0)
 
-            defecto = respuesta_modelo.get(
-                "defecto",
-                None
-            )
+            defecto = respuesta_modelo.get("defecto", None)
 
-            resultado_yolo = respuesta_modelo.get(
-                "resultado_yolo"
-            )
+            resultado_yolo = respuesta_modelo.get("resultado_yolo")
 
             if resultado_yolo is not None:
                 imagen_resultado = resultado_yolo.plot()
@@ -397,37 +392,27 @@ def mostrar_modulo_inspeccion():
 
         else:
 
-            st.error(
-                "No fue posible interpretar la respuesta del modelo."
-            )
+            st.error("No fue posible interpretar la respuesta del modelo.")
             return
 
         # -------- MOSTRAR RESULTADO --------
 
         mostrar_encabezado_seccion(
-        "Resultado de la inspección",
-        "Clasificación y nivel de confianza obtenido por el modelo."
-)
+            "Resultado de la inspección",
+            "Clasificación y nivel de confianza obtenido por el modelo.",
+        )
 
-        resultado_normalizado = str(
-            resultado
-        ).strip().upper()
+        resultado_normalizado = str(resultado).strip().upper()
 
-        if resultado_normalizado in [
-            "APTO",
-            "BUENA"
-        ]:
+        if resultado_normalizado in ["APTO", "BUENA"]:
 
             resultado_registro = "APTO"
-            st.success("✅ PIEZA APTA")
+            st.success("✅ PIEZA APTA — La pieza cumple con los criterios de calidad.")
 
-        elif resultado_normalizado in [
-            "NO APTO",
-            "MALA"
-        ]:
+        elif resultado_normalizado in ["NO APTO", "MALA"]:
 
             resultado_registro = "NO APTO"
-            st.error("❌ PIEZA NO APTA")
+            st.error("❌ PIEZA NO APTA — La pieza requiere revisión o rechazo.")
 
             if defecto:
                 st.markdown(
@@ -438,9 +423,7 @@ def mostrar_modulo_inspeccion():
         else:
 
             resultado_registro = resultado_normalizado
-            st.warning(
-                f"⚠ Resultado: {resultado_normalizado}"
-            )
+            st.warning(f"⚠ Resultado: {resultado_normalizado}")
 
         try:
             confianza_numero = float(confianza)
@@ -461,7 +444,7 @@ def mostrar_modulo_inspeccion():
             defecto=defecto or "",
             confianza=confianza_porcentaje,
             archivo=ruta_imagen,
-            origen=origen
+            origen=origen,
         )
 
         if guardado_api:
@@ -469,118 +452,102 @@ def mostrar_modulo_inspeccion():
         else:
             st.warning(mensaje_api)
 
-        col_confianza, col_origen = st.columns(2)
+            # -------- PANEL DE RESULTADOS --------
 
-        with col_confianza:
-         st.metric(
-                "Confianza del modelo",
-                f"{confianza_porcentaje:.2f}%"
-            )
+        col_imagen, col_info = st.columns([2, 1])
 
-        with col_origen:
-            st.metric(
-                "Origen de la imagen",
-                origen
-            )
+        with col_imagen:
+            st.markdown("### 🖼️ Imagen procesada")
 
-        # -------- MOSTRAR IMAGEN PROCESADA --------
+            if imagen_resultado is not None:
+                try:
+                    imagen_rgb = cv2.cvtColor(imagen_resultado, cv2.COLOR_BGR2RGB)
 
-        if imagen_resultado is not None:
+                    st.image(imagen_rgb, width=600)
 
-            try:
-                imagen_rgb = cv2.cvtColor(
-                    imagen_resultado,
-                    cv2.COLOR_BGR2RGB
-                )
+                except Exception:
+                    st.image(imagen_resultado, width=600)
 
-                st.image(
-                    imagen_rgb,
-                    caption="Resultado procesado por VisionQA",
-                    use_container_width=True
-                )
+        with col_info:
 
-            except Exception:
+            with st.container(border=True):
 
-                st.image(
-                    imagen_resultado,
-                    caption="Resultado procesado por VisionQA",
-                    use_container_width=True
-                )
+                st.markdown("### 📊 Confianza del modelo")
 
-        # -------- GUARDAR EN CSV --------
+                st.metric(label="Resultado", value=f"{confianza_porcentaje:.2f}%")
 
-        fecha_hora = datetime.now().strftime(
-            "%d/%m/%Y %H:%M:%S"
-        )
+                st.progress(min(max(confianza_porcentaje / 100, 0.0), 1.0))
 
-        nueva_fila = [
-            fecha_hora,
-            resultado_registro,
-            defecto or "",
-            f"{confianza_porcentaje:.2f}",
-            nombre_archivo,
-            origen
-        ]
+            with st.container(border=True):
 
-        with open(
-            archivo_csv,
-            mode="a",
-            newline="",
-            encoding="utf-8"
-        ) as archivo:
+                st.markdown("### 📂 Origen de la imagen")
 
-            escritor = csv.writer(archivo)
-            escritor.writerow(nueva_fila)
+                st.metric(label="Fuente", value=origen)
 
-        st.caption(
-            "Registro local CSV actualizado."
-        )
+            if defecto:
 
-    # -------- CARGAR IMAGEN --------
+                with st.container(border=True):
+
+                    defecto_texto = str(defecto).replace("_", " ").title()
+
+                    st.markdown("### ⚠️ Defecto detectado")
+
+                    st.metric(label="Clasificación", value=defecto_texto)
+
+                    # -------- GUARDAR EN CSV --------
+
+            fecha_hora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+            nueva_fila = [
+                fecha_hora,
+                resultado_registro,
+                defecto or "",
+                f"{confianza_porcentaje:.2f}",
+                nombre_archivo,
+                origen,
+            ]
+
+            with open(archivo_csv, mode="a", newline="", encoding="utf-8") as archivo:
+
+                escritor = csv.writer(archivo)
+                escritor.writerow(nueva_fila)
+        # -------- CARGAR IMAGEN --------
 
     if opcion == "Cargar imagen":
 
         archivo_subido = st.file_uploader(
             "Selecciona una imagen de la pieza",
-            type=[
-                "jpg",
-                "jpeg",
-                "png"
-            ],
-            key="imagen_cargada"
+            type=["jpg", "jpeg", "png"],
+            key="imagen_cargada",
         )
 
         if archivo_subido is not None:
 
-            st.image(
-                archivo_subido,
-                caption="Imagen seleccionada",
-                use_container_width=True
-            )
-
-            if st.button(
+            analizar = st.button(
                 "🔍 Analizar imagen",
                 key="boton_analizar_archivo",
-                use_container_width=True
-            ):
+                use_container_width=True,
+            )
 
-                nombre_archivo = datetime.now().strftime(
-                    "archivo_%Y%m%d_%H%M%S.jpg"
-                )
+            if analizar:
 
-                procesar_inspeccion(
+                nombre_archivo = datetime.now().strftime("archivo_%Y%m%d_%H%M%S.jpg")
+
+                procesar_inspeccion(archivo_subido, nombre_archivo, "Archivo local")
+
+            else:
+
+                st.image(
                     archivo_subido,
-                    nombre_archivo,
-                    "Archivo local"
+                    caption="Imagen seleccionada",
+                    use_container_width=True,
                 )
-
     # -------- TOMAR FOTOGRAFÍA --------
 
     elif opcion == "Tomar fotografía":
 
         fotografia = st.camera_input(
-            "Coloca la pieza frente a la cámara",
-            key="fotografia_camara"
+            "Coloca la pieza frente a la cámara", key="fotografia_camara"
         )
 
         if fotografia is not None:
@@ -588,39 +555,25 @@ def mostrar_modulo_inspeccion():
             if st.button(
                 "📷 Analizar fotografía",
                 key="boton_analizar_camara",
-                use_container_width=True
+                use_container_width=True,
             ):
 
-                nombre_archivo = datetime.now().strftime(
-                    "inspeccion_%Y%m%d_%H%M%S.jpg"
-                )
+                nombre_archivo = datetime.now().strftime("inspeccion_%Y%m%d_%H%M%S.jpg")
 
-                procesar_inspeccion(
-                    fotografia,
-                    nombre_archivo,
-                    "Cámara"
-                )
+                procesar_inspeccion(fotografia, nombre_archivo, "Cámara")
 
     st.divider()
+
 
 def mostrar_resumen(total, aptas, no_aptas):
 
     mostrar_encabezado_seccion(
-        "Resumen general",
-        "Indicadores principales de las inspecciones registradas."
+        "Resumen general", "Indicadores principales de las inspecciones registradas."
     )
 
-    porcentaje_aptas = (
-        (aptas / total) * 100
-        if total > 0
-        else 0
-    )
+    porcentaje_aptas = (aptas / total) * 100 if total > 0 else 0
 
-    porcentaje_no_aptas = (
-        (no_aptas / total) * 100
-        if total > 0
-        else 0
-    )
+    porcentaje_no_aptas = (no_aptas / total) * 100 if total > 0 else 0
 
     col1, col2, col3 = st.columns(3)
 
@@ -631,7 +584,7 @@ def mostrar_resumen(total, aptas, no_aptas):
             "titulo": "Total de inspecciones",
             "descripcion": "Registros almacenados",
             "detalle": "Base de datos actualizada",
-            "clase": "kpi-total"
+            "clase": "kpi-total",
         },
         {
             "icono": "bi bi-check-circle",
@@ -639,7 +592,7 @@ def mostrar_resumen(total, aptas, no_aptas):
             "titulo": "Piezas aptas",
             "descripcion": "Cumplen con calidad",
             "detalle": f"{porcentaje_aptas:.1f}% del total",
-            "clase": "kpi-success"
+            "clase": "kpi-success",
         },
         {
             "icono": "bi bi-exclamation-triangle",
@@ -647,55 +600,47 @@ def mostrar_resumen(total, aptas, no_aptas):
             "titulo": "Piezas no aptas",
             "descripcion": "Requieren revisión",
             "detalle": f"{porcentaje_no_aptas:.1f}% del total",
-            "clase": "kpi-danger"
-        }
+            "clase": "kpi-danger",
+        },
     ]
 
-    for columna, tarjeta in zip(
-    [col1, col2, col3],
-    tarjetas
-):
+    for columna, tarjeta in zip([col1, col2, col3], tarjetas):
 
-     with columna:
+        with columna:
 
-        html = (
-            f'<div class="kpi-card {tarjeta["clase"]}">'
+            html = (
+                f'<div class="kpi-card {tarjeta["clase"]}">'
                 '<div class="kpi-card-top">'
-                    '<div class="kpi-icon">'
-                        f'<i class="{tarjeta["icono"]}"></i>'
-                    '</div>'
-                    '<div class="kpi-detail">'
-                        f'{tarjeta["detalle"]}'
-                    '</div>'
-                '</div>'
+                '<div class="kpi-icon">'
+                f'<i class="{tarjeta["icono"]}"></i>'
+                "</div>"
+                '<div class="kpi-detail">'
+                f'{tarjeta["detalle"]}'
+                "</div>"
+                "</div>"
                 '<div class="kpi-value">'
-                    f'{tarjeta["valor"]}'
-                '</div>'
+                f'{tarjeta["valor"]}'
+                "</div>"
                 '<div class="kpi-title">'
-                    f'{tarjeta["titulo"]}'
-                '</div>'
+                f'{tarjeta["titulo"]}'
+                "</div>"
                 '<div class="kpi-description">'
-                    f'{tarjeta["descripcion"]}'
-                '</div>'
-            '</div>'
-        )
+                f'{tarjeta["descripcion"]}'
+                "</div>"
+                "</div>"
+            )
 
-        st.markdown(
-            html,
-            unsafe_allow_html=True
-        )
+            st.markdown(html, unsafe_allow_html=True)
 
-    st.caption(
-        "Actualización automática basada en las inspecciones registradas."
-    )
+    st.caption("Actualización automática basada en las inspecciones registradas.")
 
     st.divider()
+
 
 def mostrar_graficas(aptas, no_aptas):
 
     mostrar_encabezado_seccion(
-        "Análisis de inspección",
-        "Comparación visual entre piezas aptas y no aptas."
+        "Análisis de inspección", "Comparación visual entre piezas aptas y no aptas."
     )
 
     col1, col2 = st.columns(2)
@@ -709,10 +654,7 @@ def mostrar_graficas(aptas, no_aptas):
 
         fig_barras, ax_barras = plt.subplots()
 
-        barras = ax_barras.bar(
-            etiquetas,
-            valores
-        )
+        barras = ax_barras.bar(etiquetas, valores)
 
         ax_barras.set_ylabel("Cantidad")
         ax_barras.set_title("Piezas inspeccionadas")
@@ -724,7 +666,7 @@ def mostrar_graficas(aptas, no_aptas):
                 barra.get_height(),
                 str(valor),
                 ha="center",
-                va="bottom"
+                va="bottom",
             )
 
         st.pyplot(fig_barras)
@@ -744,9 +686,7 @@ def mostrar_graficas(aptas, no_aptas):
                 labels=etiquetas,
                 autopct="%1.1f%%",
                 startangle=90,
-                wedgeprops={
-                    "width": 0.40
-                }
+                wedgeprops={"width": 0.40},
             )
 
             ax_dona.axis("equal")
@@ -755,11 +695,10 @@ def mostrar_graficas(aptas, no_aptas):
 
         else:
 
-            st.info(
-                "Todavía no hay inspecciones para mostrar la distribución."
-            )
+            st.info("Todavía no hay inspecciones para mostrar la distribución.")
 
     st.divider()
+
 
 def mostrar_indicadores(aptas, no_aptas):
 
@@ -770,18 +709,13 @@ def mostrar_indicadores(aptas, no_aptas):
         st.divider()
         return
 
-    porcentaje_apto = (
-        aptas / inspecciones_validas
-    ) * 100
+    porcentaje_apto = (aptas / inspecciones_validas) * 100
 
-    porcentaje_no_apto = (
-        no_aptas / inspecciones_validas
-    ) * 100
+    porcentaje_no_apto = (no_aptas / inspecciones_validas) * 100
 
     mostrar_encabezado_seccion(
-    "Indicadores de calidad",
-    "Métricas porcentuales del desempeño del proceso."
-)
+        "Indicadores de calidad", "Métricas porcentuales del desempeño del proceso."
+    )
 
     col4, col5 = st.columns(2)
 
@@ -794,7 +728,7 @@ def mostrar_indicadores(aptas, no_aptas):
                 <div class="kpi-label">Tasa de aprobación</div>
             </div>
             """,
-            unsafe_allow_html=True
+            unsafe_allow_html=True,
         )
 
     with col5:
@@ -806,32 +740,25 @@ def mostrar_indicadores(aptas, no_aptas):
                 <div class="kpi-label">Tasa de rechazo</div>
             </div>
             """,
-            unsafe_allow_html=True
+            unsafe_allow_html=True,
         )
 
     st.divider()
-def mostrar_registro():
 
-    st.subheader("📋 Registro de Inspecciones")
+
+def mostrar_registro():
 
     url_api = "http://127.0.0.1:8000/api/inspecciones/"
 
     try:
 
-        respuesta = requests.get(
-            url_api,
-            timeout=10
-        )
+        respuesta = requests.get(url_api, timeout=10)
 
         if respuesta.status_code != 200:
 
-            st.error(
-                "No fue posible consultar el registro en Django."
-            )
+            st.error("No fue posible consultar el registro en Django.")
 
-            st.caption(
-                f"Error de API: {respuesta.status_code}"
-            )
+            st.caption(f"Error de API: {respuesta.status_code}")
 
             st.divider()
             return
@@ -840,17 +767,14 @@ def mostrar_registro():
 
         if not registros:
 
-            st.info(
-                "Todavía no hay inspecciones registradas."
-            )
+            st.info("Todavía no hay inspecciones registradas.")
 
             st.divider()
             return
 
         datos = pd.DataFrame(registros)
 
-        # Cambiar nombres de las columnas de Django
-        # por nombres visibles en Streamlit
+        # Cambiar nombres de columnas
         datos = datos.rename(
             columns={
                 "fecha": "Fecha",
@@ -858,26 +782,16 @@ def mostrar_registro():
                 "defecto": "Defecto",
                 "confianza": "Confianza (%)",
                 "archivo": "Archivo Guardado",
-                "origen": "Origen"
+                "origen": "Origen",
             }
         )
 
-        # Convertir y ordenar las fechas
-        datos["Fecha"] = pd.to_datetime(
-            datos["Fecha"],
-            errors="coerce"
-        )
+        # Convertir y ordenar fechas
+        datos["Fecha"] = pd.to_datetime(datos["Fecha"], errors="coerce")
 
-        datos = datos.sort_values(
-            by="Fecha",
-            ascending=True
-        ).reset_index(
-            drop=True
-        )
+        datos = datos.sort_values(by="Fecha", ascending=True).reset_index(drop=True)
 
-        datos["Fecha"] = datos["Fecha"].dt.strftime(
-            "%d/%m/%Y %H:%M:%S"
-        )
+        datos["Fecha"] = datos["Fecha"].dt.strftime("%d/%m/%Y %H:%M:%S")
 
         # -------- ÚLTIMA INSPECCIÓN --------
 
@@ -885,138 +799,216 @@ def mostrar_registro():
 
         st.markdown("### Última inspección")
 
-        col1, col2, col3 = st.columns(3)
+        resultado = str(ultima_inspeccion["Resultado"]).strip().upper()
 
-        resultado = str(
-            ultima_inspeccion["Resultado"]
-        ).strip().upper()
-
-        with col1:
-
-            st.metric(
-                "Fecha",
-                str(
-                    ultima_inspeccion["Fecha"]
-                )
-            )
-
-        with col2:
-
-            if resultado in [
-                "APTO",
-                "BUENA"
-            ]:
-
-                st.success(
-                    "✅ PIEZA APTA"
-                )
-
-            elif resultado in [
-                "NO APTO",
-                "MALA"
-            ]:
-
-                st.error(
-                    "❌ PIEZA NO APTA"
-                )
-
-            else:
-
-                st.warning(
-                    f"⚠ {resultado}"
-                )
-
-        with col3:
-
-            confianza = float(
-                ultima_inspeccion["Confianza (%)"]
-            )
-
-            st.metric(
-                "Confianza",
-                f"{confianza:.2f}%"
-            )
-
-        defecto = ultima_inspeccion.get(
-            "Defecto",
-            ""
-        )
+        defecto = ultima_inspeccion.get("Defecto", "")
 
         if pd.notna(defecto) and str(defecto).strip():
 
-            st.caption(
-                "Defecto detectado: "
-                f"{str(defecto).replace('_', ' ').title()}"
-            )
+            defecto_texto = str(defecto).replace("_", " ").title()
 
-        st.caption(
-            f"Origen de la imagen: "
-            f"{ultima_inspeccion['Origen']}"
-        )
+        else:
+
+            defecto_texto = "Sin defecto"
+
+        confianza = float(ultima_inspeccion["Confianza (%)"])
+
+        col_resultado, col_defecto, col_confianza = st.columns(3)
+
+        # -------- TARJETA RESULTADO --------
+
+        with col_resultado:
+
+            with st.container(border=True):
+
+                st.markdown("### 📋 Resultado")
+
+                if resultado in ["APTO", "BUENA"]:
+
+                    st.success("✅ PIEZA APTA")
+
+                elif resultado in ["NO APTO", "MALA"]:
+
+                    st.error("❌ PIEZA NO APTA")
+
+                else:
+
+                    st.warning(f"⚠ {resultado}")
+
+                st.caption("Clasificación general de la última inspección.")
+
+        # -------- TARJETA DEFECTO --------
+
+        with col_defecto:
+
+            with st.container(border=True):
+
+                st.markdown("### ⚠️ Defecto")
+
+                st.metric(
+                    label="Clasificación detectada",
+                    value=defecto_texto,
+                )
+
+                st.caption("Tipo de defecto identificado por el modelo.")
+
+        # -------- TARJETA CONFIANZA --------
+
+        with col_confianza:
+
+            with st.container(border=True):
+
+                st.markdown("### 🛡️ Confianza")
+
+                st.metric(
+                    label="Nivel del modelo",
+                    value=f"{confianza:.2f}%",
+                )
+
+                st.progress(
+                    min(
+                        max(confianza / 100, 0.0),
+                        1.0,
+                    )
+                )
+
+        # -------- FECHA Y ORIGEN --------
+
+        with st.container(border=True):
+
+            col_fecha, col_origen = st.columns(2)
+
+            with col_fecha:
+
+                st.markdown(f"📅 **Fecha:** {ultima_inspeccion['Fecha']}")
+
+            with col_origen:
+
+                st.markdown(f"📂 **Origen:** {ultima_inspeccion['Origen']}")
 
         # -------- HISTORIAL COMPLETO --------
 
-        st.markdown("### Historial de inspecciones")
+        st.markdown("### 📋 Historial de inspecciones")
 
         columnas_mostradas = [
             "Fecha",
             "Resultado",
             "Defecto",
             "Confianza (%)",
-            "Archivo Guardado",
-            "Origen"
+            "Origen",
         ]
 
-        datos_mostrados = datos[
-            columnas_mostradas
-        ].iloc[::-1].reset_index(
-            drop=True
+        datos_mostrados = datos[columnas_mostradas].iloc[::-1].reset_index(drop=True)
+
+        # Mejorar visualización del resultado
+        datos_mostrados["Resultado"] = datos_mostrados["Resultado"].replace(
+            {
+                "APTO": "🟢 APTO",
+                "BUENA": "🟢 APTO",
+                "NO APTO": "🔴 NO APTO",
+                "MALA": "🔴 NO APTO",
+            }
+        )
+
+        # Mejorar visualización del defecto
+        datos_mostrados["Defecto"] = (
+            datos_mostrados["Defecto"]
+            .fillna("Sin defecto")
+            .astype(str)
+            .str.replace("_", " ", regex=False)
+            .str.title()
+        )
+
+        # Formato de confianza
+        datos_mostrados["Confianza (%)"] = (
+            pd.to_numeric(
+                datos_mostrados["Confianza (%)"],
+                errors="coerce",
+            )
+            .fillna(0)
+            .round(2)
+        )
+        st.markdown(
+            """
+            <style>
+            div[data-testid="stDataFrame"] table {
+                border-radius: 12px;
+                overflow: hidden;
+            }
+
+            div[data-testid="stDataFrame"] th {
+                background: #0F6CBD;
+                color: white;
+                text-align: center;
+                font-size: 15px;
+            }
+
+            div[data-testid="stDataFrame"] td {
+                text-align: center;
+                font-size: 14px;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True,
         )
 
         st.dataframe(
             datos_mostrados,
             use_container_width=True,
-            hide_index=True
+            hide_index=True,
+            height=420,
+            column_config={
+                "Fecha": st.column_config.TextColumn(
+                    "📅 Fecha",
+                    width="medium",
+                ),
+                "Resultado": st.column_config.TextColumn(
+                    "Resultado",
+                    width="small",
+                ),
+                "Defecto": st.column_config.TextColumn(
+                    "⚠️ Defecto",
+                    width="medium",
+                ),
+                "Confianza (%)": st.column_config.ProgressColumn(
+                    "📊 Confianza",
+                    min_value=0,
+                    max_value=100,
+                    format="%.2f%%",
+                    width="medium",
+                ),
+                "Origen": st.column_config.TextColumn(
+                    "📂 Origen",
+                    width="small",
+                ),
+            },
         )
-
-        st.caption(
-            f"Total de registros mostrados: {len(datos)}"
-        )
+        st.info(f"📊 Total de inspecciones registradas: **{len(datos)}**")
 
     except requests.exceptions.ConnectionError:
 
-        st.error(
-            "No se pudo conectar con Django."
-        )
+        st.error("No se pudo conectar con Django.")
 
-        st.info(
-            "Verifica que esté ejecutándose: "
-            "python manage.py runserver"
-        )
+        st.info("Verifica que esté ejecutándose: " "python manage.py runserver")
 
     except requests.exceptions.RequestException as error:
 
-        st.error(
-            "Ocurrió un error al consultar la API."
-        )
+        st.error("Ocurrió un error al consultar la API.")
 
-        st.caption(
-            f"Detalle técnico: {error}"
-        )
+        st.caption(f"Detalle técnico: {error}")
 
     except Exception as error:
 
-        st.error(
-            "No fue posible cargar el registro de inspecciones."
-        )
+        st.error("No fue posible cargar el registro de inspecciones.")
 
-        st.caption(
-            f"Detalle técnico: {error}"
-        )
+        st.caption(f"Detalle técnico: {error}")
 
     st.divider()
 
+
 def mostrar_exportar():
+
+    st.subheader("📤 Exportar Registro")
 
     st.subheader("📤 Exportar Registro")
 
@@ -1024,9 +1016,7 @@ def mostrar_exportar():
 
     if not registros:
 
-        st.info(
-            "No existen inspecciones para exportar."
-        )
+        st.info("No existen inspecciones para exportar.")
 
         st.divider()
         return
@@ -1042,7 +1032,7 @@ def mostrar_exportar():
                 "defecto": "Defecto",
                 "confianza": "Confianza (%)",
                 "archivo": "Archivo Guardado",
-                "origen": "Origen"
+                "origen": "Origen",
             }
         )
 
@@ -1052,7 +1042,7 @@ def mostrar_exportar():
             "Defecto",
             "Confianza (%)",
             "Archivo Guardado",
-            "Origen"
+            "Origen",
         ]
 
         datos = datos[columnas]
@@ -1080,53 +1070,45 @@ def mostrar_exportar():
             data=archivo_excel,
             file_name="Registro_VisionQA.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            use_container_width=True
+            use_container_width=True,
         )
 
     except Exception as error:
 
-        st.error(
-            "No fue posible exportar el archivo."
-        )
+        st.error("No fue posible exportar el archivo.")
 
         st.caption(error)
 
     st.divider()
 
+
 def mostrar_gemini():
 
     st.subheader("🧠 Análisis de Causas con IA")
 
-    st.write(
-        """
+    st.write("""
         Utiliza Gemini para analizar los resultados de las inspecciones
         aplicando principios de Manufactura Esbelta y metodología Six Sigma.
-        """
-    )
+        """)
 
     col1, col2 = st.columns(2)
 
-# -------- ÚLTIMA INSPECCIÓN --------
+    # -------- ÚLTIMA INSPECCIÓN --------
     with col1:
 
-     if st.button(
-        "Analizar última inspección",
-        use_container_width=True
-    ):
+        if st.button("Analizar última inspección", use_container_width=True):
 
-        registros = obtener_inspecciones_api()
+            registros = obtener_inspecciones_api()
 
-        if not registros:
+            if not registros:
 
-            st.warning(
-                "No hay inspecciones registradas."
-            )
+                st.warning("No hay inspecciones registradas.")
 
-        else:
+            else:
 
-            ultima = registros[-1]
+                ultima = registros[-1]
 
-            datos = f"""
+                datos = f"""
 Fecha: {ultima['fecha']}
 Resultado: {ultima['resultado']}
 Defecto: {ultima['defecto']}
@@ -1134,36 +1116,25 @@ Confianza: {ultima['confianza']}%
 Origen: {ultima['origen']}
 """
 
-            with st.spinner(
-                "Gemini está analizando..."
-            ):
+                with st.spinner("Gemini está analizando..."):
 
-                resultado = analizar_causas(
-                    datos
-                )
+                    resultado = analizar_causas(datos)
 
-            st.success(
-                "Análisis completado."
-            )
+                st.success("Análisis completado.")
 
-            st.markdown(resultado)
+                st.markdown(resultado)
 
-        # -------- ÚLTIMAS 10 INSPECCIONES --------
+            # -------- ÚLTIMAS 10 INSPECCIONES --------
 
     with col2:
 
-        if st.button(
-            "Analizar últimas 10 inspecciones",
-            use_container_width=True
-        ):
+        if st.button("Analizar últimas 10 inspecciones", use_container_width=True):
 
             registros = obtener_inspecciones_api()
 
             if not registros:
 
-                st.warning(
-                    "No hay inspecciones registradas."
-                )
+                st.warning("No hay inspecciones registradas.")
 
             else:
 
@@ -1182,23 +1153,19 @@ Origen: {registro['origen']}
 
 """
 
-                with st.spinner(
-                    "Gemini está analizando..."
-                ):
+                with st.spinner("Gemini está analizando..."):
 
-                    resultado = analizar_causas(
-                        texto
-                    )
+                    resultado = analizar_causas(texto)
 
-                st.success(
-                    "Análisis completado."
-                )
+                st.success("Análisis completado.")
 
                 st.markdown(resultado)
+
+
 def mostrar_footer():
 
     st.markdown(
-"""
+        """
 <div class="footer">
 <b>VisionQA v1.0</b><br>
 Sistema Inteligente de Inspección Visual Asistido por Inteligencia Artificial
@@ -1209,10 +1176,13 @@ Proyecto desarrollado para IOT Technologies
 © 2026 VisionQA
 </div>
 """,
-unsafe_allow_html=True
-)
-    
+        unsafe_allow_html=True,
+    )
+
+
 cargar_css("global.css")
+
+
 def mostrar_login():
 
     st.markdown(
@@ -1448,29 +1418,17 @@ def mostrar_login():
         }
         </style>
         """,
-        unsafe_allow_html=True
+        unsafe_allow_html=True,
     )
-    columna_marca, columna_formulario = st.columns(
-        [1.15, 0.85],
-        gap="large"
-    )
+    columna_marca, columna_formulario = st.columns([1.15, 0.85], gap="large")
 
     with columna_marca:
 
-        st.markdown(
-            "<p class='iot-mark'>IOT TECHNOLOGIES</p>",
-            unsafe_allow_html=True
-        )
+        st.markdown("<p class='iot-mark'>IOT TECHNOLOGIES</p>", unsafe_allow_html=True)
 
-        st.markdown(
-            "<div class='brand-symbol'></div>",
-            unsafe_allow_html=True
-        )
+        st.markdown("<div class='brand-symbol'></div>", unsafe_allow_html=True)
 
-        st.markdown(
-            "<h1 class='brand-title'>VisionQA</h1>",
-            unsafe_allow_html=True
-        )
+        st.markdown("<h1 class='brand-title'>VisionQA</h1>", unsafe_allow_html=True)
 
         st.markdown(
             """
@@ -1478,7 +1436,7 @@ def mostrar_login():
                 Sistema Inteligente de Inspección Visual
             </p>
             """,
-            unsafe_allow_html=True
+            unsafe_allow_html=True,
         )
 
         st.markdown(
@@ -1489,7 +1447,7 @@ def mostrar_login():
                 análisis de resultados para procesos industriales.
             </p>
             """,
-            unsafe_allow_html=True
+            unsafe_allow_html=True,
         )
 
         st.markdown(
@@ -1498,7 +1456,7 @@ def mostrar_login():
                 Conectividad · Confiabilidad · Eficiencia
             </div>
             """,
-            unsafe_allow_html=True
+            unsafe_allow_html=True,
         )
 
     with columna_formulario:
@@ -1512,50 +1470,38 @@ def mostrar_login():
                 </p>
             </div>
             """,
-            unsafe_allow_html=True
+            unsafe_allow_html=True,
         )
 
         usuario = st.text_input(
-            "Usuario",
-            placeholder="Escribe tu usuario",
-            key="login_usuario"
+            "Usuario", placeholder="Escribe tu usuario", key="login_usuario"
         )
 
         contraseña = st.text_input(
             "Contraseña",
             type="password",
             placeholder="Escribe tu contraseña",
-            key="login_contrasena"
+            key="login_contrasena",
         )
 
-        iniciar = st.button(
-            "Iniciar sesión",
-            key="login_boton"
-        )
+        iniciar = st.button("Iniciar sesión", key="login_boton")
 
         if iniciar:
 
             if not usuario.strip() or not contraseña:
 
-                st.warning(
-                    "Escribe el usuario y la contraseña."
-                )
+                st.warning("Escribe el usuario y la contraseña.")
 
             else:
 
                 try:
 
-                    with st.spinner(
-                        "Validando credenciales..."
-                    ):
+                    with st.spinner("Validando credenciales..."):
 
                         respuesta = requests.post(
                             "http://127.0.0.1:8000/api/login/",
-                            json={
-                                "username": usuario.strip(),
-                                "password": contraseña
-                            },
-                            timeout=10
+                            json={"username": usuario.strip(), "password": contraseña},
+                            timeout=10,
                         )
 
                     if respuesta.status_code == 200:
@@ -1565,32 +1511,21 @@ def mostrar_login():
                         if datos.get("success"):
 
                             st.session_state["logueado"] = True
-                            st.session_state["usuario"] = datos.get(
-                                "username",
-                                usuario
-                            )
-                            st.session_state["is_staff"] = datos.get(
-                                "is_staff",
-                                False
-                            )
+                            st.session_state["usuario"] = datos.get("username", usuario)
+                            st.session_state["is_staff"] = datos.get("is_staff", False)
                             st.session_state["is_superuser"] = datos.get(
-                                "is_superuser",
-                                False
+                                "is_superuser", False
                             )
 
                             st.rerun()
 
                         else:
 
-                            st.error(
-                                "Usuario o contraseña incorrectos."
-                            )
+                            st.error("Usuario o contraseña incorrectos.")
 
                     else:
 
-                        st.error(
-                            "El servidor no pudo validar el acceso."
-                        )
+                        st.error("El servidor no pudo validar el acceso.")
 
                 except requests.exceptions.ConnectionError:
 
@@ -1601,21 +1536,15 @@ def mostrar_login():
 
                 except requests.exceptions.Timeout:
 
-                    st.error(
-                        "El servidor tardó demasiado en responder."
-                    )
+                    st.error("El servidor tardó demasiado en responder.")
 
                 except ValueError:
 
-                    st.error(
-                        "El servidor devolvió una respuesta no válida."
-                    )
+                    st.error("El servidor devolvió una respuesta no válida.")
 
                 except Exception as error:
 
-                    st.error(
-                        f"Ocurrió un error inesperado: {error}"
-                    )
+                    st.error(f"Ocurrió un error inesperado: {error}")
 
         st.markdown(
             """
@@ -1628,8 +1557,9 @@ def mostrar_login():
                 VisionQA v1.0 · IOT Technologies · 2026
             </div>
             """,
-            unsafe_allow_html=True
+            unsafe_allow_html=True,
         )
+
 
 def main():
     if "logueado" not in st.session_state:
@@ -1660,106 +1590,93 @@ def main():
                 {st.session_state["usuario"]}
             </div>
             """,
-            unsafe_allow_html=True
+            unsafe_allow_html=True,
         )
 
-        st.image(
-            "assets/logo_iot.png",
-            use_container_width=True
-        )
+        st.image("assets/logo_iot.png", use_container_width=True)
 
         st.markdown(
             '<div class="sidebar-brand">'
             '<div class="sidebar-title">VisionQA</div>'
             '<div class="sidebar-subtitle">'
-            'Sistema Inteligente de Inspección Visual'
-            '</div>'
-            '</div>',
-            unsafe_allow_html=True
+            "Sistema Inteligente de Inspección Visual"
+            "</div>"
+            "</div>",
+            unsafe_allow_html=True,
         )
 
-        st.markdown(
-            '<div class="sidebar-separator"></div>',
-            unsafe_allow_html=True
-        )
+        st.markdown('<div class="sidebar-separator"></div>', unsafe_allow_html=True)
 
- 
         pagina = option_menu(
-    menu_title=None,
-    options=[
-        "Dashboard",
-        "Inspección",
-        "Registro",
-        "IA Generativa",
-        "Reportes",
-        "Acerca de"
-    ],
-    icons=[
-        "speedometer2",
-        "search",
-        "clipboard-data",
-        "cpu",
-        "file-earmark-bar-graph",
-        "info-circle"
-    ],
-    menu_icon=None,
-    default_index=0,
-    orientation="vertical",
-    styles={
-    "container": {
-        "padding": "12px 10px",
-        "margin": "0px",
-        "background-color": "#1998B7",
-        "border": "none",
-        "border-radius": "0px",
-        "box-shadow": "none"
-    },
-    "icon": {
-        "color": "#FFFFFF",
-        "font-size": "18px"
-    },
-    "nav-link": {
-        "font-size": "15px",
-        "font-weight": "500",
-        "color": "#FFFFFF",
-        "text-align": "left",
-        "margin": "6px 0",
-        "padding": "14px 16px",
-        "border-radius": "10px",
-        "background-color": "#1998B7",
-        "border": "none"
-    },
-    "nav-link-hover": {
-        "background-color": "rgba(255,255,255,0.16)",
-        "color": "#FFFFFF"
-    },
-    "nav-link-selected": {
-        "background-color": "#0A4E95",
-        "color": "#FFFFFF",
-        "font-weight": "700",
-        "border-radius": "10px",
-        "box-shadow": "0 4px 10px rgba(0,0,0,0.18)"
-    }
-}
-)
+            menu_title=None,
+            options=[
+                "Dashboard",
+                "Inspección",
+                "Registro",
+                "IA Generativa",
+                "Reportes",
+                "Acerca de",
+            ],
+            icons=[
+                "speedometer2",
+                "search",
+                "clipboard-data",
+                "cpu",
+                "file-earmark-bar-graph",
+                "info-circle",
+            ],
+            menu_icon=None,
+            default_index=0,
+            orientation="vertical",
+            styles={
+                "container": {
+                    "padding": "12px 10px",
+                    "margin": "0px",
+                    "background-color": "#1998B7",
+                    "border": "none",
+                    "border-radius": "0px",
+                    "box-shadow": "none",
+                },
+                "icon": {"color": "#FFFFFF", "font-size": "18px"},
+                "nav-link": {
+                    "font-size": "15px",
+                    "font-weight": "500",
+                    "color": "#FFFFFF",
+                    "text-align": "left",
+                    "margin": "6px 0",
+                    "padding": "14px 16px",
+                    "border-radius": "10px",
+                    "background-color": "#1998B7",
+                    "border": "none",
+                },
+                "nav-link-hover": {
+                    "background-color": "rgba(255,255,255,0.16)",
+                    "color": "#FFFFFF",
+                },
+                "nav-link-selected": {
+                    "background-color": "#0A4E95",
+                    "color": "#FFFFFF",
+                    "font-weight": "700",
+                    "border-radius": "10px",
+                    "box-shadow": "0 4px 10px rgba(0,0,0,0.18)",
+                },
+            },
+        )
         st.markdown("---")
 
-
         st.markdown(
-                """
+            """
                 <div class="sidebar-footer">
                     <strong>VisionQA</strong><br>
                     Versión 1.0<br>
                     IOT Technologies
                 </div>
                 """,
-                unsafe_allow_html=True
-            )
+            unsafe_allow_html=True,
+        )
 
         # -------- DATOS DEL REGISTRO --------
-    espacio, col_usuario, col_logout = st.columns(
-        [7, 2, 1.3]
-    )
+    espacio, col_usuario, col_logout = st.columns([7, 2, 1.3])
 
     with col_usuario:
         st.markdown(
@@ -1773,29 +1690,35 @@ def main():
                 👤 <b>{st.session_state["usuario"]}</b>
             </div>
             """,
-            unsafe_allow_html=True
+            unsafe_allow_html=True,
         )
 
-    st.markdown(
+        st.markdown(
         """
-        <a href="http://127.0.0.1:8000/api/logout/"
-           target="_self"
-           style="
-               display:block;
-               width:100%;
-               padding:12px;
-               text-align:center;
-               text-decoration:none;
-               border-radius:8px;
-               background-color:white;
-               color:#231F20;
-               border:1px solid #d9d9d9;
-           ">
-           🚪 Cerrar sesión
-        </a>
+        <div style="text-align:right;">
+            <a href="http://127.0.0.1:8000/api/logout/"
+               target="_self"
+               style="
+                   display:inline-block;
+                   min-width:150px;
+                   padding:10px 16px;
+                   text-align:center;
+                   text-decoration:none;
+                   border-radius:8px;
+                   background-color:#64748B;
+                   color:white;
+                   border:1px solid #475569;
+                   font-size:14px;
+                   font-weight:600;
+                   box-shadow:0 3px 8px rgba(0,0,0,0.15);
+               ">
+               ➜ Cerrar sesión
+            </a>
+        </div>
         """,
         unsafe_allow_html=True,
     )
+
     total, aptas, no_aptas = cargar_datos_registro()
     # -------- DASHBOARD --------
     if pagina == "Dashboard":
@@ -1806,28 +1729,25 @@ def main():
 
         html_header = (
             '<div class="visionqa-header">'
-                '<div class="header-left">'
-                    '<div class="header-greeting">Buenos días, Dorcas</div>'
-                    '<div class="header-description">'
-                        'Sistema Inteligente de Inspección Visual'
-                    '</div>'
-                    '<div class="header-status">'
-                        '<span class="status-dot"></span>'
-                        'Sistema conectado'
-                    '</div>'
-                '</div>'
-                '<div class="header-right">'
-                    '<div class="header-label">Última actualización</div>'
-                    f'<div class="header-date">{fecha_actual}</div>'
-                    f'<div class="header-time">{hora_actual}</div>'
-                '</div>'
-            '</div>'
+            '<div class="header-left">'
+            '<div class="header-greeting">Buenos días, Dorcas</div>'
+            '<div class="header-description">'
+            "Sistema Inteligente de Inspección Visual"
+            "</div>"
+            '<div class="header-status">'
+            '<span class="status-dot"></span>'
+            "Sistema conectado"
+            "</div>"
+            "</div>"
+            '<div class="header-right">'
+            '<div class="header-label">Última actualización</div>'
+            f'<div class="header-date">{fecha_actual}</div>'
+            f'<div class="header-time">{hora_actual}</div>'
+            "</div>"
+            "</div>"
         )
 
-        st.markdown(
-            html_header,
-            unsafe_allow_html=True
-        )
+        st.markdown(html_header, unsafe_allow_html=True)
 
         st.markdown(
             """
@@ -1841,24 +1761,14 @@ def main():
                 🏠 Dashboard Operativo
             </h2>
             """,
-             unsafe_allow_html=True
+            unsafe_allow_html=True,
         )
 
-        mostrar_resumen(
-            total,
-            aptas,
-            no_aptas
-        )
+        mostrar_resumen(total, aptas, no_aptas)
 
-        mostrar_graficas(
-            aptas,
-            no_aptas
-        )
+        mostrar_graficas(aptas, no_aptas)
 
-        mostrar_indicadores(
-            aptas,
-            no_aptas
-        )
+        mostrar_indicadores(aptas, no_aptas)
 
     # -------- INSPECCIÓN --------
 
@@ -1866,7 +1776,7 @@ def main():
 
         mostrar_titulo(
             "🔍 Inspección Visual",
-            "Captura y analiza piezas mediante inteligencia artificial."
+            "Captura y analiza piezas mediante inteligencia artificial.",
         )
 
         mostrar_estado_sistema()
@@ -1878,7 +1788,7 @@ def main():
 
         mostrar_titulo(
             "📋 Registro de Inspecciones",
-            "Consulta los resultados y el historial de inspecciones."
+            "Consulta los resultados y el historial de inspecciones.",
         )
 
         mostrar_registro()
@@ -1889,7 +1799,7 @@ def main():
 
         mostrar_titulo(
             "🧠 Análisis Inteligente",
-            "Analiza posibles causas y acciones de mejora mediante Gemini."
+            "Analiza posibles causas y acciones de mejora mediante Gemini.",
         )
 
         mostrar_gemini()
@@ -1900,7 +1810,7 @@ def main():
 
         mostrar_titulo(
             "📤 Exportación de Reportes",
-            "Genera archivos para el seguimiento del proceso de calidad."
+            "Genera archivos para el seguimiento del proceso de calidad.",
         )
 
         mostrar_exportar()
@@ -1911,11 +1821,10 @@ def main():
 
         mostrar_titulo(
             "ℹ️ Acerca de VisionQA",
-            "Información general del sistema y las tecnologías utilizadas."
+            "Información general del sistema y las tecnologías utilizadas.",
         )
 
-        st.markdown(
-            """
+        st.markdown("""
             **VisionQA** es un sistema inteligente de inspección visual
             desarrollado para apoyar el control de calidad de piezas
             manufacturadas.
@@ -1928,38 +1837,34 @@ def main():
             - Dashboard desarrollado con Streamlit.
             - Análisis de causas mediante Gemini.
             - Principios de Manufactura Esbelta y Six Sigma.
-            """
-        )
+            """)
 
         st.markdown("### Información del proyecto")
 
         col1, col2 = st.columns(2)
 
         with col1:
-            st.markdown(
-                """
+            st.markdown("""
                 **Proyecto:** VisionQA
 
                 **Empresa:** IOT Technologies
 
                 **Área:** Control de Calidad
-                """
-            )
+                """)
 
         with col2:
-            st.markdown(
-                """
+            st.markdown("""
                 **Desarrolladora:** Dorcas Tabita Perez Martinez
 
                 **Tecnologías:** Python, YOLOv8, OpenCV, Streamlit y Gemini
 
                 **Versión:** 1.0
-                """
-            )
+                """)
 
         st.divider()
 
     mostrar_footer()
-    
+
+
 if __name__ == "__main__":
     main()

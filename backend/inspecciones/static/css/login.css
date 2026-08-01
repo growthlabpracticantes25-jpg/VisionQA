@@ -501,11 +501,11 @@ body {
     }
 
     .proyecto-modal-icono {
-        width: 60px;
-        height: 60px;
+        width: 56px;
+        height: 56px;
         display: grid;
         place-items: center;
-        margin-bottom: 20px;
+        margin-bottom: 18px;
         border-radius: 17px;
         font-size: 21px;
         font-weight: 800;
@@ -513,6 +513,7 @@ body {
                 #55cef2,
                 #168de8);
         box-shadow: 0 12px 24px rgba(22, 142, 232, 0.28);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, .18);
     }
 
     .proyecto-modal-etiqueta {
@@ -544,15 +545,25 @@ body {
     }
 
     .proyecto-modal-item {
-        min-height: 135px;
-        padding: 23px;
-        border: 1px solid rgba(152, 218, 233, 0.19);
-        border-radius: 18px;
-        background: rgba(255, 255, 255, 0.06);
-        transition:
-            transform 0.2s ease,
-            border-color 0.2s ease,
-            background 0.2s ease;
+        background: linear-gradient(180deg,
+                rgba(43, 82, 120, 0.60),
+                rgba(30, 58, 91, 0.75));
+
+        border: 1px solid rgba(152, 218, 233, .15);
+
+        border-radius: 16px;
+
+        padding: 18px;
+
+        transition: .3s ease;
+    }
+
+    .proyecto-modal-item:hover {
+        transform: translateY(-3px);
+
+        border-color: rgba(152, 218, 233, .35);
+
+        box-shadow: 0 10px 25px rgba(0, 0, 0, .18);
     }
 
     .proyecto-modal-item:hover {
@@ -896,698 +907,760 @@ body {
    Inspirado en la identidad visual oficial
    ========================================================= */
 
-/* ---------- FONDO GENERAL ---------- */
-
-body {
-    position: relative;
-    min-height: 100vh;
-    padding: 32px;
-    overflow-x: hidden;
-    font-family: "Open Sans", "Segoe UI", Arial, sans-serif;
-    color: #ffffff;
-
-    background:
-        radial-gradient(
-            circle at 12% 10%,
-            rgba(29, 126, 174, 0.50),
-            transparent 25%
-        ),
-        radial-gradient(
-            circle at 88% 90%,
-            rgba(0, 50, 160, 0.45),
-            transparent 30%
-        ),
-        linear-gradient(
-            135deg,
-            #00142f 0%,
-            #00275a 48%,
-            #003f8f 100%
-        );
-}
-
-/* Onda superior izquierda */
-
-body::before {
-    content: "";
-    position: fixed;
-    z-index: 0;
-    top: -210px;
-    left: -170px;
-    width: 610px;
-    height: 430px;
-    border-radius: 42% 58% 68% 32% / 58% 40% 60% 42%;
-    background:
-        linear-gradient(
-            145deg,
-            #1d7eae 0%,
-            #087fc6 45%,
-            #0032a0 100%
-        );
-    transform: rotate(-10deg);
-    opacity: 0.95;
-    pointer-events: none;
-}
-
-/* Onda inferior derecha */
-
-body::after {
-    content: "";
-    position: fixed;
-    z-index: 0;
-    right: -190px;
-    bottom: -240px;
-    width: 720px;
-    height: 520px;
-    border-radius: 65% 35% 35% 65% / 45% 60% 40% 55%;
-    background:
-        linear-gradient(
-            145deg,
-            #0032a0 0%,
-            #087fc6 50%,
-            #1d7eae 100%
-        );
-    transform: rotate(-12deg);
-    opacity: 0.88;
-    pointer-events: none;
-}
-
-
-/* ---------- CONTENEDOR PRINCIPAL ---------- */
-
-.login-container {
-    position: relative;
-    z-index: 2;
-    width: min(1160px, 100%);
-    min-height: 690px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    padding: 0;
-    overflow: hidden;
-
-    border: 1px solid rgba(152, 218, 233, 0.34);
-    border-radius: 28px;
-
-    background: #ffffff;
-
-    box-shadow:
-        0 35px 90px rgba(0, 10, 30, 0.48),
-        0 0 0 1px rgba(255, 255, 255, 0.04);
-}
-
-/* Quitamos las franjas del diseño anterior */
-
-.login-container::before,
-.login-container::after {
-    content: none;
-}
-
-
-/* ---------- PANEL IZQUIERDO ---------- */
-
-.left-panel {
-    position: relative;
-    z-index: 2;
-    min-height: 690px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 58px 62px;
-    overflow: hidden;
-
-    background:
-        radial-gradient(
-            circle at 20% 15%,
-            rgba(29, 126, 174, 0.26),
-            transparent 34%
-        ),
-        linear-gradient(
-            145deg,
-            #00152f 0%,
-            #00285b 55%,
-            #003c83 100%
-        );
-}
-
-/* Cuadrícula tecnológica sutil */
-
-.left-panel::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    opacity: 0.16;
-
-    background-image:
-        radial-gradient(
-            circle,
-            rgba(152, 218, 233, 0.70) 1px,
-            transparent 1.5px
-        );
-
-    background-size: 24px 24px;
-    mask-image:
-        linear-gradient(
-            to bottom,
-            transparent,
-            #000 18%,
-            #000 82%,
-            transparent
-        );
-}
-
-/* Brillo decorativo */
-
-.left-panel::after {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    left: -170px;
-    bottom: -160px;
-    width: 520px;
-    height: 370px;
-    border-radius: 55% 45% 65% 35%;
-    background: rgba(0, 50, 160, 0.34);
-    transform: rotate(-18deg);
-}
-
-
-/* ---------- IDENTIDAD VISIONQA ---------- */
-
-.visionqa-brand {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 42px;
-}
-
-.brand-placeholder {
-    display: none;
-}
-
-.visionqa-brand h1 {
-    margin: 0;
-    font-size: clamp(36px, 4vw, 52px);
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -1px;
-    color: #ffffff;
-}
-
-.visionqa-brand h1 span {
-    color: #21a8ef;
-}
-
-
-/* ---------- PRESENTACIÓN ---------- */
-
-.intro {
-    position: relative;
-}
-
-.eyebrow {
-    margin-bottom: 8px;
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: #dcebf5;
-}
-
-.left-panel .intro h2 {
-    margin: 0 0 16px;
-    font-size: clamp(27px, 3vw, 38px);
-    font-weight: 800;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #23aaf0;
-}
-
-.left-panel .line {
-    width: 70px;
-    height: 3px;
-    margin: 0 0 28px;
-    border-radius: 10px;
-    background: #23aaf0;
-}
-
-.left-panel .description {
-    max-width: 470px;
-    margin: 0 0 30px;
-    font-size: 15px;
-    line-height: 1.8;
-    color: #d9e7f1;
-}
-
-
-/* ---------- LISTA DE CARACTERÍSTICAS ---------- */
-
-.feature-list {
-    display: grid;
-    gap: 14px;
-    margin-bottom: 36px;
-}
-
-.feature-item {
-    display: flex;
-    align-items: center;
-    gap: 13px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #edf7ff;
-}
-
-.feature-icon {
-    width: 38px;
-    height: 38px;
-    display: grid;
-    place-items: center;
-    flex: 0 0 38px;
-
-    border: 1px solid rgba(35, 170, 240, 0.55);
-    border-radius: 50%;
-
-    color: #23aaf0;
-    background: rgba(35, 170, 240, 0.08);
-}
-
-.feature-icon svg {
-    width: 20px;
-    height: 20px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.8;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-
-/* ---------- BOTÓN CONOCER PROYECTO ---------- */
-
-.left-panel .learn-btn {
-    width: 100%;
-    min-height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 18px;
-    padding: 14px 24px;
-
-    border: none;
-    border-radius: 12px;
-
-    font-size: 15px;
-    font-weight: 800;
-    color: #ffffff;
-
-    cursor: pointer;
-
-    background:
-        linear-gradient(
-            90deg,
-            #1d7eae 0%,
-            #087fc6 45%,
-            #0032a0 100%
-        );
-
-    box-shadow:
-        0 14px 28px rgba(0, 50, 160, 0.30);
-
-    transition:
-        transform 0.22s ease,
-        box-shadow 0.22s ease,
-        filter 0.22s ease;
-}
-
-.left-panel .learn-btn:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.08);
-    box-shadow:
-        0 18px 34px rgba(0, 50, 160, 0.40);
-}
-
-.button-arrow {
-    font-size: 23px;
-    font-weight: 400;
-}
-
-
-/* ---------- PANEL DERECHO ---------- */
-
-.login-card {
-    position: relative;
-    z-index: 3;
-    align-self: stretch;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-    padding: 64px 66px 48px;
-
-    border: none;
-    border-radius: 0;
-    color: #071827;
-    background: #ffffff;
-
-    box-shadow: none;
-    backdrop-filter: none;
-}
-
-/* Curva divisoria entre los dos paneles */
-
-.login-card::before {
-    content: "";
-    position: absolute;
-    top: -5%;
-    left: -78px;
-    width: 145px;
-    height: 110%;
-    z-index: -1;
-
-    border-radius: 48% 52% 52% 48% / 20% 45% 55% 80%;
-    background: #ffffff;
-}
-
-
-/* ---------- CABECERA DEL LOGIN ---------- */
-
-.login-header {
-    margin-bottom: 38px;
-}
-
-.login-card .login-header h2 {
-    margin: 0;
-    text-align: left;
-    font-size: clamp(36px, 4vw, 47px);
-    font-weight: 800;
-    letter-spacing: -1px;
-    color: #071827;
-}
-
-.login-title-line {
-    width: 72px;
-    height: 3px;
-    margin-top: 16px;
-    border-radius: 10px;
-    background: #1d7eae;
-}
-
-
-/* ---------- FORMULARIO ---------- */
-
-.login-card form {
-    display: flex;
-    flex-direction: column;
-}
-
-.login-card label {
-    margin-bottom: 9px;
-    font-size: 14px;
-    font-weight: 800;
-    color: #172033;
-}
-
-.login-card .input-box {
-    position: relative;
-    display: flex;
-    align-items: center;
-    min-height: 58px;
-    margin-bottom: 24px;
-
-    border: 1px solid #cdd6df;
-    border-radius: 12px;
-
-    background: #f8fafc;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        background 0.2s ease;
-}
-
-.login-card .input-box:focus-within {
-    border-color: #1d7eae;
-    background: #ffffff;
-    box-shadow:
-        0 0 0 4px rgba(29, 126, 174, 0.12);
-}
-
-.login-card .input-box > svg {
-    width: 22px;
-    height: 22px;
-    margin-left: 18px;
-    flex: 0 0 auto;
-
-    fill: none;
-    stroke: #23324b;
-    stroke-width: 1.8;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-.login-card .input-box input {
-    width: 100%;
-    min-width: 0;
-    padding: 17px 52px 17px 15px;
-
-    border: none;
-    outline: none;
-
-    font-size: 15px;
-    color: #172033;
-    background: transparent;
-}
-
-.login-card .input-box input::placeholder {
-    color: #8b96a5;
-}
-
-
-/* ---------- OJO DE CONTRASEÑA ---------- */
-
-.login-card .password-toggle {
-    position: absolute;
-    top: 50%;
-    right: 12px;
-    width: 39px;
-    height: 39px;
-    display: grid;
-    place-items: center;
-
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    background: transparent;
-}
-
-.login-card .password-toggle:hover {
-    background: rgba(29, 126, 174, 0.10);
-}
-
-.login-card .password-toggle svg {
-    width: 21px;
-    height: 21px;
-    fill: none;
-    stroke: #657286;
-    stroke-width: 1.8;
-}
-
-
-/* ---------- OPCIONES ---------- */
-
-.login-card .options {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 18px;
-    margin: 0 1px 28px;
-}
-
-.login-card .remember {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    margin: 0 !important;
-    color: #172033;
-    cursor: pointer;
-}
-
-.login-card .remember input {
-    width: 17px;
-    height: 17px;
-    accent-color: #1d7eae;
-}
-
-.login-card .options a,
-.login-card .register-link a,
-.login-card .privacy-link a {
-    color: #0068c9;
-    font-weight: 700;
-    text-decoration: none;
-}
-
-.login-card .options a:hover,
-.login-card .register-link a:hover,
-.login-card .privacy-link a:hover {
-    color: #0032a0;
-    text-decoration: underline;
-}
-
-
-/* ---------- BOTÓN INICIAR SESIÓN ---------- */
-
-.login-card .login-submit {
-    min-height: 58px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 11px;
-
-    border: none;
-    border-radius: 12px;
-
-    font-size: 16px;
-    font-weight: 800;
-    color: #ffffff;
-    cursor: pointer;
-
-    background:
-        linear-gradient(
-            90deg,
-            #1d7eae 0%,
-            #087fc6 42%,
-            #0032a0 100%
-        );
-
-    box-shadow:
-        0 12px 24px rgba(0, 50, 160, 0.22);
-
-    transition:
-        transform 0.22s ease,
-        box-shadow 0.22s ease,
-        filter 0.22s ease;
-}
-
-.login-card .login-submit:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.06);
-    box-shadow:
-        0 16px 30px rgba(0, 50, 160, 0.31);
-}
-
-.login-card .login-submit svg {
-    width: 20px;
-    height: 20px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.8;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-
-/* ---------- MENSAJES Y ENLACES ---------- */
-
-.login-card .register-link {
-    margin-top: 30px;
-    text-align: center;
-    font-size: 14px;
-    color: #39465a;
-}
-
-.login-card .privacy-link {
-    margin-top: 13px;
-    text-align: center;
-    font-size: 11px;
-    color: #778394;
-}
-
-.login-card .privacy-link a {
-    font-weight: 500;
-    color: #657286;
-}
-
-.login-card .error {
-    margin: -16px 0 24px;
-    padding: 13px 15px;
-
-    border: 1px solid rgba(255, 102, 27, 0.42);
-    border-radius: 10px;
-
-    color: #9b2d00;
-    background: rgba(255, 102, 27, 0.10);
-}
-
-
-/* ---------- RESPONSIVE ---------- */
-
-@media (max-width: 980px) {
+    /* ---------- FONDO GENERAL ---------- */
 
     body {
-        align-items: flex-start;
-        padding: 22px;
+        position: relative;
+        min-height: 100vh;
+        padding: 32px;
+        overflow-x: hidden;
+        font-family: "Open Sans", "Segoe UI", Arial, sans-serif;
+        color: #ffffff;
+
+        background:
+            radial-gradient(circle at 12% 10%,
+                rgba(29, 126, 174, 0.50),
+                transparent 25%),
+            radial-gradient(circle at 88% 90%,
+                rgba(0, 50, 160, 0.45),
+                transparent 30%),
+            linear-gradient(135deg,
+                #00142f 0%,
+                #00275a 48%,
+                #003f8f 100%);
     }
+
+    /* Onda superior izquierda */
+
+    body::before {
+        content: "";
+        position: fixed;
+        z-index: 0;
+        top: -210px;
+        left: -170px;
+        width: 610px;
+        height: 430px;
+        border-radius: 42% 58% 68% 32% / 58% 40% 60% 42%;
+        background:
+            linear-gradient(145deg,
+                #1d7eae 0%,
+                #087fc6 45%,
+                #0032a0 100%);
+        transform: rotate(-10deg);
+        opacity: 0.95;
+        pointer-events: none;
+    }
+
+    /* Onda inferior derecha */
+
+    body::after {
+        content: "";
+        position: fixed;
+        z-index: 0;
+        right: -190px;
+        bottom: -240px;
+        width: 720px;
+        height: 520px;
+        border-radius: 65% 35% 35% 65% / 45% 60% 40% 55%;
+        background:
+            linear-gradient(145deg,
+                #0032a0 0%,
+                #087fc6 50%,
+                #1d7eae 100%);
+        transform: rotate(-12deg);
+        opacity: 0.88;
+        pointer-events: none;
+    }
+
+
+    /* ---------- CONTENEDOR PRINCIPAL ---------- */
 
     .login-container {
-        grid-template-columns: 1fr;
-        max-width: 700px;
+        position: relative;
+        z-index: 2;
+        width: min(1160px, 100%);
+        min-height: 690px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        padding: 0;
+        overflow: hidden;
+
+        border: 1px solid rgba(152, 218, 233, 0.34);
+        border-radius: 28px;
+
+        background: #ffffff;
+
+        box-shadow:
+            0 35px 90px rgba(0, 10, 30, 0.48),
+            0 0 0 1px rgba(255, 255, 255, 0.04);
     }
+
+    /* Quitamos las franjas del diseño anterior */
+
+    .login-container::before,
+    .login-container::after {
+        content: none;
+    }
+
+
+    /* ---------- PANEL IZQUIERDO ---------- */
 
     .left-panel {
-        min-height: auto;
-        padding: 50px;
+        position: relative;
+        z-index: 2;
+        min-height: 690px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 58px 62px;
+        overflow: hidden;
+
+        background:
+            radial-gradient(circle at 20% 15%,
+                rgba(29, 126, 174, 0.26),
+                transparent 34%),
+            linear-gradient(145deg,
+                #00152f 0%,
+                #00285b 55%,
+                #003c83 100%);
     }
 
-    .login-card {
-        padding: 55px 50px;
+    /* Cuadrícula tecnológica sutil */
+
+    .left-panel::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        opacity: 0.16;
+
+        background-image:
+            radial-gradient(circle,
+                rgba(152, 218, 233, 0.70) 1px,
+                transparent 1.5px);
+
+        background-size: 24px 24px;
+        mask-image:
+            linear-gradient(to bottom,
+                transparent,
+                #000 18%,
+                #000 82%,
+                transparent);
     }
 
-    .login-card::before {
-        display: none;
-    }
-}
+    /* Brillo decorativo */
 
-@media (max-width: 620px) {
-
-    body {
-        padding: 12px;
+    .left-panel::after {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        left: -170px;
+        bottom: -160px;
+        width: 520px;
+        height: 370px;
+        border-radius: 55% 45% 65% 35%;
+        background: rgba(0, 50, 160, 0.34);
+        transform: rotate(-18deg);
     }
 
-    .login-container {
-        border-radius: 20px;
-    }
 
-    .left-panel {
-        padding: 38px 25px;
-    }
+    /* ---------- IDENTIDAD VISIONQA ---------- */
 
     .visionqa-brand {
-        margin-bottom: 32px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 42px;
+    }
+
+    .brand-placeholder {
+        display: none;
     }
 
     .visionqa-brand h1 {
-        font-size: 37px;
+        margin: 0;
+        font-size: clamp(36px, 4vw, 52px);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -1px;
+        color: #ffffff;
+    }
+
+    .visionqa-brand h1 span {
+        color: #21a8ef;
+    }
+
+
+    /* ---------- PRESENTACIÓN ---------- */
+
+    .intro {
+        position: relative;
+    }
+
+    .eyebrow {
+        margin-bottom: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: #dcebf5;
     }
 
     .left-panel .intro h2 {
-        font-size: 27px;
+        margin: 0 0 16px;
+        font-size: clamp(27px, 3vw, 38px);
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #23aaf0;
+    }
+
+    .left-panel .line {
+        width: 70px;
+        height: 3px;
+        margin: 0 0 28px;
+        border-radius: 10px;
+        background: #23aaf0;
+    }
+
+    .left-panel .description {
+        max-width: 470px;
+        margin: 0 0 30px;
+        font-size: 15px;
+        line-height: 1.8;
+        color: #d9e7f1;
+    }
+
+
+    /* ---------- LISTA DE CARACTERÍSTICAS ---------- */
+
+    .feature-list {
+        display: grid;
+        gap: 14px;
+        margin-bottom: 36px;
     }
 
     .feature-item {
-        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #edf7ff;
     }
 
+    .feature-icon {
+        width: 38px;
+        height: 38px;
+        display: grid;
+        place-items: center;
+        flex: 0 0 38px;
+
+        border: 1px solid rgba(35, 170, 240, 0.55);
+        border-radius: 50%;
+
+        color: #23aaf0;
+        background: rgba(35, 170, 240, 0.08);
+    }
+
+    .feature-icon svg {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+
+    /* ---------- BOTÓN CONOCER PROYECTO ---------- */
+
+    .left-panel .learn-btn {
+        width: 100%;
+        min-height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        padding: 14px 24px;
+
+        border: none;
+        border-radius: 12px;
+
+        font-size: 15px;
+        font-weight: 800;
+        color: #ffffff;
+
+        cursor: pointer;
+
+        background:
+            linear-gradient(90deg,
+                #1d7eae 0%,
+                #087fc6 45%,
+                #0032a0 100%);
+
+        box-shadow:
+            0 14px 28px rgba(0, 50, 160, 0.30);
+
+        transition:
+            transform 0.22s ease,
+            box-shadow 0.22s ease,
+            filter 0.22s ease;
+    }
+
+    .left-panel .learn-btn:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.08);
+        box-shadow:
+            0 18px 34px rgba(0, 50, 160, 0.40);
+    }
+
+    .button-arrow {
+        font-size: 23px;
+        font-weight: 400;
+    }
+
+
+    /* ---------- PANEL DERECHO ---------- */
+
     .login-card {
-        padding: 43px 24px 35px;
+        position: relative;
+        z-index: 3;
+        align-self: stretch;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        padding: 64px 66px 48px;
+
+        border: none;
+        border-radius: 0;
+        color: #071827;
+        background: #ffffff;
+
+        box-shadow: none;
+        backdrop-filter: none;
+    }
+
+    /* Curva divisoria entre los dos paneles */
+
+    .login-card::before {
+        content: "";
+        position: absolute;
+        top: -5%;
+        left: -78px;
+        width: 145px;
+        height: 110%;
+        z-index: -1;
+
+        border-radius: 48% 52% 52% 48% / 20% 45% 55% 80%;
+        background: #ffffff;
+    }
+
+
+    /* ---------- CABECERA DEL LOGIN ---------- */
+
+    .login-header {
+        margin-bottom: 38px;
     }
 
     .login-card .login-header h2 {
-        font-size: 35px;
+        margin: 0;
+        text-align: left;
+        font-size: clamp(36px, 4vw, 47px);
+        font-weight: 800;
+        letter-spacing: -1px;
+        color: #071827;
     }
 
-    .login-card .options {
-        align-items: flex-start;
+    .login-title-line {
+        width: 72px;
+        height: 3px;
+        margin-top: 16px;
+        border-radius: 10px;
+        background: #1d7eae;
+    }
+
+
+    /* ---------- FORMULARIO ---------- */
+
+    .login-card form {
+        display: flex;
         flex-direction: column;
     }
-} }
+
+    .login-card label {
+        margin-bottom: 9px;
+        font-size: 14px;
+        font-weight: 800;
+        color: #172033;
+    }
+
+    .login-card .input-box {
+        position: relative;
+        display: flex;
+        align-items: center;
+        min-height: 58px;
+        margin-bottom: 24px;
+
+        border: 1px solid #cdd6df;
+        border-radius: 12px;
+
+        background: #f8fafc;
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+    }
+
+    .login-card .input-box:focus-within {
+        border-color: #1d7eae;
+        background: #ffffff;
+        box-shadow:
+            0 0 0 4px rgba(29, 126, 174, 0.12);
+    }
+
+    .login-card .input-box>svg {
+        width: 22px;
+        height: 22px;
+        margin-left: 18px;
+        flex: 0 0 auto;
+
+        fill: none;
+        stroke: #23324b;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .login-card .input-box input {
+        width: 100%;
+        min-width: 0;
+        padding: 17px 52px 17px 15px;
+
+        border: none;
+        outline: none;
+
+        font-size: 15px;
+        color: #172033;
+        background: transparent;
+    }
+
+    .login-card .input-box input::placeholder {
+        color: #8b96a5;
+    }
+
+
+    /* ---------- OJO DE CONTRASEÑA ---------- */
+
+    .login-card .password-toggle {
+        position: absolute;
+        top: 50%;
+        right: 12px;
+        width: 39px;
+        height: 39px;
+        display: grid;
+        place-items: center;
+
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        background: transparent;
+    }
+
+    .login-card .password-toggle:hover {
+        background: rgba(29, 126, 174, 0.10);
+    }
+
+    .login-card .password-toggle svg {
+        width: 21px;
+        height: 21px;
+        fill: none;
+        stroke: #657286;
+        stroke-width: 1.8;
+    }
+
+
+    /* ---------- OPCIONES ---------- */
+
+    .login-card .options {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        margin: 0 1px 28px;
+    }
+
+    .login-card .remember {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin: 0 !important;
+        color: #172033;
+        cursor: pointer;
+    }
+
+    .login-card .remember input {
+        width: 17px;
+        height: 17px;
+        accent-color: #1d7eae;
+    }
+
+    .login-card .options a,
+    .login-card .register-link a,
+    .login-card .privacy-link a {
+        color: #0068c9;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .login-card .options a:hover,
+    .login-card .register-link a:hover,
+    .login-card .privacy-link a:hover {
+        color: #0032a0;
+        text-decoration: underline;
+    }
+
+
+    /* ---------- BOTÓN INICIAR SESIÓN ---------- */
+
+    .login-card .login-submit {
+        min-height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 11px;
+
+        border: none;
+        border-radius: 12px;
+
+        font-size: 16px;
+        font-weight: 800;
+        color: #ffffff;
+        cursor: pointer;
+
+        background:
+            linear-gradient(90deg,
+                #1d7eae 0%,
+                #087fc6 42%,
+                #0032a0 100%);
+
+        box-shadow:
+            0 12px 24px rgba(0, 50, 160, 0.22);
+
+        transition:
+            transform 0.22s ease,
+            box-shadow 0.22s ease,
+            filter 0.22s ease;
+    }
+
+    .login-card .login-submit:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.06);
+        box-shadow:
+            0 16px 30px rgba(0, 50, 160, 0.31);
+    }
+
+    .login-card .login-submit svg {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+
+    /* ---------- MENSAJES Y ENLACES ---------- */
+
+    .login-card .register-link {
+        margin-top: 30px;
+        text-align: center;
+        font-size: 14px;
+        color: #39465a;
+    }
+
+    .login-card .privacy-link {
+        margin-top: 13px;
+        text-align: center;
+        font-size: 11px;
+        color: #778394;
+    }
+
+    .login-card .privacy-link a {
+        font-weight: 500;
+        color: #657286;
+    }
+
+    .login-card .error {
+        margin: -16px 0 24px;
+        padding: 13px 15px;
+
+        border: 1px solid rgba(255, 102, 27, 0.42);
+        border-radius: 10px;
+
+        color: #9b2d00;
+        background: rgba(255, 102, 27, 0.10);
+    }
+
+
+    /* ---------- RESPONSIVE ---------- */
+
+    @media (max-width: 980px) {
+
+        body {
+            align-items: flex-start;
+            padding: 22px;
+        }
+
+        .login-container {
+            grid-template-columns: 1fr;
+            max-width: 700px;
+        }
+
+        .left-panel {
+            min-height: auto;
+            padding: 50px;
+        }
+
+        .login-card {
+            padding: 55px 50px;
+        }
+
+        .login-card::before {
+            display: none;
+        }
+    }
+
+    @media (max-width: 620px) {
+
+        body {
+            padding: 12px;
+        }
+
+        .login-container {
+            border-radius: 20px;
+        }
+
+        .left-panel {
+            padding: 38px 25px;
+        }
+
+        .visionqa-brand {
+            margin-bottom: 32px;
+        }
+
+        .visionqa-brand h1 {
+            font-size: 37px;
+        }
+
+        .left-panel .intro h2 {
+            font-size: 27px;
+        }
+
+        .feature-item {
+            font-size: 13px;
+        }
+
+        .login-card {
+            padding: 43px 24px 35px;
+        }
+
+        .login-card .login-header h2 {
+            font-size: 35px;
+        }
+
+        .login-card .options {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+}
+
+#privacidad-modal .proyecto-modal-fondo {
+    background:
+        radial-gradient(circle at 12% 10%,
+            rgba(29, 126, 174, 0.50),
+            transparent 25%),
+        radial-gradient(circle at 88% 90%,
+            rgba(0, 50, 160, 0.45),
+            transparent 30%),
+        linear-gradient(135deg,
+            #00142f 0%,
+            #00275a 48%,
+            #003f8f 100%);
+    backdrop-filter: blur(8px);
+}
+
+/* ===== AJUSTE FINAL: POLÍTICA DE PRIVACIDAD ===== */
+
+#privacidad-modal .proyecto-modal-fondo {
+    background: rgba(0, 39, 90, 0.38) !important;
+    backdrop-filter: blur(3px) !important;
+    transition: none !important;
+}
+
+#privacidad-modal .proyecto-modal-contenido {
+    background:
+        radial-gradient(circle at 20% 15%,
+            rgba(29, 126, 174, 0.28),
+            transparent 34%),
+        linear-gradient(145deg,
+            #00152f 0%,
+            #00285b 55%,
+            #003c83 100%) !important;
+
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+}
+
+#privacidad-modal.proyecto-modal-visible {
+    display: flex !important;
+}
+
+#privacidad-modal .proyecto-modal-icono i {
+    font-size: 24px;
+    color: white;
+}
+
+/* ===== ICONOS DE POLÍTICA DE PRIVACIDAD ===== */
+
+#privacidad-modal .proyecto-modal-item {
+    position: relative;
+    padding: 22px;
+}
+
+#privacidad-modal .politica-icono {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    border-radius: 11px;
+    color: #ffffff;
+    background: linear-gradient(135deg,
+            #53cfff,
+            #168de8);
+    box-shadow: 0 8px 18px rgba(22, 142, 232, 0.24);
+}
+
+#privacidad-modal .politica-icono svg {
+    width: 21px;
+    height: 21px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+#privacidad-modal .proyecto-modal-item h3 {
+    margin-bottom: 9px;
+}

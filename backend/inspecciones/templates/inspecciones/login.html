@@ -9,7 +9,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Iniciar sesión - VisionQA</title>
-
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
     <link rel="stylesheet" href="{% static 'css/login_v2.css' %}">
 </head>
@@ -134,10 +133,8 @@
                         <circle cx="12" cy="8" r="4"></circle>
                         <path d="M4 21v-2c0-4 3.6-6 8-6s8 2 8 6v2"></path>
                     </svg>
-
-                    <input type="text" name="username" id="username" placeholder="Crea un nombre de usuario"
-                        autocomplete="off" value="" required>
-                    >
+                    <input type="text" name="username" id="username" placeholder="Ingresa tu usuario"
+                        autocomplete="username" value="" required>
                 </div>
 
                 <label for="password">
@@ -227,37 +224,38 @@
                 para apoyar la mejora continua de los procesos de calidad.
             </p>
 
+
             <div class="proyecto-modal-grid">
 
                 <article class="proyecto-modal-item">
-                    <h3>Detección inteligente</h3>
+                    <h3>Detección automática</h3>
                     <p>
-                        Identifica defectos como piezas rotas, manchadas o sin backplate
-                        mediante un modelo de visión artificial basado en YOLOv8.
+                        VisionQA utiliza visión por computadora para detectar
+                        defectos en piezas manufacturadas de forma rápida y precisa.
                     </p>
                 </article>
 
                 <article class="proyecto-modal-item">
                     <h3>Inspección visual</h3>
                     <p>
-                        Permite analizar imágenes cargadas desde archivo o capturadas
-                        mediante una cámara conectada al sistema.
+                        Permite inspeccionar piezas mediante imágenes cargadas,
+                        cámara en tiempo real o simulación de streaming.
                     </p>
                 </article>
 
                 <article class="proyecto-modal-item">
-                    <h3>Registro y trazabilidad</h3>
+                    <h3>Trazabilidad</h3>
                     <p>
-                        Conserva los resultados de cada inspección, incluyendo fecha,
-                        clasificación, confianza y evidencia visual.
+                        Cada inspección queda registrada con su resultado,
+                        evidencia visual y fecha para facilitar el seguimiento.
                     </p>
                 </article>
 
                 <article class="proyecto-modal-item">
-                    <h3>Análisis con IA</h3>
+                    <h3>Inteligencia artificial</h3>
                     <p>
-                        Utiliza inteligencia artificial generativa para proponer posibles
-                        causas, acciones correctivas y recomendaciones de mejora.
+                        Integra modelos de IA para apoyar la detección de defectos
+                        y el análisis inteligente de resultados.
                     </p>
                 </article>
 
@@ -267,11 +265,6 @@
                 <button type="button" class="proyecto-modal-boton" id="cerrar-proyecto-secundario">
                     Regresar al inicio de sesión
                 </button>
-
-                <a href="#" class="proyecto-modal-registro">
-                    Crear cuenta
-                </a>
-
             </div>
 
         </section>
@@ -290,7 +283,11 @@
             </button>
 
             <div class="proyecto-modal-icono">
-                <span>🔒</span>
+                <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                    <path fill="currentColor" d="M12 2l7 3v6c0 5-3.4 9.4-7 11-3.6-1.6-7-6-7-11V5l7-3z" />
+                    <path fill="#ffffff"
+                        d="M12 9a2 2 0 0 1 2 2v1h.5a.5.5 0 0 1 .5.5V16a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5v-3.5a.5.5 0 0 1 .5-.5H10v-1a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v1h2v-1a1 1 0 0 0-1-1z" />
+                </svg>
             </div>
 
             <p class="proyecto-modal-etiqueta">
@@ -309,7 +306,16 @@
 
             <div class="proyecto-modal-grid">
 
+                <!-- Datos de usuario -->
                 <article class="proyecto-modal-item">
+
+                    <div class="politica-icono">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="12" cy="8" r="4"></circle>
+                            <path d="M4 21v-2c0-4 3.6-6 8-6s8 2 8 6v2"></path>
+                        </svg>
+                    </div>
+
                     <h3>Datos de usuario</h3>
 
                     <p>
@@ -317,9 +323,19 @@
                         información necesaria para identificar quién realizó
                         cada inspección.
                     </p>
+
                 </article>
 
+                <!-- Imágenes -->
                 <article class="proyecto-modal-item">
+
+                    <div class="politica-icono">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M4 7h3l1-2h8l1 2h3v12H4z"></path>
+                            <circle cx="12" cy="13" r="3"></circle>
+                        </svg>
+                    </div>
+
                     <h3>Imágenes de inspección</h3>
 
                     <p>
@@ -327,9 +343,21 @@
                         detectar posibles defectos y conservar evidencia del
                         proceso de inspección.
                     </p>
+
                 </article>
 
+                <!-- Uso -->
                 <article class="proyecto-modal-item">
+
+                    <div class="politica-icono">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 2v20"></path>
+                            <path d="M7 7h10"></path>
+                            <path d="M7 12h10"></path>
+                            <path d="M7 17h10"></path>
+                        </svg>
+                    </div>
+
                     <h3>Uso de la información</h3>
 
                     <p>
@@ -337,9 +365,20 @@
                         de calidad, análisis de resultados, trazabilidad y
                         mejora continua.
                     </p>
+
                 </article>
 
+                <!-- Protección -->
                 <article class="proyecto-modal-item">
+
+                    <div class="politica-icono">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 2l7 3v6c0 5-3.4 9.4-7 11-3.6-1.6-7-6-7-11V5l7-3z"></path>
+                            <path d="M12 9v6"></path>
+                            <path d="M9 12h6"></path>
+                        </svg>
+                    </div>
+
                     <h3>Protección de datos</h3>
 
                     <p>
@@ -347,6 +386,7 @@
                         y evitar compartir información confidencial mediante
                         el sistema.
                     </p>
+
                 </article>
 
             </div>
@@ -392,6 +432,9 @@
 
                 eyeIcon.classList.toggle("password-visible");
             });
+
+            // MODAL CONOCER PROYECTO
+
             const modal = document.getElementById("proyecto-modal");
             const contenido = modal.querySelector(
                 ".proyecto-modal-contenido"
@@ -416,29 +459,24 @@
                 ultimoElementoActivo = document.activeElement;
 
                 modal.classList.add("proyecto-modal-visible");
+                modal.classList.add("proyecto-modal-activo");
                 modal.setAttribute("aria-hidden", "false");
                 abrir.setAttribute("aria-expanded", "true");
                 document.body.classList.add("modal-abierto");
 
-                requestAnimationFrame(function () {
-                    modal.classList.add("proyecto-modal-activo");
-                    contenido.focus();
-                });
+                contenido.focus();
             }
 
             function cerrarModal() {
                 modal.classList.remove("proyecto-modal-activo");
+                modal.classList.remove("proyecto-modal-visible");
+                modal.setAttribute("aria-hidden", "true");
                 abrir.setAttribute("aria-expanded", "false");
+                document.body.classList.remove("modal-abierto");
 
-                temporizadorCierre = setTimeout(function () {
-                    modal.classList.remove("proyecto-modal-visible");
-                    modal.setAttribute("aria-hidden", "true");
-                    document.body.classList.remove("modal-abierto");
-
-                    if (ultimoElementoActivo) {
-                        ultimoElementoActivo.focus();
-                    }
-                }, 360);
+                if (ultimoElementoActivo) {
+                    ultimoElementoActivo.focus();
+                }
             }
 
             abrir.addEventListener("click", abrirModal);
@@ -446,133 +484,121 @@
             cerrarSecundario.addEventListener("click", cerrarModal);
             fondo.addEventListener("click", cerrarModal);
 
+            // MODAL POLÍTICA DE PRIVACIDAD
+
+            const privacidadModal =
+                document.getElementById("privacidad-modal");
+
+            const privacidadContenido =
+                document.getElementById(
+                    "privacidad-modal-contenido"
+                );
+
+            const abrirPrivacidad =
+                document.getElementById("abrir-privacidad");
+
+            const cerrarPrivacidad =
+                document.getElementById("cerrar-privacidad");
+
+            const cerrarPrivacidadSecundario =
+                document.getElementById(
+                    "cerrar-privacidad-secundario"
+                );
+
+            const privacidadFondo =
+                document.getElementById(
+                    "privacidad-modal-fondo"
+                );
+
+            let elementoActivoPrivacidad = null;
+
+            function abrirModalPrivacidad(event) {
+                event.preventDefault();
+
+                elementoActivoPrivacidad = document.activeElement;
+
+                privacidadModal.classList.add(
+                    "proyecto-modal-visible"
+                );
+
+                privacidadModal.classList.add(
+                    "proyecto-modal-activo"
+                );
+
+                privacidadModal.setAttribute(
+                    "aria-hidden",
+                    "false"
+                );
+
+                document.body.classList.add("modal-abierto");
+
+                privacidadContenido.focus();
+            }
+
+            function cerrarModalPrivacidad() {
+                privacidadModal.classList.remove(
+                    "proyecto-modal-activo"
+                );
+
+                privacidadModal.classList.remove(
+                    "proyecto-modal-visible"
+                );
+
+                privacidadModal.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
+
+                document.body.classList.remove("modal-abierto");
+
+                if (elementoActivoPrivacidad) {
+                    elementoActivoPrivacidad.focus();
+                }
+            }
+
+            abrirPrivacidad.addEventListener(
+                "click",
+                abrirModalPrivacidad
+            );
+
+            cerrarPrivacidad.addEventListener(
+                "click",
+                cerrarModalPrivacidad
+            );
+
+            cerrarPrivacidadSecundario.addEventListener(
+                "click",
+                cerrarModalPrivacidad
+            );
+
+            privacidadFondo.addEventListener(
+                "click",
+                cerrarModalPrivacidad
+            );
+
+            // CERRAR MODALES CON ESCAPE
+
             document.addEventListener("keydown", function (event) {
+                if (event.key !== "Escape") {
+                    return;
+                }
+
                 if (
-                    event.key === "Escape" &&
-                    modal.classList.contains("proyecto-modal-visible")
+                    privacidadModal.classList.contains(
+                        "proyecto-modal-visible"
+                    )
+                ) {
+                    cerrarModalPrivacidad();
+                    return;
+                }
+
+                if (
+                    modal.classList.contains(
+                        "proyecto-modal-visible"
+                    )
                 ) {
                     cerrarModal();
                 }
-                // POLÍTICA DE PRIVACIDAD
-
-                const privacidadModal =
-                    document.getElementById("privacidad-modal");
-
-                const privacidadContenido =
-                    document.getElementById("privacidad-modal-contenido");
-
-                const abrirPrivacidad =
-                    document.getElementById("abrir-privacidad");
-
-                const cerrarPrivacidad =
-                    document.getElementById("cerrar-privacidad");
-
-                const cerrarPrivacidadSecundario =
-                    document.getElementById(
-                        "cerrar-privacidad-secundario"
-                    );
-
-                const privacidadFondo =
-                    document.getElementById(
-                        "privacidad-modal-fondo"
-                    );
-
-                let elementoActivoPrivacidad = null;
-                let temporizadorPrivacidad = null;
-
-
-                function abrirModalPrivacidad(event) {
-                    event.preventDefault();
-
-                    if (temporizadorPrivacidad) {
-                        clearTimeout(temporizadorPrivacidad);
-                    }
-
-                    elementoActivoPrivacidad = document.activeElement;
-
-                    privacidadModal.classList.add(
-                        "proyecto-modal-visible"
-                    );
-
-                    privacidadModal.setAttribute(
-                        "aria-hidden",
-                        "false"
-                    );
-
-                    document.body.classList.add("modal-abierto");
-
-                    requestAnimationFrame(function () {
-                        privacidadModal.classList.add(
-                            "proyecto-modal-activo"
-                        );
-
-                        privacidadContenido.focus();
-                    });
-                }
-
-
-                function cerrarModalPrivacidad() {
-                    privacidadModal.classList.remove(
-                        "proyecto-modal-activo"
-                    );
-
-                    temporizadorPrivacidad = setTimeout(
-                        function () {
-                            privacidadModal.classList.remove(
-                                "proyecto-modal-visible"
-                            );
-
-                            privacidadModal.setAttribute(
-                                "aria-hidden",
-                                "true"
-                            );
-
-                            document.body.classList.remove(
-                                "modal-abierto"
-                            );
-
-                            if (elementoActivoPrivacidad) {
-                                elementoActivoPrivacidad.focus();
-                            }
-                        },
-                        360
-                    );
-                }
-
-
-                abrirPrivacidad.addEventListener(
-                    "click",
-                    abrirModalPrivacidad
-                );
-
-                cerrarPrivacidad.addEventListener(
-                    "click",
-                    cerrarModalPrivacidad
-                );
-
-                cerrarPrivacidadSecundario.addEventListener(
-                    "click",
-                    cerrarModalPrivacidad
-                );
-
-                privacidadFondo.addEventListener(
-                    "click",
-                    cerrarModalPrivacidad
-                );
-
-                document.addEventListener(
-                    "keydown",
-                    function (event) {
-                        if (
-                            event.key === "Escape" &&
-                            privacidadModal.classList.contains(
-                                "proyecto-modal-visible"
-                            )
-                        ) {
-                            cerrarModalPrivacidad();
-                        }
-                    }
-                );
             });
         });
     </script>
