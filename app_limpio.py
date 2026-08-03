@@ -41,21 +41,38 @@ from reportlab.platypus import (
     TableStyle,
 )
 
+def cargar_tema(nombre_archivo):
+    ruta = Path(__file__).parent / "styles" / nombre_archivo
+
+    if ruta.exists():
+        with open(ruta, "r", encoding="utf-8") as archivo:
+            st.markdown(
+                f"<style>{archivo.read()}</style>",
+                unsafe_allow_html=True,
+            )
+    else:
+        st.warning(f"No se encontró el archivo de tema: {ruta}")
+
 
 def cargar_css(nombre_archivo):
     ruta = Path(__file__).parent / "assets" / "css" / nombre_archivo
 
     if ruta.exists():
         with open(ruta, "r", encoding="utf-8") as archivo:
-            st.markdown(f"<style>{archivo.read()}</style>", unsafe_allow_html=True)
+            st.markdown(
+                f"<style>{archivo.read()}</style>",
+                unsafe_allow_html=True,
+            )
     else:
         st.warning(f"No se encontró el archivo CSS: {ruta}")
-
-
 # ---------------- APP PRINCIPAL ----------------
 
 st.set_page_config(page_title="VisionQA", page_icon="🔍", layout="wide")
-
+with open("styles/styles.css", encoding="utf-8") as f:
+    st.markdown(
+        f"<style>{f.read()}</style>",
+        unsafe_allow_html=True,
+    )
 st.markdown(
     """
     <style>
@@ -137,12 +154,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 # ---------------- ESTILOS ----------------
-
-with open("styles/styles.css", encoding="utf-8") as f:
-    st.markdown(
-        f"<style>{f.read()}</style>",
-        unsafe_allow_html=True,
-    )
 
 st.markdown(
     """
@@ -2684,375 +2695,516 @@ def icono_svg(nombre, tamaño=22, margen_derecho=8):
         f'">'
     )
 
-def main():
-    if "logueado" not in st.session_state:
-        st.session_state["logueado"] = True
-
-    usuario_url = st.query_params.get("usuario")
-
-    if usuario_url:
-        st.session_state["usuario"] = usuario_url
-
-    elif "usuario" not in st.session_state:
-        st.session_state["usuario"] = "Usuario"
-
-    # -------- MENÚ LATERAL --------
-    ahora = datetime.now()
-
-    dias_semana = [
-        "Lunes",
-        "Martes",
-        "Miércoles",
-        "Jueves",
-        "Viernes",
-        "Sábado",
-        "Domingo",
-    ]
-
-    meses = [
-        "Ene",
-        "Feb",
-        "Mar",
-        "Abr",
-        "May",
-        "Jun",
-        "Jul",
-        "Ago",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dic",
-    ]
-
-    dia_semana = dias_semana[ahora.weekday()]
-    mes_actual = meses[ahora.month - 1]
-
-    fecha_actual = f"{dia_semana}, {ahora.day:02d} " f"{mes_actual} {ahora.year}"
-
-    hora_actual = ahora.strftime("%I:%M %p")
-
-    if ahora.hour < 12:
-        saludo = "Buenos días"
-    elif ahora.hour < 19:
-        saludo = "Buenas tardes"
-    else:
-        saludo = "Buenas noches"
-
-    nombre_usuario = escape(
-        str(
-            st.session_state.get(
-                "usuario",
-                "Usuario",
-            )
-        )
-    )
-
-    html_barra = (
-        '<div class="visionqa-topbar">'
-
-            '<div class="visionqa-topbar-left">'
-                f'<div class="visionqa-topbar-greeting">'
-                    f'{saludo}, {nombre_usuario}'
-                '</div>'
-                '<div class="visionqa-topbar-subtitle">'
-                    'Este es el estado actual del sistema VisionQA'
-                '</div>'
-            '</div>'
-
-            '<div class="visionqa-topbar-right">'
-
-                '<div class="visionqa-topbar-datetime">'
-                    f'<div class="visionqa-topbar-date">'
-                        f'{fecha_actual}'
-                    '</div>'
-                    f'<div class="visionqa-topbar-time">'
-                        f'{hora_actual}'
-                    '</div>'
-                '</div>'
-
-                '<div class="visionqa-topbar-actions">'
-
-                    f'<div class="visionqa-topbar-action" '
-                    f'title="{nombre_usuario}">'
-                        f'{icono_svg("user.svg",20,0)}'
-                    '</div>'
-
-                    '<a class="visionqa-topbar-action" '
-                    'href="?pagina=Acerca%20de" '
-                    'title="Ayuda">'
-                        f'{icono_svg("help.svg",20,0)}'
-                    '</a>'
-
-                    '<a class="visionqa-topbar-action" '
-                    'href="http://127.0.0.1:8000/api/logout/" '
-                    'target="_self" '
-                    'title="Cerrar sesión">'
-                        f'{icono_svg("logout.svg",20,0)}'
-                    '</a>'
-
-                '</div>'
-
-            '</div>'
-
-        '</div>'
-    )
-
+def redirigir_a(url, mensaje="Redirigiendo..."):
     st.markdown(
-        html_barra,
+        f"""
+        <meta http-equiv="refresh" content="0; url={url}">
+        <script>
+            window.top.location.replace("{url}");
+        </script>
+        """,
         unsafe_allow_html=True,
     )
-    with st.sidebar:
-        st.markdown( 
-            f"""
-            <div style="
-                background:#0d6efd20;
-                border:1px solid #0d6efd40;
-                border-radius:10px;
-                padding:10px;
-                margin-bottom:15px;
-                text-align:center;
-            ">
 
-            {icono_svg("user.svg",22,6)}
+    st.info(mensaje)
 
-            <br>
+    st.link_button(
+        "Continuar",
+        url,
+        use_container_width=True,
+    )
 
-            {st.session_state["usuario"]}
+    st.stop()
 
-            </div>
-            """,
-            unsafe_allow_html=True,
+def main():
+
+        LOGIN_URL = "http://127.0.0.1:8000/api/login/"
+        LOGOUT_URL = "http://127.0.0.1:8000/api/logout/"
+        VERIFICAR_URL = (
+            "http://127.0.0.1:8000/api/verificar-acceso/"
         )
 
-        st.image("assets/logo_iot.png", use_container_width=True)
+        # ---------------------------------------------
+        # CERRAR SESIÓN DESDE STREAMLIT
+        # ---------------------------------------------
+
+        if st.query_params.get("logout") == "1":
+
+            st.session_state.clear()
+            st.query_params.clear()
+
+            redirigir_a(
+                LOGOUT_URL,
+                "Cerrando sesión...",
+            )
+
+        # ---------------------------------------------
+        # OBTENER TOKEN
+        # ---------------------------------------------
+
+        token_url = st.query_params.get("token")
+
+        if token_url:
+            st.session_state["token_acceso"] = token_url
+
+        token_acceso = st.session_state.get("token_acceso")
+
+        # ---------------------------------------------
+        # SI NO HAY TOKEN, VOLVER AL LOGIN
+        # ---------------------------------------------
+
+        if not token_acceso:
+
+            st.session_state.clear()
+
+            redirigir_a(
+                LOGIN_URL,
+                "Debes iniciar sesión para acceder a VisionQA.",
+            )
+        # ---------------------------------------------
+        # VALIDAR SIEMPRE EL TOKEN CON DJANGO
+        # ---------------------------------------------
+
+        try:
+
+            respuesta = requests.get(
+                VERIFICAR_URL,
+                params={
+                    "token": token_acceso,
+                },
+                timeout=10,
+            )
+
+            if respuesta.status_code != 200:
+
+                st.session_state.clear()
+                st.query_params.clear()
+
+                redirigir_a(
+                    LOGIN_URL,
+                    "Tu sesión no es válida. Inicia sesión nuevamente.",
+                )
+            datos_usuario = respuesta.json()
+
+            if not datos_usuario.get("autenticado"):
+
+                st.session_state.clear()
+                st.query_params.clear()
+
+                redirigir_a(
+
+                    LOGIN_URL,
+                    "Tu sesión terminó.",
+                )
+
+            nombre = (
+                datos_usuario.get("first_name")
+                or datos_usuario.get("username")
+                or "Usuario"
+            )
+
+            st.session_state["usuario"] = nombre
+            st.session_state["username"] = datos_usuario.get(
+                "username",
+                "",
+            )
+            st.session_state["logueado"] = True
+
+        except requests.RequestException:
+
+            st.error(
+                "No fue posible conectar con el servidor de autenticación."
+            )
+
+            st.stop()
+
+    # -------------------------------------------------
+    # USUARIO AUTENTICADO
+    # -------------------------------------------------
+
+        nombre_usuario = st.session_state.get(
+        "usuario",
+        "Usuario",
+    )
+        if "tema" not in st.session_state:
+            st.session_state["tema"] = "Claro"
+
+        # -------- MENÚ LATERAL --------
+        ahora = datetime.now()
+
+        dias_semana = [
+            "Lunes",
+            "Martes",
+            "Miércoles",
+            "Jueves",
+            "Viernes",
+            "Sábado",
+            "Domingo",
+        ]
+
+        meses = [
+            "Ene",
+            "Feb",
+            "Mar",
+            "Abr",
+            "May",
+            "Jun",
+            "Jul",
+            "Ago",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dic",
+        ]
+
+        dia_semana = dias_semana[ahora.weekday()]
+        mes_actual = meses[ahora.month - 1]
+
+        fecha_actual = f"{dia_semana}, {ahora.day:02d} " f"{mes_actual} {ahora.year}"
+
+        hora_actual = ahora.strftime("%I:%M %p")
+
+        if ahora.hour < 12:
+            saludo = "Buenos días"
+        elif ahora.hour < 19:
+            saludo = "Buenas tardes"
+        else:
+            saludo = "Buenas noches"
+
+        nombre_usuario = escape(
+            str(
+                st.session_state.get(
+                    "usuario",
+                    "Usuario",
+                )
+            )
+        )
+
+        html_barra = (
+            '<div class="visionqa-topbar">'
+
+                '<div class="visionqa-topbar-left">'
+                    f'<div class="visionqa-topbar-greeting">'
+                        f'{saludo}, {nombre_usuario}'
+                    '</div>'
+                    '<div class="visionqa-topbar-subtitle">'
+                        'Este es el estado actual del sistema VisionQA'
+                    '</div>'
+                '</div>'
+
+                '<div class="visionqa-topbar-right">'
+
+                    '<div class="visionqa-topbar-datetime">'
+                        f'<div class="visionqa-topbar-date">'
+                            f'{fecha_actual}'
+                        '</div>'
+                        f'<div class="visionqa-topbar-time">'
+                            f'{hora_actual}'
+                        '</div>'
+                    '</div>'
+
+                    '<div class="visionqa-topbar-actions">'
+
+                        f'<div class="visionqa-topbar-action" '
+                        f'title="{nombre_usuario}">'
+                            f'{icono_svg("user.svg",20,0)}'
+                        '</div>'
+
+                        '<a class="visionqa-topbar-action" '
+                        'href="?pagina=Acerca%20de" '
+                        'title="Ayuda">'
+                            f'{icono_svg("help.svg",20,0)}'
+                        '</a>'
+
+                        '<a class="visionqa-topbar-action" '
+                        'href="http://127.0.0.1:8501/?logout=1" '
+                        'target="_self" '
+                        'title="Cerrar sesión">'
+                            f'{icono_svg("logout.svg",20,0)}'
+                        '</a>'
+
+                    '</div>'
+
+                '</div>'
+
+            '</div>'
+        )
 
         st.markdown(
-            '<div class="sidebar-brand">'
-            '<div class="sidebar-title">VisionQA</div>'
-            '<div class="sidebar-subtitle">'
-            "Sistema Inteligente de Inspección Visual"
-            "</div>"
-            "</div>",
+            html_barra,
             unsafe_allow_html=True,
         )
+        with st.sidebar:
+            st.markdown( 
+                f"""
+                <div style="
+                    background:#0d6efd20;
+                    border:1px solid #0d6efd40;
+                    border-radius:10px;
+                    padding:10px;
+                    margin-bottom:15px;
+                    text-align:center;
+                ">
 
-        st.markdown('<div class="sidebar-separator"></div>', unsafe_allow_html=True)
+                {icono_svg("user.svg",22,6)}
 
-        pagina = option_menu(
-            menu_title=None,
-            options=[
-                "Dashboard",
-                "Inspección",
-                "Registro",
-                "IA Generativa",
-                "Reportes",
-                "Acerca de",
-            ],
-            icons=[
-                "speedometer2",
-                "search",
-                "clipboard-data",
-                "cpu",
-                "file-earmark-bar-graph",
-                "info-circle",
-            ],
-            menu_icon=None,
-            default_index=0,
-            orientation="vertical",
-            styles={
-                "container": {
-                    "padding": "12px 10px",
-                    "margin": "0px",
-                    "background-color": "#1998B7",
-                    "border": "none",
-                    "border-radius": "0px",
-                    "box-shadow": "none",
-                },
-                "icon": {"color": "#FFFFFF", "font-size": "18px"},
-                "nav-link": {
-                    "font-size": "15px",
-                    "font-weight": "500",
-                    "color": "#FFFFFF",
-                    "text-align": "left",
-                    "margin": "6px 0",
-                    "padding": "14px 16px",
-                    "border-radius": "10px",
-                    "background-color": "#1998B7",
-                    "border": "none",
-                },
-                "nav-link-hover": {
-                    "background-color": "rgba(255,255,255,0.16)",
-                    "color": "#FFFFFF",
-                },
-                "nav-link-selected": {
-                    "background-color": "#0A4E95",
-                    "color": "#FFFFFF",
-                    "font-weight": "700",
-                    "border-radius": "10px",
-                    "box-shadow": "0 4px 10px rgba(0,0,0,0.18)",
-                },
-            },
-        )
-        st.markdown("---")
+                <br>
 
-        st.markdown(
-            """
-                <div class="sidebar-footer">
-                    <strong>VisionQA</strong><br>
-                    Versión 1.0<br>
-                    IOT Technologies
+                {st.session_state.get("usuario", "Usuario")}
+
                 </div>
                 """,
-            unsafe_allow_html=True,
-        )
+                unsafe_allow_html=True,
+            )
 
-    # -------- BARRA SUPERIOR DEL USUARIO --------
+            st.image("assets/logo_iot.png", use_container_width=True)
 
-    
-    # -------- DASHBOARD --------
-    if pagina == "Dashboard":
-        registros = obtener_inspecciones_api()
+            st.markdown(
+                '<div class="sidebar-brand">'
+                '<div class="sidebar-title">VisionQA</div>'
+                '<div class="sidebar-subtitle">'
+                "Sistema Inteligente de Inspección Visual"
+                "</div>"
+                "</div>",
+                unsafe_allow_html=True,
+            )
 
-        total = len(registros)
+            st.markdown('<div class="sidebar-separator"></div>', unsafe_allow_html=True)
 
-        aptas = sum(
-            1
-            for registro in registros
-            if str(
-                registro.get("resultado", "")
-            ).strip().upper() == "APTO"
-        )
+            pagina = option_menu(
+                menu_title=None,
+                options=[
+                    "Dashboard",
+                    "Inspección",
+                    "Registro",
+                    "IA Generativa",
+                    "Reportes",
+                    "Acerca de",
+                ],
+                icons=[
+                    "speedometer2",
+                    "search",
+                    "clipboard-data",
+                    "cpu",
+                    "file-earmark-bar-graph",
+                    "info-circle",
+                ],
+                menu_icon=None,
+                default_index=0,
+                orientation="vertical",
+                styles={
+                    "container": {
+                        "padding": "12px 10px",
+                        "margin": "0px",
+                        "background-color": "#1998B7",
+                        "border": "none",
+                        "border-radius": "0px",
+                        "box-shadow": "none",
+                    },
+                    "icon": {"color": "#FFFFFF", "font-size": "18px"},
+                    "nav-link": {
+                        "font-size": "15px",
+                        "font-weight": "500",
+                        "color": "#FFFFFF",
+                        "text-align": "left",
+                        "margin": "6px 0",
+                        "padding": "14px 16px",
+                        "border-radius": "10px",
+                        "background-color": "#1998B7",
+                        "border": "none",
+                    },
+                    "nav-link-hover": {
+                        "background-color": "rgba(255,255,255,0.16)",
+                        "color": "#FFFFFF",
+                    },
+                    "nav-link-selected": {
+                        "background-color": "#0A4E95",
+                        "color": "#FFFFFF",
+                        "font-weight": "700",
+                        "border-radius": "10px",
+                        "box-shadow": "0 4px 10px rgba(0,0,0,0.18)",
+                    },
+                },
 
-        no_aptas = sum(
-            1
-            for registro in registros
-            if str(
-                registro.get("resultado", "")
-            ).strip().upper() == "NO APTO"
-        )
-        st.markdown(
-            f"""
-            <h2 style="
-                color:#231F20 !important;
-                font-size:32px;
-                font-weight:700;
-                margin-top:0;
-                margin-bottom:18px;
-                display:flex;
-                align-items:center;
-            ">
-                {icono_svg("dashboard.svg", 40, 12)}
-                Dashboard Operativo
-            </h2>
-            """,
-            unsafe_allow_html=True,
-        )
-        mostrar_resumen(total, aptas, no_aptas)
+            )
+            st.markdown(
+                '<div class="sidebar-section">Apariencia</div>',
+                unsafe_allow_html=True,
+            )
 
-        mostrar_graficas(aptas, no_aptas)
+            tema_seleccionado = st.radio(
+                "Tema",
+                ["Claro", "Oscuro"],
+                horizontal=True,
+                label_visibility="collapsed",
+                index=0 if st.session_state["tema"] == "Claro" else 1,
+            )
 
-        mostrar_indicadores(aptas, no_aptas)
+            st.session_state["tema"] = tema_seleccionado
 
-    # -------- INSPECCIÓN --------
+            if tema_seleccionado == "Oscuro":
+                cargar_tema("oscuro.css")
+            else:
+                cargar_tema("claro.css")
+            st.markdown("---")
 
-    elif pagina == "Inspección":
+            st.markdown(
+                """
+                    <div class="sidebar-footer">
+                        <strong>VisionQA</strong><br>
+                        Versión 1.0<br>
+                        IOT Technologies
+                    </div>
+                    """,
+                unsafe_allow_html=True,
+            )
 
-        mostrar_titulo(
-            "inspection.svg",
-            "Inspección Visual",
-            "Captura y analiza piezas mediante inteligencia artificial.",
-        )
+        # -------- BARRA SUPERIOR DEL USUARIO --------
 
-        mostrar_estado_sistema()
-        mostrar_modulo_inspeccion()
+        
+        # -------- DASHBOARD --------
+        if pagina == "Dashboard":
+            registros = obtener_inspecciones_api()
 
-    # -------- REGISTRO --------
+            total = len(registros)
 
-    elif pagina == "Registro":
+            aptas = sum(
+                1
+                for registro in registros
+                if str(
+                    registro.get("resultado", "")
+                ).strip().upper() == "APTO"
+            )
 
-        mostrar_titulo(
-            "register.svg",
-            "Registro de Inspecciones",
-            "Consulta los resultados y el historial de inspecciones.",
-        )
+            no_aptas = sum(
+                1
+                for registro in registros
+                if str(
+                    registro.get("resultado", "")
+                ).strip().upper() == "NO APTO"
+            )
+            st.markdown(
+                f"""
+                <h2 style="
+                    color:#231F20 !important;
+                    font-size:32px;
+                    font-weight:700;
+                    margin-top:0;
+                    margin-bottom:18px;
+                    display:flex;
+                    align-items:center;
+                ">
+                    {icono_svg("dashboard.svg", 40, 12)}
+                    Dashboard Operativo
+                </h2>
+                """,
+                unsafe_allow_html=True,
+            )
+            mostrar_resumen(total, aptas, no_aptas)
 
-        mostrar_registro()
-    # -------- IA GENERATIVA --------
+            mostrar_graficas(aptas, no_aptas)
 
-    elif pagina == "IA Generativa":
+            mostrar_indicadores(aptas, no_aptas)
 
-        mostrar_titulo(
-            "ai.svg",
-            "Análisis Inteligente",
-            "Analiza inspecciones mediante Gemini, metodología 6M, Lean Manufacturing y Six Sigma para apoyar la toma de decisiones en calidad.",
-        )
-        mostrar_gemini()
+        # -------- INSPECCIÓN --------
 
-    # -------- REPORTES --------
+        elif pagina == "Inspección":
 
-    elif pagina == "Reportes":
+            mostrar_titulo(
+                "inspection.svg",
+                "Inspección Visual",
+                "Captura y analiza piezas mediante inteligencia artificial.",
+            )
 
-        mostrar_titulo(
-            "report.svg",
-            "Centro de Reportes",
-            "Genera y descarga los documentos disponibles del sistema VisionQA.",
-        )
+            mostrar_estado_sistema()
+            mostrar_modulo_inspeccion()
 
-        mostrar_reportes()
+        # -------- REGISTRO --------
 
-    # -------- ACERCA DE --------
+        elif pagina == "Registro":
 
-    elif pagina == "Acerca de":
+            mostrar_titulo(
+                "register.svg",
+                "Registro de Inspecciones",
+                "Consulta los resultados y el historial de inspecciones.",
+            )
 
-        mostrar_titulo(
-            "info.svg",
-            "Acerca de VisionQA",
-            "Información general del sistema y las tecnologías utilizadas.",
-        )
+            mostrar_registro()
+        # -------- IA GENERATIVA --------
 
-        st.markdown("""
-            **VisionQA** es un sistema inteligente de inspección visual
-            desarrollado para apoyar el control de calidad de piezas
-            manufacturadas.
+        elif pagina == "IA Generativa":
 
-            El sistema integra:
+            mostrar_titulo(
+                "ai.svg",
+                "Análisis Inteligente",
+                "Analiza inspecciones mediante Gemini, metodología 6M, Lean Manufacturing y Six Sigma para apoyar la toma de decisiones en calidad.",
+            )
+            mostrar_gemini()
 
-            - Visión por computadora.
-            - Modelo de detección YOLOv8.
-            - Procesamiento de imágenes con OpenCV.
-            - Dashboard desarrollado con Streamlit.
-            - Análisis de causas mediante Gemini.
-            - Principios de Manufactura Esbelta y Six Sigma.
-            """)
+        # -------- REPORTES --------
 
-        st.markdown("### Información del proyecto")
+        elif pagina == "Reportes":
 
-        col1, col2 = st.columns(2)
+            mostrar_titulo(
+                "report.svg",
+                "Centro de Reportes",
+                "Genera y descarga los documentos disponibles del sistema VisionQA.",
+            )
 
-        with col1:
+            mostrar_reportes()
+
+        # -------- ACERCA DE --------
+
+        elif pagina == "Acerca de":
+
+            mostrar_titulo(
+                "info.svg",
+                "Acerca de VisionQA",
+                "Información general del sistema y las tecnologías utilizadas.",
+            )
 
             st.markdown("""
-                **Proyecto:** VisionQA
+                **VisionQA** es un sistema inteligente de inspección visual
+                desarrollado para apoyar el control de calidad de piezas
+                manufacturadas.
 
-                **Empresa:** IOT Technologies
+                El sistema integra:
 
-                **Área:** Control de Calidad
+                - Visión por computadora.
+                - Modelo de detección YOLOv8.
+                - Procesamiento de imágenes con OpenCV.
+                - Dashboard desarrollado con Streamlit.
+                - Análisis de causas mediante Gemini.
+                - Principios de Manufactura Esbelta y Six Sigma.
                 """)
 
-        with col2:
+            st.markdown("### Información del proyecto")
 
-            st.markdown("""
-                **Desarrolladora:** Dorcas Tabita Perez Martinez
+            col1, col2 = st.columns(2)
 
-                **Tecnologías:** Python, YOLOv8, OpenCV, Streamlit y Gemini
+            with col1:
 
-                **Versión:** 1.0
-                """)
+                st.markdown("""
+                    **Proyecto:** VisionQA
 
-        st.divider()
+                    **Empresa:** IOT Technologies
 
-    mostrar_footer()
+                    **Área:** Control de Calidad
+                    """)
 
+            with col2:
+
+                st.markdown("""
+                    **Desarrolladora:** Dorcas Tabita Perez Martinez
+
+                    **Tecnologías:** Python, YOLOv8, OpenCV, Streamlit y Gemini
+
+                    **Versión:** 1.0
+                    """)
+
+            st.divider()
+
+        mostrar_footer()
 
 if __name__ == "__main__":
     main()

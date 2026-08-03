@@ -11,8 +11,10 @@ from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-
+from django.core import signing
+from django.contrib.sessions.models import Session
 from .models import Inspeccion
+from django.utils import timezone 
 from .serializers import InspeccionSerializer
 
 
@@ -47,11 +49,24 @@ def pagina_login(request):
             else:
                 auth_login(request, usuario)
 
-                nombre_usuario = quote(usuario.username)
+                # Asegurar que Django cree la sesión.
+                if not request.session.session_key:
+                    request.session.save()
+
+                token_acceso = signing.dumps(
+                    {
+                        "usuario_id": usuario.id,
+                        "username": usuario.username,
+                        "session_key": request.session.session_key,
+                    },
+                    salt="visionqa-streamlit",
+                )
+
+                token_codificado = quote(token_acceso)
 
                 return redirect(
-                    f"http://127.0.0.1:8501/?usuario={nombre_usuario}"
-                ) 
+                    f"http://127.0.0.1:8501/?token={token_codificado}"
+                )
 
     return render(
         request,
@@ -108,6 +123,101 @@ def registrar_usuario(request):
         },
     )
 
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def verificar_acceso_streamlit(request):
+
+    token = request.GET.get("token", "").strip()
+
+    if not token:
+
+        return Response(
+            {
+                "autenticado": False,
+                "mensaje": "No se recibió el token de acceso.",
+            },
+            status=status.HTTP_401_UNAUTHORIZED,
+        )
+
+    try:
+
+        datos = signing.loads(
+            token,
+            salt="visionqa-streamlit",
+            max_age=60 * 60 * 8,
+        )
+
+        usuario_id = datos.get("usuario_id")
+        username = datos.get("username")
+        session_key = datos.get("session_key")
+
+        if not usuario_id or not username or not session_key:
+
+            raise signing.BadSignature(
+                "El token no contiene los datos necesarios."
+            )
+
+        # Comprobar que la sesión de Django siga activa.
+        sesion_activa = Session.objects.filter(
+            session_key=session_key,
+             expire_date__gt=timezone.now(),
+        ).exists()
+
+        if not sesion_activa:
+
+            return Response(
+                {
+                    "autenticado": False,
+                    "mensaje": "La sesión ya no está activa.",
+                },
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        usuario = User.objects.filter(
+            id=usuario_id,
+            username=username,
+            is_active=True,
+        ).first()
+
+        if usuario is None:
+
+            return Response(
+                {
+                    "autenticado": False,
+                    "mensaje": "El usuario no es válido.",
+                },
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        return Response(
+            {
+                "autenticado": True,
+                "username": usuario.username,
+                "first_name": usuario.first_name,
+                "is_staff": usuario.is_staff,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+    except signing.SignatureExpired:
+
+        return Response(
+            {
+                "autenticado": False,
+                "mensaje": "El acceso ha expirado.",
+            },
+            status=status.HTTP_401_UNAUTHORIZED,
+        )
+
+    except signing.BadSignature:
+
+        return Response(
+            {
+                "autenticado": False,
+                "mensaje": "El acceso no es válido.",
+            },
+            status=status.HTTP_401_UNAUTHORIZED,
+        )
 def cerrar_sesion(request):
     auth_logout(request)
 

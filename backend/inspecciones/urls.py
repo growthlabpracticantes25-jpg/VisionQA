@@ -5,9 +5,10 @@ from .views import (
     cerrar_sesion,
     dashboard,
     login_usuario,
-    pagina_login, 
+    pagina_login,
     recuperar_password,
-    registrar_usuario, 
+    registrar_usuario,
+    verificar_acceso_streamlit,
 )
 
 urlpatterns = [
@@ -50,4 +51,10 @@ urlpatterns = [
         login_usuario,
         name="api-login",
     ),
+    
+    path(
+    "verificar-acceso/",
+    verificar_acceso_streamlit,
+    name="verificar-acceso-streamlit",
+),
 ]

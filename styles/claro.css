@@ -1,0 +1,996 @@
+/* =========================
+   VISIONQA - ESTILO GENERAL
+   ========================= */
+
+:root {
+    --iot-blue: #1D7EAE;
+    --iot-dark: #231F20;
+    --iot-light: #F4F7F9;
+    --iot-white: #FFFFFF;
+    --iot-gray: #6B7280;
+    --iot-border: #D9E2E8;
+    --iot-success: #1F9D62;
+    --iot-danger: #D94343;
+}
+
+/* Fondo general */
+
+.stApp {
+    background-color: var(--iot-light);
+}
+
+
+/* Tipografía general */
+
+html,
+body,
+[class*="css"] {
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: var(--iot-dark);
+}
+
+/* Encabezados de Streamlit */
+
+.stApp h1,
+.stApp h2,
+.stApp h3,
+[data-testid="stMarkdownContainer"] h1,
+[data-testid="stMarkdownContainer"] h2,
+[data-testid="stMarkdownContainer"] h3 {
+    color: #231F20 !important;
+    font-weight: 700;
+}
+
+h2 {
+    margin-top: 1.2rem;
+}
+
+/* Encabezado VisionQA */
+
+.iot-title {
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: #231F20 !important;
+    line-height: 1.1;
+}
+
+.iot-subtitle {
+    margin-top: 0.5rem;
+    font-size: 1.05rem;
+    color: var(--iot-gray);
+    font-weight: 400;
+}
+/* =========================================
+   TARJETAS KPI MODERNAS
+   ========================================= */
+
+.kpi-card {
+    min-height: 220px;
+    padding: 24px;
+
+    background: #ffffff;
+    border: 1px solid #d9e2e8;
+    border-radius: 18px;
+
+    box-shadow: 0 8px 22px rgba(35, 31, 32, 0.08);
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+
+    position: relative;
+    overflow: hidden;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.kpi-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 6px;
+    height: 100%;
+    background: #1d7eae;
+}
+
+.kpi-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 32px rgba(35, 31, 32, 0.14);
+}
+
+.kpi-card-top {
+    width: 100%;
+    margin-bottom: 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.kpi-icon {
+    width: 52px;
+    height: 52px;
+
+    border-radius: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #eaf5fb;
+    color: #1d7eae;
+}
+
+.kpi-icon i {
+    font-size: 25px;
+}
+
+.kpi-detail {
+    padding: 6px 10px;
+
+    border-radius: 999px;
+
+    background: #f4f7f9;
+    color: #6b7280;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.kpi-value {
+    margin-bottom: 8px;
+
+    color: #1d7eae;
+
+    font-size: 52px;
+    line-height: 1;
+    font-weight: 800;
+}
+
+.kpi-title {
+    margin-bottom: 6px;
+
+    color: #231f20;
+
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.kpi-description {
+    color: #7b8491;
+
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Tarjeta total */
+.kpi-total::before {
+    background: #1d7eae;
+}
+
+/* Tarjeta aptas */
+.kpi-success::before {
+    background: #1f9d62;
+}
+
+.kpi-success .kpi-icon {
+    background: #e8f7ef;
+    color: #1f9d62;
+}
+
+.kpi-success .kpi-value {
+    color: #1f9d62;
+}
+
+.kpi-success .kpi-detail {
+    background: #e8f7ef;
+    color: #197b4d;
+}
+
+/* Tarjeta no aptas */
+.kpi-danger::before {
+    background: #d94343;
+}
+
+.kpi-danger .kpi-icon {
+    background: #fdecec;
+    color: #d94343;
+}
+
+.kpi-danger .kpi-value {
+    color: #d94343;
+}
+
+.kpi-danger .kpi-detail {
+    background: #fdecec;
+    color: #b83232;
+}
+/* Botones */
+
+.stButton > button {
+    width: 100%;
+    background-color: var(--iot-blue);
+    color: var(--iot-white);
+    border: none;
+    border-radius: 10px;
+    padding: 0.65rem 1rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.stButton > button:hover {
+    background-color: #17678F;
+    color: var(--iot-white);
+    border: none;
+    transform: translateY(-1px);
+}
+
+/* File uploader */
+
+[data-testid="stFileUploader"] {
+    background: var(--iot-white);
+    border: 1px solid var(--iot-border);
+    border-radius: 12px;
+    padding: 0.8rem;
+}
+
+/* Cámara */
+
+[data-testid="stCameraInput"] {
+    background: var(--iot-white);
+    border: 1px solid var(--iot-border);
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+/* Alertas */
+
+[data-testid="stAlert"] {
+    border-radius: 12px;
+    border: none;
+}
+
+/* Métricas */
+
+[data-testid="stMetric"] {
+    background: var(--iot-white);
+    border: 1px solid var(--iot-border);
+    border-left: 5px solid var(--iot-blue);
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 4px 14px rgba(35, 31, 32, 0.06);
+}
+
+/* Tablas */
+
+[data-testid="stDataFrame"] {
+    background: var(--iot-white);
+    border: 1px solid var(--iot-border);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+
+/* Divisores */
+
+hr {
+    border: none;
+    border-top: 1px solid var(--iot-border);
+    margin-top: 1.8rem;
+    margin-bottom: 1.8rem;
+}
+
+/* Texto auxiliar */
+
+.stCaption {
+    color: var(--iot-gray);
+}
+
+/* Footer */
+
+.footer-visionqa {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--iot-gray);
+    font-size: 0.85rem;
+}
+
+.footer-visionqa p {
+    margin: 0.2rem 0;
+}
+
+/* Ocultar elementos innecesarios de Streamlit */
+
+#MainMenu {
+    visibility: hidden;
+}
+
+footer {
+    visibility: hidden;
+}
+
+header {
+    background: transparent;
+}
+/* =========================
+   TÍTULOS DE PÁGINA
+   ========================= */
+
+.page-header {
+    margin-bottom: 1rem;
+}
+
+.page-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #231F20;
+    margin-bottom: 6px;
+}
+
+.page-subtitle {
+    font-size: 1rem;
+    color: #6B7280;
+    margin-bottom: 4px;
+}
+
+/* =========================
+   ENCABEZADOS DE SECCIÓN
+   ========================= */
+
+.section-header{
+    margin-top: 1.8rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--iot-border);
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--iot-dark);
+    line-height: 1.3;
+}
+
+.section-description {
+    margin-top: 0.25rem;
+    font-size: 0.88rem;
+    color: #6b7280;
+}
+/* ==========================
+   TÍTULOS DE GRÁFICAS
+   ========================== */
+
+.chart-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0032A0;
+    margin-bottom: 4px;
+}
+
+.block-container {
+    max-width: 100% !important;
+    width: 100% !important;
+
+    padding-top: 140px !important;  
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+    padding-bottom: 2rem !important;
+}
+/* =========================================
+   SIDEBAR VISIONQA
+   ========================================= */
+
+section[data-testid="stSidebar"] {
+    width: 340px !important;
+    min-width: 340px !important;
+    max-width: 340px !important;
+    flex: 0 0 340px !important;
+
+    background: linear-gradient(
+        180deg,
+        #178fb4 0%,
+        #1b9fc0 55%,
+        #167fa5 100%
+    ) !important;
+
+    border-right: none !important;
+    box-shadow: 4px 0 18px rgba(15, 66, 90, 0.18);
+}
+
+/* Contenido interior */
+section[data-testid="stSidebar"]
+[data-testid="stSidebarContent"] {
+    width: 340px !important;
+    min-width: 340px !important;
+    max-width: 340px !important;
+    padding: 26px 24px !important;
+    background: transparent !important;
+}
+
+/* Evitar contenedores blancos dentro de la barra */
+section[data-testid="stSidebar"] > div,
+section[data-testid="stSidebar"] [data-testid="stVerticalBlock"],
+section[data-testid="stSidebar"] [data-testid="stElementContainer"] {
+    background: transparent !important;
+}
+
+/* Logo IOT */
+section[data-testid="stSidebar"] img {
+    width: 265px !important;
+    max-width: 265px !important;
+    display: block !important;
+    margin: 16px auto 34px auto !important;
+}
+
+/* Identidad VisionQA */
+.sidebar-brand {
+    text-align: center;
+    margin-bottom: 26px;
+}
+
+.sidebar-title {
+    font-size: 42px;
+    font-weight: 800;
+    color: #ffffff !important;
+    margin-bottom: 8px;
+}
+
+.sidebar-subtitle {
+    max-width: 285px;
+    margin: 0 auto;
+    font-size: 18px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.92) !important;
+}
+
+/* Separadores */
+.sidebar-separator {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.55);
+    margin: 24px 0;
+}
+
+/* Menú de navegación */
+section[data-testid="stSidebar"] nav {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Pie de barra */
+.sidebar-footer {
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.55);
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.88) !important;
+}
+
+.sidebar-footer strong {
+    color: #ffffff !important;
+    font-size: 14px;
+}
+
+/* Botón para contraer */
+button[data-testid="stSidebarCollapseButton"] {
+    color: #ffffff !important;
+}
+
+/* =========================================
+   SELECTOR DE MÉTODO DE INSPECCIÓN
+   ========================================= */
+
+div[data-testid="stButton"] > button {
+
+    min-height:70px;
+
+    border-radius:14px;
+
+    border:1px solid #D8E3EB;
+
+    background:#FFFFFF;
+
+    color:#1F2937;
+
+    font-size:16px;
+
+    font-weight:700;
+
+    transition:all .25s ease;
+
+    box-shadow:0 6px 16px rgba(0,0,0,.06);
+
+}
+div[data-testid="stButton"] > button:hover{
+
+    background:#1998B7;
+
+    color:white;
+
+    border-color:#1998B7;
+
+    transform:translateY(-2px);
+
+    box-shadow:0 10px 20px rgba(25,152,183,.25);
+
+}
+
+/* Contenido interior de la barra */
+section[data-testid="stSidebar"] > div {
+    background: transparent;
+}
+
+/* Texto general de la barra */
+section[data-testid="stSidebar"] * {
+    color: #ffffff;
+}
+
+/* Separadores */
+section[data-testid="stSidebar"] hr {
+    border-color: rgba(255, 255, 255, 0.22);
+}
+
+/* Botones del menú */
+section[data-testid="stSidebar"] button {
+    width: 100%;
+    min-height: 46px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: white;
+    font-weight: 500;
+    text-align: left;
+    justify-content: flex-start;
+    padding-left: 14px;
+    transition: all 0.2s ease;
+}
+
+/* Efecto al pasar el cursor */
+section[data-testid="stSidebar"] button:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: white;
+    transform: translateX(3px);
+}
+
+/* Radio buttons usados como navegación */
+section[data-testid="stSidebar"] div[role="radiogroup"] label {
+    background: transparent;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 5px;
+    transition: all 0.2s ease;
+}
+
+/* Hover del menú */
+section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {
+    background: rgba(255, 255, 255, 0.14);
+}
+
+/* Opción seleccionada */
+section[data-testid="stSidebar"] div[role="radiogroup"] label:has(
+    input:checked
+) {
+    background: #084a92;
+    box-shadow: 0 5px 12px rgba(4, 49, 102, 0.25);
+}
+
+/* Oculta el círculo del radio */
+section[data-testid="stSidebar"] div[role="radiogroup"] input {
+    display: none;
+}
+
+/* Texto de las opciones */
+section[data-testid="stSidebar"] div[role="radiogroup"] p {
+    color: white;
+    font-weight: 500;
+}
+
+/* Botón para contraer la barra */
+button[data-testid="stSidebarCollapseButton"] {
+    color: white;
+}
+
+/* Texto pequeño inferior */
+section[data-testid="stSidebar"] small {
+    color: rgba(255, 255, 255, 0.80);
+}
+/* Quitar bordes y fondos claros alrededor del option_menu */
+section[data-testid="stSidebar"] .nav,
+section[data-testid="stSidebar"] .nav-pills,
+section[data-testid="stSidebar"] ul,
+section[data-testid="stSidebar"] li,
+section[data-testid="stSidebar"] nav {
+    background: #1998B7 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Eliminar líneas blancas laterales del menú */
+section[data-testid="stSidebar"] .nav-link {
+    border: none !important;
+    outline: none !important;
+}
+
+/* Asegurar que el bloque completo del menú tenga el mismo color */
+section[data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
+    background: transparent !important;
+}
+.sidebar-footer {
+    background: transparent !important;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.55);
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.88) !important;
+}
+
+.sidebar-footer strong {
+    color: #ffffff !important;
+}
+/* ===========================
+   SECCIONES DEL MENÚ
+   =========================== */
+
+.sidebar-section{
+
+    margin-top:22px;
+    margin-bottom:10px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    letter-spacing:1.5px;
+
+    text-transform:uppercase;
+
+    color:rgba(255,255,255,.70);
+
+    padding-left:8px;
+
+}
+/* Botones principales del módulo de IA */
+div.stButton > button {
+    background: linear-gradient(135deg, #0f6cbd, #1593b7) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    min-height: 46px !important;
+    box-shadow: 0 4px 10px rgba(15, 108, 189, 0.18) !important;
+    transition: all 0.2s ease !important;
+}
+
+div.stButton > button:hover {
+    background: linear-gradient(135deg, #0b5ca5, #117f9f) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(15, 108, 189, 0.28) !important;
+}
+
+div.stButton > button:active {
+    transform: translateY(0);
+}
+/* ==========================================
+   TOP BAR - VISIONQA / ESTILO LEANDIGITAL
+========================================== */
+
+.visionqa-topbar {
+
+    position: fixed;
+
+    top: 0;
+
+    left: 340px;
+
+    right: 0;
+
+    width: auto;
+
+    z-index: 999;
+
+    margin: 0;
+
+    border-radius: 0;
+
+    min-height: 130px;
+
+    padding: 22px 30px;
+
+    background: linear-gradient(
+        90deg,
+        #2389A8,
+        #1593B7
+    );
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.visionqa-topbar-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+}
+
+.visionqa-topbar-greeting {
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.visionqa-topbar-subtitle {
+    margin-top: 4px;
+
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.2;
+}
+
+.visionqa-topbar-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+}
+
+.visionqa-topbar-datetime {
+    min-width: 145px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.visionqa-topbar-date {
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.visionqa-topbar-time {
+    margin-top: 3px;
+
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.visionqa-topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.visionqa-topbar-action {
+    width: 34px;
+    height: 34px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.18);
+
+    background: rgba(12,75,120,.85);
+
+    color: #FFFFFF !important;
+    text-decoration: none !important;
+
+    font-size: 17px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+.visionqa-topbar-action:link,
+.visionqa-topbar-action:visited,
+.visionqa-topbar-action:hover,
+.visionqa-topbar-action:active {
+    color: #FFFFFF !important;
+    text-decoration: none !important;
+}
+
+.visionqa-topbar-action:hover {
+    background: #083A72;
+    color: #FFFFFF;
+    transform: translateY(-2px);
+}
+.visionqa-topbar-action i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+/* Ajuste para pantallas medianas */
+
+@media (max-width: 900px) {
+
+    .visionqa-topbar{
+    width:calc(100% + 40px);
+    margin-left:-20px;
+    margin-right:-20px;
+
+    padding:18px 30px;
+
+    margin-top:-10px;
+    margin-bottom:30px;
+
+    background:linear-gradient(90deg,#2389A8,#1593B7);
+
+    border-radius:0;
+}
+    .visionqa-topbar-greeting {
+        font-size: 15px;
+    }
+
+    .visionqa-topbar-subtitle {
+        font-size: 11px;
+    }
+
+    .visionqa-topbar-datetime {
+        min-width: 125px;
+    }
+
+    .visionqa-topbar-action {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+/* Ajuste para pantallas pequeñas */
+
+@media (max-width: 650px) {
+
+    .visionqa-topbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .visionqa-topbar-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .visionqa-topbar-datetime {
+        text-align: left;
+    }
+}
+/* Quitar margen del área principal */
+section.main > div {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+.bi {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+/* ==================================================
+   CORRECCIÓN GENERAL DEL TEMA CLARO
+   ================================================== */
+
+.stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stMain"] {
+    background-color: #F4F7FB !important;
+    color: #231F20 !important;
+}
+
+/* Títulos y texto general del contenido principal */
+[data-testid="stAppViewContainer"] .main h1,
+[data-testid="stAppViewContainer"] .main h2,
+[data-testid="stAppViewContainer"] .main h3,
+[data-testid="stAppViewContainer"] .main h4,
+[data-testid="stAppViewContainer"] .main h5,
+[data-testid="stAppViewContainer"] .main h6,
+[data-testid="stAppViewContainer"] .main p,
+[data-testid="stAppViewContainer"] .main li,
+[data-testid="stAppViewContainer"] .main label,
+[data-testid="stAppViewContainer"] .main strong {
+    color: #231F20 !important;
+}
+
+/* Textos secundarios */
+[data-testid="stAppViewContainer"] .main small,
+[data-testid="stCaptionContainer"],
+.section-description,
+.card-description,
+.metric-subtitle {
+    color: #64748B !important;
+}
+
+/* Tarjetas y contenedores */
+[data-testid="stVerticalBlockBorderWrapper"],
+.metric-card,
+.vq-card,
+.report-card {
+    background-color: #FFFFFF !important;
+    border-color: #DDE3EA !important;
+    color: #231F20 !important;
+}
+
+/* Campos interiores */
+input,
+textarea,
+[data-baseweb="select"] > div {
+    background-color: #FFFFFF !important;
+    color: #231F20 !important;
+    border-color: #DDE3EA !important;
+}
+
+/* Divisores */
+hr {
+    border-color: #DDE3EA !important;
+}
+/* ==================================================
+   FORZAR TEMA CLARO SIN DEPENDER DE CHROME
+   ================================================== */
+
+:root {
+    color-scheme: light !important;
+}
+
+html,
+body,
+.stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stMain"],
+[data-testid="stMainBlockContainer"] {
+    background-color: #F4F7FB !important;
+    color: #231F20 !important;
+    color-scheme: light !important;
+}
+
+/* Tarjetas y contenedores de Streamlit */
+[data-testid="stVerticalBlockBorderWrapper"],
+[data-testid="stMetric"],
+[data-testid="stForm"],
+[data-testid="stExpander"],
+[data-baseweb="base-input"],
+[data-baseweb="input"],
+[data-baseweb="textarea"],
+[data-baseweb="select"] > div {
+    background-color: #FFFFFF !important;
+    color: #231F20 !important;
+    border-color: #DDE3EA !important;
+}
+
+/* Textos internos */
+[data-testid="stAppViewContainer"] h1,
+[data-testid="stAppViewContainer"] h2,
+[data-testid="stAppViewContainer"] h3,
+[data-testid="stAppViewContainer"] h4,
+[data-testid="stAppViewContainer"] h5,
+[data-testid="stAppViewContainer"] h6,
+[data-testid="stAppViewContainer"] p,
+[data-testid="stAppViewContainer"] span,
+[data-testid="stAppViewContainer"] label,
+[data-testid="stAppViewContainer"] strong,
+[data-testid="stAppViewContainer"] li {
+    color: #231F20 !important;
+}
+
+/* Texto secundario */
+[data-testid="stCaptionContainer"],
+small,
+.section-description,
+.card-description {
+    color: #64748B !important;
+}
