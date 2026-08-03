@@ -342,8 +342,8 @@ header {
    ENCABEZADOS DE SECCIÓN
    ========================= */
 
-.section-header {
-    margin-top: 0.5rem;
+.section-header{
+    margin-top: 1.8rem;
     margin-bottom: 1.2rem;
     padding-bottom: 0.8rem;
     border-bottom: 1px solid var(--iot-border);
@@ -372,16 +372,15 @@ header {
     margin-bottom: 4px;
 }
 
-.block-container{
-    max-width: 1850px !important;
+.block-container {
+    max-width: 100% !important;
     width: 100% !important;
 
-    padding-top: 1.8rem !important;
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
+    padding-top: 140px !important;  
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
     padding-bottom: 2rem !important;
 }
-
 /* =========================================
    SIDEBAR VISIONQA
    ========================================= */
@@ -658,4 +657,228 @@ section[data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
 
     padding-left:8px;
 
+}
+/* Botones principales del módulo de IA */
+div.stButton > button {
+    background: linear-gradient(135deg, #0f6cbd, #1593b7) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    min-height: 46px !important;
+    box-shadow: 0 4px 10px rgba(15, 108, 189, 0.18) !important;
+    transition: all 0.2s ease !important;
+}
+
+div.stButton > button:hover {
+    background: linear-gradient(135deg, #0b5ca5, #117f9f) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(15, 108, 189, 0.28) !important;
+}
+
+div.stButton > button:active {
+    transform: translateY(0);
+}
+/* ==========================================
+   TOP BAR - VISIONQA / ESTILO LEANDIGITAL
+========================================== */
+
+.visionqa-topbar {
+
+    position: fixed;
+
+    top: 0;
+
+    left: 340px;
+
+    right: 0;
+
+    width: auto;
+
+    z-index: 999;
+
+    margin: 0;
+
+    border-radius: 0;
+
+    min-height: 130px;
+
+    padding: 22px 30px;
+
+    background: linear-gradient(
+        90deg,
+        #2389A8,
+        #1593B7
+    );
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.visionqa-topbar-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+}
+
+.visionqa-topbar-greeting {
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.visionqa-topbar-subtitle {
+    margin-top: 4px;
+
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.2;
+}
+
+.visionqa-topbar-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+}
+
+.visionqa-topbar-datetime {
+    min-width: 145px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.visionqa-topbar-date {
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.visionqa-topbar-time {
+    margin-top: 3px;
+
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.visionqa-topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.visionqa-topbar-action {
+    width: 34px;
+    height: 34px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.18);
+
+    background: rgba(12,75,120,.85);
+
+    color: #FFFFFF !important;
+    text-decoration: none !important;
+
+    font-size: 17px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+.visionqa-topbar-action:link,
+.visionqa-topbar-action:visited,
+.visionqa-topbar-action:hover,
+.visionqa-topbar-action:active {
+    color: #FFFFFF !important;
+    text-decoration: none !important;
+}
+
+.visionqa-topbar-action:hover {
+    background: #083A72;
+    color: #FFFFFF;
+    transform: translateY(-2px);
+}
+.visionqa-topbar-action i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+/* Ajuste para pantallas medianas */
+
+@media (max-width: 900px) {
+
+    .visionqa-topbar{
+    width:calc(100% + 40px);
+    margin-left:-20px;
+    margin-right:-20px;
+
+    padding:18px 30px;
+
+    margin-top:-10px;
+    margin-bottom:30px;
+
+    background:linear-gradient(90deg,#2389A8,#1593B7);
+
+    border-radius:0;
+}
+    .visionqa-topbar-greeting {
+        font-size: 15px;
+    }
+
+    .visionqa-topbar-subtitle {
+        font-size: 11px;
+    }
+
+    .visionqa-topbar-datetime {
+        min-width: 125px;
+    }
+
+    .visionqa-topbar-action {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+/* Ajuste para pantallas pequeñas */
+
+@media (max-width: 650px) {
+
+    .visionqa-topbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .visionqa-topbar-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .visionqa-topbar-datetime {
+        text-align: left;
+    }
+}
+/* Quitar margen del área principal */
+section.main > div {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+.bi {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
 }
