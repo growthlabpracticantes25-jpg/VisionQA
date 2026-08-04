@@ -994,3 +994,201 @@ small,
 .card-description {
     color: #64748B !important;
 }
+/* ==================================================
+   RECUPERAR TARJETAS Y RECUADROS DEL TEMA CLARO
+   ================================================== */
+
+/* Contenedores con borde de Streamlit */
+[data-testid="stVerticalBlockBorderWrapper"] {
+    background-color: #FFFFFF !important;
+    border: 1px solid #D9E2E8 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 14px rgba(35, 31, 32, 0.06) !important;
+}
+
+/* Tarjetas personalizadas de VisionQA */
+.metric-card,
+.vq-card,
+.report-card,
+.status-card,
+.analysis-card,
+.inspection-card,
+.result-card,
+.info-card {
+    background-color: #FFFFFF !important;
+    border: 1px solid #D9E2E8 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 14px rgba(35, 31, 32, 0.06) !important;
+    color: #231F20 !important;
+}
+
+/* Contenedores de formulario */
+[data-testid="stForm"],
+[data-testid="stExpander"] {
+    background-color: #FFFFFF !important;
+    border: 1px solid #D9E2E8 !important;
+    border-radius: 12px !important;
+}
+
+/* Botones normales */
+[data-testid="stButton"] > button {
+    background: linear-gradient(
+        135deg,
+        #0F6CBD,
+        #1593B7
+    ) !important;
+
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 8px !important;
+}
+
+/* Botones de descarga */
+[data-testid="stDownloadButton"] > button {
+    width: 100% !important;
+
+    background: linear-gradient(
+        135deg,
+        #0F6CBD,
+        #1593B7
+    ) !important;
+
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    min-height: 46px !important;
+
+    box-shadow:
+        0 4px 10px
+        rgba(15, 108, 189, 0.18) !important;
+}
+
+[data-testid="stDownloadButton"] > button:hover {
+    background: linear-gradient(
+        135deg,
+        #0B5CA5,
+        #117F9F
+    ) !important;
+
+    color: #FFFFFF !important;
+}
+
+/* Texto dentro de botones */
+[data-testid="stButton"] button p,
+[data-testid="stDownloadButton"] button p {
+    color: #FFFFFF !important;
+}
+
+/* Área de carga y cámara */
+[data-testid="stFileUploader"],
+[data-testid="stCameraInput"] {
+    background-color: #FFFFFF !important;
+    border: 1px solid #D9E2E8 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 14px rgba(35, 31, 32, 0.05) !important;
+}
+
+/* Tabla: contenedor exterior */
+[data-testid="stDataFrame"] {
+    background-color: #FFFFFF !important;
+    border: 1px solid #D9E2E8 !important;
+    border-radius: 12px !important;
+    color-scheme: light !important;
+    overflow: hidden !important;
+}
+/* ==================================================
+   CONTENEDORES CON BORDE - TEMA CLARO
+   ================================================== */
+
+div[data-testid="stVerticalBlockBorderWrapper"] {
+    background: #FFFFFF !important;
+    border: 1px solid #CBD5E1 !important;
+    border-radius: 14px !important;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08) !important;
+    padding: 4px !important;
+}
+
+/* Algunos Streamlit colocan el fondo en el hijo interior */
+div[data-testid="stVerticalBlockBorderWrapper"] > div {
+    background: #FFFFFF !important;
+    border-radius: 12px !important;
+}
+
+/* Texto interior de las tarjetas */
+div[data-testid="stVerticalBlockBorderWrapper"] h1,
+div[data-testid="stVerticalBlockBorderWrapper"] h2,
+div[data-testid="stVerticalBlockBorderWrapper"] h3,
+div[data-testid="stVerticalBlockBorderWrapper"] h4,
+div[data-testid="stVerticalBlockBorderWrapper"] p,
+div[data-testid="stVerticalBlockBorderWrapper"] span,
+div[data-testid="stVerticalBlockBorderWrapper"] label,
+div[data-testid="stVerticalBlockBorderWrapper"] strong {
+    color: #231F20 !important;
+}
+
+/* Espacio interior de las tarjetas */
+div[data-testid="stVerticalBlockBorderWrapper"]
+[data-testid="stVerticalBlock"] {
+    padding: 10px 12px !important;
+}
+/* TARJETAS DEL ESTADO DEL SISTEMA - TEMA CLARO */
+
+.system-card {
+    min-height: 145px;
+    padding: 22px;
+    background: #ffffff;
+    border: 1px solid #d8e1eb;
+    border-left: 5px solid #168db5;
+    border-radius: 14px;
+    box-shadow: 0 5px 16px rgba(15, 23, 42, 0.08);
+}
+
+.system-card-title {
+    color: #1f2937;
+    font-size: 23px;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.system-card-text {
+    color: #334155;
+    font-size: 15px;
+    margin-bottom: 15px;
+}
+
+.system-card-status {
+    color: #475569;
+    font-size: 14px;
+}
+/* ==========================================
+   TARJETAS GENERALES
+========================================== */
+
+.card-modulo{
+    border-radius:16px;
+    border-left:5px solid #1696d2;
+    padding:22px;
+    background:#ffffff;
+    border:1px solid #d9e3f0;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+    margin-bottom:15px;
+}
+/* ==================================================
+   MÉTODOS DE INSPECCIÓN — TEMA CLARO
+   ================================================== */
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.inspection-method-marker) {
+    background: #ffffff !important;
+    border: 1px solid #d8e1eb !important;
+    border-top: 5px solid #1998b7 !important;
+    border:1px solid rgba(22,150,210,.22);
+    border-radius: 14px !important;
+    box-shadow: 0 5px 16px rgba(15, 23, 42, 0.08) !important;
+    padding: 14px 10px 12px !important;
+    overflow: hidden !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.inspection-method-marker) > div {
+    background: transparent !important;
+}

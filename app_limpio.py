@@ -259,44 +259,48 @@ def mostrar_encabezado_seccion(titulo, descripcion=""):
 
     st.markdown(html, unsafe_allow_html=True)
 
-
 def mostrar_estado_sistema():
     st.subheader("🟢 Estado del Sistema")
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        with st.container(border=True):
-            st.markdown("""
-    ### 🤖 Modelo IA
-
-    **Estado:** Conectado
-
-    🟢 Cargado correctamente
-    """)
+        st.markdown(
+            """
+            <div class="system-card">
+                <div class="system-card-title">🤖 Modelo IA</div>
+                <div class="system-card-text"><strong>Estado:</strong> Conectado</div>
+                <div class="system-card-status">🟢 Cargado correctamente</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
     with col2:
-        with st.container(border=True):
-            st.markdown("""
-    ### 🧠 Gemini
-
-    **Estado:** Disponible
-
-    🟢 Conectado
-    """)
+        st.markdown(
+            """
+            <div class="system-card">
+                <div class="system-card-title">🧠 Gemini</div>
+                <div class="system-card-text"><strong>Estado:</strong> Disponible</div>
+                <div class="system-card-status">🟢 Conectado</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
     with col3:
-        with st.container(border=True):
-            st.markdown("""
-    ### 💾 Base de datos
-
-    **Estado:** Disponible
-
-    🟢 Registro listo
-    """)
+        st.markdown(
+            """
+            <div class="system-card">
+                <div class="system-card-title">💾 Base de datos</div>
+                <div class="system-card-text"><strong>Estado:</strong> Disponible</div>
+                <div class="system-card-status">🟢 Registro listo</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
     st.divider()
-
 
 def cargar_datos_registro():
 
@@ -334,7 +338,6 @@ def cargar_datos_registro():
 
         return 0, 0, 0
 
-
 def mostrar_modulo_inspeccion():
 
     mostrar_encabezado_seccion(
@@ -345,27 +348,34 @@ def mostrar_modulo_inspeccion():
     if "metodo_inspeccion" not in st.session_state:
         st.session_state["metodo_inspeccion"] = None
 
-    # Primero se crean las columnas
     col_metodo_1, col_metodo_2 = st.columns(2)
 
-    # Después se usan
     with col_metodo_1:
         with st.container(border=True):
 
             st.markdown(
-                """
-                <div style="text-align:center; padding:15px;">
-                    <div style="font-size:50px;">📂</div>
-                    <h4 style="margin:6px 0;">Cargar imagen</h4>
-                    <p style="color:#6c757d; margin:0;">
-                        Selecciona una imagen desde tu computadora.
-                    </p>
-                </div>
-                """,
+                '<span class="inspection-method-marker"></span>',
                 unsafe_allow_html=True,
             )
 
-            carga_activa = st.session_state["metodo_inspeccion"] == "Cargar imagen"
+            st.markdown(
+                dedent(
+                    """
+                    <div class="inspection-method-content">
+                        <div class="inspection-method-icon">📂</div>
+                        <div class="inspection-method-title">Cargar imagen</div>
+                        <div class="inspection-method-description">
+                            Selecciona una imagen desde tu computadora.
+                        </div>
+                    </div>
+                    """
+                ),
+                unsafe_allow_html=True,
+            )
+
+            carga_activa = (
+                st.session_state["metodo_inspeccion"] == "Cargar imagen"
+            )
 
             if st.button(
                 "✓ Imagen seleccionada" if carga_activa else "Seleccionar imagen",
@@ -380,19 +390,28 @@ def mostrar_modulo_inspeccion():
         with st.container(border=True):
 
             st.markdown(
-                """
-                <div style="text-align:center; padding:15px;">
-                    <div style="font-size:50px;">📷</div>
-                    <h4 style="margin:6px 0;">Tomar fotografía</h4>
-                    <p style="color:#6c757d; margin:0;">
-                        Captura una imagen utilizando la cámara.
-                    </p>
-                </div>
-                """,
+                '<span class="inspection-method-marker"></span>',
                 unsafe_allow_html=True,
             )
 
-            camara_activa = st.session_state["metodo_inspeccion"] == "Tomar fotografía"
+            st.markdown(
+                dedent(
+                    """
+                    <div class="inspection-method-content">
+                        <div class="inspection-method-icon">📷</div>
+                        <div class="inspection-method-title">Tomar fotografía</div>
+                        <div class="inspection-method-description">
+                            Captura una imagen utilizando la cámara.
+                        </div>
+                    </div>
+                    """
+                ),
+                unsafe_allow_html=True,
+            )
+
+            camara_activa = (
+                st.session_state["metodo_inspeccion"] == "Tomar fotografía"
+            )
 
             if st.button(
                 "✓ Cámara seleccionada" if camara_activa else "Abrir cámara",
@@ -2935,7 +2954,7 @@ def main():
             unsafe_allow_html=True,
         )
         with st.sidebar:
-            st.markdown( 
+            st.markdown(
                 f"""
                 <div style="
                     background:#0d6efd20;
@@ -2945,19 +2964,18 @@ def main():
                     margin-bottom:15px;
                     text-align:center;
                 ">
-
-                {icono_svg("user.svg",22,6)}
-
-                <br>
-
-                {st.session_state.get("usuario", "Usuario")}
-
+                    {icono_svg("user.svg", 22, 6)}
+                    <br>
+                    {st.session_state.get("usuario", "Usuario")}
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
 
-            st.image("assets/logo_iot.png", use_container_width=True)
+            st.image(
+                "assets/logo_iot.png",
+                use_container_width=True,
+            )
 
             st.markdown(
                 '<div class="sidebar-brand">'
@@ -2969,7 +2987,10 @@ def main():
                 unsafe_allow_html=True,
             )
 
-            st.markdown('<div class="sidebar-separator"></div>', unsafe_allow_html=True)
+            st.markdown(
+                '<div class="sidebar-separator"></div>',
+                unsafe_allow_html=True,
+            )
 
             pagina = option_menu(
                 menu_title=None,
@@ -3001,7 +3022,10 @@ def main():
                         "border-radius": "0px",
                         "box-shadow": "none",
                     },
-                    "icon": {"color": "#FFFFFF", "font-size": "18px"},
+                    "icon": {
+                        "color": "#FFFFFF",
+                        "font-size": "18px",
+                    },
                     "nav-link": {
                         "font-size": "15px",
                         "font-weight": "500",
@@ -3025,8 +3049,8 @@ def main():
                         "box-shadow": "0 4px 10px rgba(0,0,0,0.18)",
                     },
                 },
-
             )
+
             st.markdown(
                 '<div class="sidebar-section">Apariencia</div>',
                 unsafe_allow_html=True,
@@ -3037,31 +3061,39 @@ def main():
                 ["Claro", "Oscuro"],
                 horizontal=True,
                 label_visibility="collapsed",
-                index=0 if st.session_state["tema"] == "Claro" else 1,
+                index=(
+                    0
+                    if st.session_state.get("tema", "Claro") == "Claro"
+                    else 1
+                ),
             )
 
             st.session_state["tema"] = tema_seleccionado
 
-            if tema_seleccionado == "Oscuro":
-                cargar_tema("oscuro.css")
-            else:
-                cargar_tema("claro.css")
             st.markdown("---")
 
             st.markdown(
                 """
-                    <div class="sidebar-footer">
-                        <strong>VisionQA</strong><br>
-                        Versión 1.0<br>
-                        IOT Technologies
-                    </div>
-                    """,
+                <div class="sidebar-footer">
+                    <strong>VisionQA</strong><br>
+                    Versión 1.0<br>
+                    IOT Technologies
+                </div>
+                """,
                 unsafe_allow_html=True,
             )
 
+        # ---------------------------------------------
+        # APLICAR TEMA FUERA DEL SIDEBAR
+        # ---------------------------------------------
+
+        if st.session_state.get("tema", "Claro") == "Oscuro":
+            cargar_tema("oscuro.css")
+        else:
+            cargar_tema("claro.css")
+
         # -------- BARRA SUPERIOR DEL USUARIO --------
 
-        
         # -------- DASHBOARD --------
         if pagina == "Dashboard":
             registros = obtener_inspecciones_api()

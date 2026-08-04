@@ -1039,3 +1039,95 @@ body,
     color: #F8FAFC !important;
     color-scheme: dark !important;
 }
+/* ==================================================
+   CONTENEDORES CON BORDE - TEMA OSCURO
+   ================================================== */
+
+div[data-testid="stVerticalBlockBorderWrapper"] {
+    background: #172033 !important;
+    border: 1px solid #3B4A61 !important;
+    border-radius: 14px !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.30) !important;
+    padding: 4px !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] > div {
+    background: #172033 !important;
+    border-radius: 12px !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] h1,
+div[data-testid="stVerticalBlockBorderWrapper"] h2,
+div[data-testid="stVerticalBlockBorderWrapper"] h3,
+div[data-testid="stVerticalBlockBorderWrapper"] h4,
+div[data-testid="stVerticalBlockBorderWrapper"] p,
+div[data-testid="stVerticalBlockBorderWrapper"] span,
+div[data-testid="stVerticalBlockBorderWrapper"] label,
+div[data-testid="stVerticalBlockBorderWrapper"] strong {
+    color: #F8FAFC !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"]
+[data-testid="stVerticalBlock"] {
+    padding: 10px 12px !important;
+}
+/* TARJETAS DEL ESTADO DEL SISTEMA - TEMA OSCURO */
+
+.system-card {
+    min-height: 145px;
+    padding: 22px;
+    background: #172033;
+    border: 1px solid #3b4a61;
+    border-left: 5px solid #22a6c7;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+}
+
+.system-card-title {
+    color: #f8fafc;
+    font-size: 23px;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.system-card-text {
+    color: #dbeafe;
+    font-size: 15px;
+    margin-bottom: 15px;
+}
+
+.system-card-status {
+    color: #cbd5e1;
+    font-size: 14px;
+}
+/* ==========================================
+   TARJETAS GENERALES
+========================================== */
+
+.card-modulo{
+    border-radius:16px;
+    border-left:5px solid #22b8ff;
+    padding:22px;
+    background:#1b2235;
+    border:1px solid #334155;
+    box-shadow:0 4px 12px rgba(0,0,0,.35);
+    margin-bottom:15px;
+}
+/* ==================================================
+   MÉTODOS DE INSPECCIÓN — TEMA OSCURO
+   ================================================== */
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.inspection-method-marker) {
+    background: #172033 !important;
+    border: 1px solid #3b4a61 !important;
+    border-top: 5px solid #22b8d6 !important;
+    border:1px solid rgba(52,182,223,.28);
+    border-radius: 14px !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28) !important;
+    padding: 14px 10px 12px !important;
+    overflow: hidden !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.inspection-method-marker) > div {
+    background: transparent !important;
+}
