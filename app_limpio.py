@@ -2175,7 +2175,10 @@ Origen: {registro.get('origen', 'Sin origen')}
 
 
 def mostrar_reportes():
-
+    st.markdown(
+        '<span class="reportes-page-marker"></span>',
+        unsafe_allow_html=True,
+    )
     st.markdown("## 📂 Documentos disponibles")
 
     st.caption("Selecciona el documento que deseas generar o descargar.")

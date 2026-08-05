@@ -1247,3 +1247,76 @@ div[data-testid="stColumn"]
     padding: 14px !important;
     box-sizing: border-box !important;
 }
+/* ==================================================
+   REPORTES - TEMA CLARO
+================================================== */
+
+section[data-testid="stMain"]:has(.reportes-page-marker)
+div[data-testid="stColumn"]
+> div[data-testid="stVerticalBlock"] {
+
+    background: #ffffff !important;
+    border: 1px solid #202020 !important;
+    border-radius: 14px !important;
+    box-shadow: 0 2px 7px rgba(0,0,0,.07) !important;
+    padding: 16px !important;
+    box-sizing: border-box !important;
+
+}
+/* ==========================================
+   CARGADOR DE ARCHIVOS Y CÁMARA — TEMA CLARO
+========================================== */
+
+div[data-testid="stFileUploader"] section,
+div[data-testid="stCameraInput"] section {
+    background: #ffffff !important;
+    border: 1px solid #202020 !important;
+    border-radius: 12px !important;
+    color: #202124 !important;
+}
+
+div[data-testid="stFileUploader"] button,
+div[data-testid="stCameraInput"] button {
+    background: #1678c8 !important;
+    color: #ffffff !important;
+    border: 1px solid #1268af !important;
+    border-radius: 8px !important;
+}
+
+div[data-testid="stFileUploader"] button:hover,
+div[data-testid="stCameraInput"] button:hover {
+    background: #0f63a7 !important;
+    border-color: #0f63a7 !important;
+}
+
+div[data-testid="stFileUploader"] small,
+div[data-testid="stFileUploader"] span,
+div[data-testid="stCameraInput"] small,
+div[data-testid="stCameraInput"] span {
+    color: #4b5563 !important;
+}
+/* ==========================================
+   CÁMARA — TEMA CLARO
+========================================== */
+
+div[data-testid="stCameraInput"] {
+    background: #ffffff !important;
+    border: 1px solid #202020 !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+}
+
+div[data-testid="stCameraInput"] > div,
+div[data-testid="stCameraInput"] section {
+    background: #ffffff !important;
+}
+
+div[data-testid="stCameraInput"] video {
+    background: #eef3f8 !important;
+}
+
+div[data-testid="stCameraInput"] button {
+    background: #1678c8 !important;
+    color: #ffffff !important;
+    border: 1px solid #1268af !important;
+}
