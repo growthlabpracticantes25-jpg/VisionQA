@@ -1098,39 +1098,41 @@ small,
     overflow: hidden !important;
 }
 /* ==================================================
-   CONTENEDORES CON BORDE - TEMA CLARO
-   ================================================== */
+   TARJETAS Y CONTENEDORES — TEMA CLARO
+================================================== */
 
+/* El envoltorio exterior no lleva el borde */
 div[data-testid="stVerticalBlockBorderWrapper"] {
-    background: #FFFFFF !important;
-    border: 1px solid #CBD5E1 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* El borde se aplica al bloque interior visible */
+div[data-testid="stVerticalBlockBorderWrapper"]
+> div[data-testid="stVerticalBlock"] {
+    background: #ffffff !important;
+    border: 1px solid #252525 !important;
     border-radius: 14px !important;
-    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08) !important;
-    padding: 4px !important;
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.07) !important;
+    padding: 12px 14px !important;
+    box-sizing: border-box !important;
 }
 
-/* Algunos Streamlit colocan el fondo en el hijo interior */
-div[data-testid="stVerticalBlockBorderWrapper"] > div {
-    background: #FFFFFF !important;
-    border-radius: 12px !important;
-}
-
-/* Texto interior de las tarjetas */
+/* Encabezados dentro de las tarjetas */
 div[data-testid="stVerticalBlockBorderWrapper"] h1,
 div[data-testid="stVerticalBlockBorderWrapper"] h2,
 div[data-testid="stVerticalBlockBorderWrapper"] h3,
 div[data-testid="stVerticalBlockBorderWrapper"] h4,
-div[data-testid="stVerticalBlockBorderWrapper"] p,
-div[data-testid="stVerticalBlockBorderWrapper"] span,
-div[data-testid="stVerticalBlockBorderWrapper"] label,
 div[data-testid="stVerticalBlockBorderWrapper"] strong {
-    color: #231F20 !important;
+    color: #202124 !important;
 }
 
-/* Espacio interior de las tarjetas */
-div[data-testid="stVerticalBlockBorderWrapper"]
-[data-testid="stVerticalBlock"] {
-    padding: 10px 12px !important;
+/* Texto secundario */
+div[data-testid="stVerticalBlockBorderWrapper"] p,
+div[data-testid="stVerticalBlockBorderWrapper"] span,
+div[data-testid="stVerticalBlockBorderWrapper"] label {
+    color: #4b5563 !important;
 }
 /* TARJETAS DEL ESTADO DEL SISTEMA - TEMA CLARO */
 
@@ -1174,21 +1176,74 @@ div[data-testid="stVerticalBlockBorderWrapper"]
     box-shadow:0 4px 12px rgba(0,0,0,.08);
     margin-bottom:15px;
 }
-/* ==================================================
-   MÉTODOS DE INSPECCIÓN — TEMA CLARO
-   ================================================== */
+/* TARJETAS MÉTODO DE INSPECCIÓN — TEMA CLARO */
 
-div[data-testid="stVerticalBlockBorderWrapper"]:has(.inspection-method-marker) {
-    background: #ffffff !important;
-    border: 1px solid #d8e1eb !important;
-    border-top: 5px solid #1998b7 !important;
-    border:1px solid rgba(22,150,210,.22);
-    border-radius: 14px !important;
-    box-shadow: 0 5px 16px rgba(15, 23, 42, 0.08) !important;
-    padding: 14px 10px 12px !important;
-    overflow: hidden !important;
+.inspection-card {
+    background: #ffffff;
+    border: 2px solid #bfd7e8;
+    box-shadow: 0 5px 16px rgba(15, 23, 42, 0.10);
 }
 
-div[data-testid="stVerticalBlockBorderWrapper"]:has(.inspection-method-marker) > div {
-    background: transparent !important;
+.inspection-card:hover {
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.15);
+}
+
+.inspection-card-title {
+    color: #231f20;
+}
+
+.inspection-card-description {
+    color: #64748b;
+}
+
+.inspection-card.active {
+    border-color: #0a4e95;
+}
+/* ÚLTIMA INSPECCIÓN — TEMA CLARO */
+
+.registro-card {
+    background: #ffffff;
+    border: 2px solid #bfd7e8;
+    box-shadow: 0 5px 16px rgba(15, 23, 42, 0.10);
+}
+
+.registro-card:hover {
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.15);
+}
+
+.registro-card-heading,
+.registro-card-value {
+    color: #231f20;
+}
+
+.registro-card-label,
+.registro-card-caption {
+    color: #64748b;
+}
+
+.registro-progress-track {
+    background: #dbe5ee;
+}
+/* ==========================================
+   CONTENEDORES - TEMA CLARO
+========================================== */
+
+div[data-testid="stVerticalBlockBorderWrapper"]{
+    border:1px solid #d8e4ef !important;
+    border-radius:16px !important;
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+/* ==================================================
+   TARJETAS IA GENERATIVA — TEMA CLARO
+================================================== */
+
+section[data-testid="stMain"]:has(.gemini-page-marker)
+div[data-testid="stColumn"]
+> div[data-testid="stVerticalBlock"] {
+    background: #ffffff !important;
+    border: 1px solid #202020 !important;
+    border-radius: 14px !important;
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.07) !important;
+    padding: 14px !important;
+    box-sizing: border-box !important;
 }

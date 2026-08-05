@@ -882,43 +882,148 @@ section.main > div {
     justify-content: center;
     line-height: 1;
 }
+/* ==================================================
+   TARJETAS HTML — MÉTODO DE INSPECCIÓN
+   ================================================== */
 
-/* =====================================================
-   TARJETAS MÉTODO DE INSPECCIÓN
-===================================================== */
-
-.inspection-method-marker{
-    display:block;
-    width:100%;
-    height:5px;
-    background:#1696d2;
-    border-radius:8px 8px 0 0;
-    margin-bottom:18px;
+.inspection-card {
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 12px;
 }
 
-.inspection-method-content{
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-
-    text-align:center;
-    min-height:220px;
-    padding:28px 20px;
-}
-.inspection-method-icon{
-    font-size:52px;
-    margin-bottom:10px;
+.inspection-card:hover {
+    transform: translateY(-2px);
 }
 
-.inspection-method-title{
-    font-size:24px;
-    font-weight:700;
-    margin-bottom:10px;
+.inspection-card-top {
+    width: 100%;
+    height: 6px;
+    background: #1696d2;
 }
 
-.inspection-method-description{
-    font-size:15px;
-    opacity:.8;
-    margin-bottom:18px;
+.inspection-card-content {
+    min-height: 180px;
+    padding: 28px 20px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.inspection-card-icon {
+    font-size: 52px;
+    line-height: 1;
+    margin-bottom: 16px;
+}
+
+.inspection-card-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.inspection-card-description {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.inspection-card.active .inspection-card-top {
+    background: #0a4e95;
+}
+/* ==================================================
+   TARJETAS — ÚLTIMA INSPECCIÓN
+   ================================================== */
+
+.registro-card {
+    width: 100%;
+    min-height: 210px;
+    height: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.registro-card:hover {
+    transform: translateY(-2px);
+}
+
+.registro-card-top {
+    width: 100%;
+    height: 5px;
+    background: #1696d2;
+}
+
+.registro-card-content {
+    min-height: 205px;
+    padding: 20px 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.registro-card-heading {
+    font-size: 21px;
+    font-weight: 700;
+    margin-bottom: 22px;
+}
+
+.registro-card-label {
+    font-size: 13px;
+    margin-bottom: 5px;
+    opacity: 0.75;
+}
+
+.registro-card-value {
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.registro-card-caption {
+    font-size: 13px;
+    line-height: 1.45;
+    opacity: 0.72;
+}
+
+.registro-result-badge {
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 15px;
+    margin-bottom: 18px;
+}
+
+.registro-apto .registro-result-badge {
+    background: #d9f5e5;
+    color: #16794a;
+}
+
+.registro-no-apto .registro-result-badge {
+    background: #f9d9dc;
+    color: #b4232f;
+}
+
+.registro-revision .registro-result-badge {
+    background: #fff2cc;
+    color: #8a6400;
+}
+
+.registro-progress-track {
+    width: 100%;
+    height: 7px;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 16px;
+}
+
+.registro-progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: #1696d2;
 }

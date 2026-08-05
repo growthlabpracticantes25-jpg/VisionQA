@@ -351,76 +351,69 @@ def mostrar_modulo_inspeccion():
     col_metodo_1, col_metodo_2 = st.columns(2)
 
     with col_metodo_1:
-        with st.container(border=True):
+        carga_activa = (
+            st.session_state["metodo_inspeccion"] == "Cargar imagen"
+        )
 
-            st.markdown(
-                '<span class="inspection-method-marker"></span>',
-                unsafe_allow_html=True,
-            )
-
-            st.markdown(
-                dedent(
-                    """
-                    <div class="inspection-method-content">
-                        <div class="inspection-method-icon">📂</div>
-                        <div class="inspection-method-title">Cargar imagen</div>
-                        <div class="inspection-method-description">
+        st.markdown(
+            dedent(
+                f"""
+                <div class="inspection-card {'active' if carga_activa else ''}">
+                    <div class="inspection-card-top"></div>
+                    <div class="inspection-card-content">
+                        <div class="inspection-card-icon">📂</div>
+                        <div class="inspection-card-title">Cargar imagen</div>
+                        <div class="inspection-card-description">
                             Selecciona una imagen desde tu computadora.
                         </div>
                     </div>
-                    """
-                ),
-                unsafe_allow_html=True,
-            )
+                </div>
+                """
+            ),
+            unsafe_allow_html=True,
+        )
 
-            carga_activa = (
-                st.session_state["metodo_inspeccion"] == "Cargar imagen"
-            )
-
-            if st.button(
-                "✓ Imagen seleccionada" if carga_activa else "Seleccionar imagen",
-                key="seleccionar_carga",
-                use_container_width=True,
-                type="primary" if carga_activa else "secondary",
-            ):
-                st.session_state["metodo_inspeccion"] = "Cargar imagen"
-                st.rerun()
+        if st.button(
+            "✓ Imagen seleccionada" if carga_activa else "Seleccionar imagen",
+            key="seleccionar_carga",
+            use_container_width=True,
+            type="primary" if carga_activa else "secondary",
+        ):
+            st.session_state["metodo_inspeccion"] = "Cargar imagen"
+            st.rerun()
 
     with col_metodo_2:
-        with st.container(border=True):
+        camara_activa = (
+            st.session_state["metodo_inspeccion"] == "Tomar fotografía"
+        )
 
-            st.markdown(
-                '<span class="inspection-method-marker"></span>',
-                unsafe_allow_html=True,
-            )
-
-            st.markdown(
-                dedent(
-                    """
-                    <div class="inspection-method-content">
-                        <div class="inspection-method-icon">📷</div>
-                        <div class="inspection-method-title">Tomar fotografía</div>
-                        <div class="inspection-method-description">
+        st.markdown(
+            dedent(
+                f"""
+                <div class="inspection-card {'active' if camara_activa else ''}">
+                    <div class="inspection-card-top"></div>
+                    <div class="inspection-card-content">
+                        <div class="inspection-card-icon">📷</div>
+                        <div class="inspection-card-title">Tomar fotografía</div>
+                        <div class="inspection-card-description">
                             Captura una imagen utilizando la cámara.
                         </div>
                     </div>
-                    """
-                ),
-                unsafe_allow_html=True,
-            )
+                </div>
+                """
+            ),
+            unsafe_allow_html=True,
+        )
 
-            camara_activa = (
-                st.session_state["metodo_inspeccion"] == "Tomar fotografía"
-            )
+        if st.button(
+            "✓ Cámara seleccionada" if camara_activa else "Abrir cámara",
+            key="seleccionar_camara",
+            use_container_width=True,
+            type="primary" if camara_activa else "secondary",
+        ):
+            st.session_state["metodo_inspeccion"] = "Tomar fotografía"
+            st.rerun()
 
-            if st.button(
-                "✓ Cámara seleccionada" if camara_activa else "Abrir cámara",
-                key="seleccionar_camara",
-                use_container_width=True,
-                type="primary" if camara_activa else "secondary",
-            ):
-                st.session_state["metodo_inspeccion"] = "Tomar fotografía"
-                st.rerun()
 
     opcion = st.session_state["metodo_inspeccion"]
 
@@ -819,30 +812,23 @@ def mostrar_indicadores(aptas, no_aptas):
 
     st.divider()
 
-
 def mostrar_registro():
 
     url_api = "http://127.0.0.1:8000/api/inspecciones/"
 
     try:
-
         respuesta = requests.get(url_api, timeout=10)
 
         if respuesta.status_code != 200:
-
             st.error("No fue posible consultar el registro en Django.")
-
             st.caption(f"Error de API: {respuesta.status_code}")
-
             st.divider()
             return
 
         registros = respuesta.json()
 
         if not registros:
-
             st.info("Todavía no hay inspecciones registradas.")
-
             st.divider()
             return
 
@@ -861,11 +847,22 @@ def mostrar_registro():
         )
 
         # Convertir y ordenar fechas
-        datos["Fecha"] = pd.to_datetime(datos["Fecha"], errors="coerce")
+        datos["Fecha"] = pd.to_datetime(
+            datos["Fecha"],
+            errors="coerce",
+        )
 
-        datos = datos.sort_values(by="Fecha", ascending=True).reset_index(drop=True)
+        datos = (
+            datos.sort_values(
+                by="Fecha",
+                ascending=True,
+            )
+            .reset_index(drop=True)
+        )
 
-        datos["Fecha"] = datos["Fecha"].dt.strftime("%d/%m/%Y %H:%M:%S")
+        datos["Fecha"] = datos["Fecha"].dt.strftime(
+            "%d/%m/%Y %H:%M:%S"
+        )
 
         # -------- ÚLTIMA INSPECCIÓN --------
 
@@ -873,212 +870,229 @@ def mostrar_registro():
 
         st.markdown("### Última inspección")
 
-        resultado = str(ultima_inspeccion["Resultado"]).strip().upper()
+        resultado = str(
+            ultima_inspeccion["Resultado"]
+        ).strip().upper()
 
         defecto = ultima_inspeccion.get("Defecto", "")
 
         if pd.notna(defecto) and str(defecto).strip():
-
-            defecto_texto = str(defecto).replace("_", " ").title()
-
+            defecto_texto = (
+                str(defecto)
+                .replace("_", " ")
+                .title()
+            )
         else:
-
             defecto_texto = "Sin defecto"
 
-        confianza = float(ultima_inspeccion["Confianza (%)"])
+        try:
+            confianza = float(
+                ultima_inspeccion["Confianza (%)"]
+            )
+        except (TypeError, ValueError):
+            confianza = 0.0
 
         col_resultado, col_defecto, col_confianza = st.columns(3)
+
+        # -------- PREPARAR ESTADO VISUAL --------
+
+        if resultado in ["APTO", "BUENA"]:
+            clase_resultado = "registro-apto"
+            icono_resultado = "✅"
+            texto_resultado = "PIEZA APTA"
+
+        elif resultado in ["NO APTO", "MALA"]:
+            clase_resultado = "registro-no-apto"
+            icono_resultado = "❌"
+            texto_resultado = "PIEZA NO APTA"
+
+        else:
+            clase_resultado = "registro-revision"
+            icono_resultado = "⚠️"
+            texto_resultado = resultado
 
         # -------- TARJETA RESULTADO --------
 
         with col_resultado:
-
-            with st.container(border=True):
-
-                st.markdown("### 📋 Resultado")
-
-                if resultado in ["APTO", "BUENA"]:
-
-                    st.success("✅ PIEZA APTA")
-
-                elif resultado in ["NO APTO", "MALA"]:
-
-                    st.error("❌ PIEZA NO APTA")
-
-                else:
-
-                    st.warning(f"⚠ {resultado}")
-
-                st.caption("Clasificación general de la última inspección.")
+            st.markdown(
+                f"""<div class="registro-card {clase_resultado}">
+<div class="registro-card-top"></div>
+<div class="registro-card-content">
+<div class="registro-card-heading">📋 Resultado</div>
+<div class="registro-result-badge">{icono_resultado} {texto_resultado}</div>
+<div class="registro-card-caption">Clasificación general de la última inspección.</div>
+</div>
+</div>""",
+                unsafe_allow_html=True,
+            )
 
         # -------- TARJETA DEFECTO --------
 
         with col_defecto:
-
-            with st.container(border=True):
-
-                st.markdown("### ⚠️ Defecto")
-
-                st.metric(
-                    label="Clasificación detectada",
-                    value=defecto_texto,
-                )
-
-                st.caption("Tipo de defecto identificado por el modelo.")
+            st.markdown(
+                f"""<div class="registro-card">
+<div class="registro-card-top"></div>
+<div class="registro-card-content">
+<div class="registro-card-heading">⚠️ Defecto</div>
+<div class="registro-card-label">Clasificación detectada</div>
+<div class="registro-card-value">{escape(defecto_texto)}</div>
+<div class="registro-card-caption">Tipo de defecto identificado por el modelo.</div>
+</div>
+</div>""",
+                unsafe_allow_html=True,
+            )
 
         # -------- TARJETA CONFIANZA --------
 
         with col_confianza:
+            porcentaje_barra = min(
+                max(confianza, 0.0),
+                100.0,
+            )
 
-            with st.container(border=True):
-
-                st.markdown("### 🛡️ Confianza")
-
-                st.metric(
-                    label="Nivel del modelo",
-                    value=f"{confianza:.2f}%",
-                )
-
-                st.progress(
-                    min(
-                        max(confianza / 100, 0.0),
-                        1.0,
-                    )
-                )
+            st.markdown(
+                f"""<div class="registro-card">
+<div class="registro-card-top"></div>
+<div class="registro-card-content">
+<div class="registro-card-heading">🛡️ Confianza</div>
+<div class="registro-card-label">Nivel del modelo</div>
+<div class="registro-card-value">{confianza:.2f}%</div>
+<div class="registro-progress-track">
+<div class="registro-progress-fill" style="width:{porcentaje_barra:.2f}%;"></div>
+</div>
+</div>
+</div>""",
+                unsafe_allow_html=True,
+            )
 
         # -------- FECHA Y ORIGEN --------
 
         with st.container(border=True):
-
             col_fecha, col_origen = st.columns(2)
 
             with col_fecha:
-
-                st.markdown(f"📅 **Fecha:** {ultima_inspeccion['Fecha']}")
+                st.markdown(
+                    f"📅 **Fecha:** {ultima_inspeccion['Fecha']}"
+                )
 
             with col_origen:
-
-                st.markdown(f"📂 **Origen:** {ultima_inspeccion['Origen']}")
+                st.markdown(
+                    f"📂 **Origen:** {ultima_inspeccion['Origen']}"
+                )
 
         # -------- HISTORIAL COMPLETO --------
 
-        st.markdown("### 📋 Historial de inspecciones")
+        with st.container(border=True):
+            st.markdown("### 📋 Historial de inspecciones")
 
-        columnas_mostradas = [
-            "Fecha",
-            "Resultado",
-            "Defecto",
-            "Confianza (%)",
-            "Origen",
-        ]
+            columnas_mostradas = [
+                "Fecha",
+                "Resultado",
+                "Defecto",
+                "Confianza (%)",
+                "Origen",
+            ]
 
-        datos_mostrados = datos[columnas_mostradas].iloc[::-1].reset_index(drop=True)
-
-        # Mejorar visualización del resultado
-        datos_mostrados["Resultado"] = datos_mostrados["Resultado"].replace(
-            {
-                "APTO": "🟢 APTO",
-                "BUENA": "🟢 APTO",
-                "NO APTO": "🔴 NO APTO",
-                "MALA": "🔴 NO APTO",
-            }
-        )
-
-        # Mejorar visualización del defecto
-        datos_mostrados["Defecto"] = (
-            datos_mostrados["Defecto"]
-            .fillna("Sin defecto")
-            .astype(str)
-            .str.replace("_", " ", regex=False)
-            .str.title()
-        )
-
-        # Formato de confianza
-        datos_mostrados["Confianza (%)"] = (
-            pd.to_numeric(
-                datos_mostrados["Confianza (%)"],
-                errors="coerce",
+            datos_mostrados = (
+                datos[columnas_mostradas]
+                .iloc[::-1]
+                .reset_index(drop=True)
             )
-            .fillna(0)
-            .round(2)
-        )
-        st.markdown(
-            """
-            <style>
-            div[data-testid="stDataFrame"] table {
-                border-radius: 12px;
-                overflow: hidden;
-            }
 
-            div[data-testid="stDataFrame"] th {
-                background: #0F6CBD;
-                color: white;
-                text-align: center;
-                font-size: 15px;
-            }
+            # Guardar resultado original para futuros colores
+            resultados_originales = (
+                datos_mostrados["Resultado"]
+                .astype(str)
+                .str.strip()
+                .str.upper()
+            )
 
-            div[data-testid="stDataFrame"] td {
-                text-align: center;
-                font-size: 14px;
-            }
-            </style>
-            """,
-            unsafe_allow_html=True,
-        )
+            # Mejorar visualización del resultado
+            datos_mostrados["Resultado"] = (
+                resultados_originales.replace(
+                    {
+                        "APTO": "🟢 APTO",
+                        "BUENA": "🟢 APTO",
+                        "NO APTO": "🔴 NO APTO",
+                        "MALA": "🔴 NO APTO",
+                    }
+                )
+            )
 
-        st.dataframe(
-            datos_mostrados,
-            use_container_width=True,
-            hide_index=True,
-            height=420,
-            column_config={
-                "Fecha": st.column_config.TextColumn(
-                    "📅 Fecha",
-                    width="medium",
-                ),
-                "Resultado": st.column_config.TextColumn(
-                    "Resultado",
-                    width="small",
-                ),
-                "Defecto": st.column_config.TextColumn(
-                    "⚠️ Defecto",
-                    width="medium",
-                ),
-                "Confianza (%)": st.column_config.ProgressColumn(
-                    "📊 Confianza",
-                    min_value=0,
-                    max_value=100,
-                    format="%.2f%%",
-                    width="medium",
-                ),
-                "Origen": st.column_config.TextColumn(
-                    "📂 Origen",
-                    width="small",
-                ),
-            },
-        )
-        st.info(f"📊 Total de inspecciones registradas: **{len(datos)}**")
+            # Mejorar visualización del defecto
+            datos_mostrados["Defecto"] = (
+                datos_mostrados["Defecto"]
+                .fillna("Sin defecto")
+                .astype(str)
+                .str.replace("_", " ", regex=False)
+                .str.title()
+            )
+
+            # Formato de confianza
+            datos_mostrados["Confianza (%)"] = (
+                pd.to_numeric(
+                    datos_mostrados["Confianza (%)"],
+                    errors="coerce",
+                )
+                .fillna(0)
+                .round(2)
+            )
+
+            st.data_editor(
+                datos_mostrados,
+                use_container_width=True,
+                hide_index=True,
+                height=420,
+                disabled=True,
+                column_config={
+                    "Fecha": st.column_config.TextColumn(
+                        "📅 Fecha",
+                        width="medium",
+                    ),
+                    "Resultado": st.column_config.TextColumn(
+                        "Resultado",
+                        width="small",
+                    ),
+                    "Defecto": st.column_config.TextColumn(
+                        "⚠️ Defecto",
+                        width="medium",
+                    ),
+                    "Confianza (%)": st.column_config.ProgressColumn(
+                        "📊 Confianza",
+                        min_value=0,
+                        max_value=100,
+                        format="%.2f%%",
+                        width="medium",
+                    ),
+                    "Origen": st.column_config.TextColumn(
+                        "📂 Origen",
+                        width="small",
+                    ),
+                },
+            )
+
+            st.info(
+                f"📊 Total de inspecciones registradas: **{len(datos)}**"
+            )
 
     except requests.exceptions.ConnectionError:
-
         st.error("No se pudo conectar con Django.")
-
-        st.info("Verifica que esté ejecutándose: " "python manage.py runserver")
+        st.info(
+            "Verifica que esté ejecutándose: "
+            "`python manage.py runserver`"
+        )
 
     except requests.exceptions.RequestException as error:
-
         st.error("Ocurrió un error al consultar la API.")
-
         st.caption(f"Detalle técnico: {error}")
 
     except Exception as error:
-
-        st.error("No fue posible cargar el registro de inspecciones.")
-
+        st.error(
+            "No fue posible cargar el registro de inspecciones."
+        )
         st.caption(f"Detalle técnico: {error}")
 
     st.divider()
-
 
 def generar_excel_registros(registros):
 
@@ -1673,7 +1687,10 @@ def generar_pdf_informe_ia(
 
 
 def mostrar_gemini():
-
+    st.markdown(
+        '<span class="gemini-page-marker"></span>',
+        unsafe_allow_html=True,
+    )
     # -------- VARIABLES DEL INFORME --------
 
     resultado_ia = None

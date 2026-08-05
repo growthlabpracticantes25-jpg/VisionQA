@@ -1113,21 +1113,51 @@ div[data-testid="stVerticalBlockBorderWrapper"]
     box-shadow:0 4px 12px rgba(0,0,0,.35);
     margin-bottom:15px;
 }
-/* ==================================================
-   MÉTODOS DE INSPECCIÓN — TEMA OSCURO
-   ================================================== */
+/* TARJETAS MÉTODO DE INSPECCIÓN — TEMA OSCURO */
 
-div[data-testid="stVerticalBlockBorderWrapper"]:has(.inspection-method-marker) {
-    background: #172033 !important;
-    border: 1px solid #3b4a61 !important;
-    border-top: 5px solid #22b8d6 !important;
-    border:1px solid rgba(52,182,223,.28);
-    border-radius: 14px !important;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28) !important;
-    padding: 14px 10px 12px !important;
-    overflow: hidden !important;
+.inspection-card {
+    background: #172033;
+    border: 2px solid #52627a;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.30);
 }
 
-div[data-testid="stVerticalBlockBorderWrapper"]:has(.inspection-method-marker) > div {
-    background: transparent !important;
+.inspection-card:hover {
+    box-shadow: 0 9px 24px rgba(0, 0, 0, 0.42);
+}
+
+.inspection-card-title {
+    color: #f8fafc;
+}
+
+.inspection-card-description {
+    color: #cbd5e1;
+}
+
+.inspection-card.active {
+    border-color: #22b8d6;
+}
+/* ÚLTIMA INSPECCIÓN — TEMA OSCURO */
+
+.registro-card {
+    background: #172033;
+    border: 2px solid #52627a;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.30);
+}
+
+.registro-card:hover {
+    box-shadow: 0 9px 24px rgba(0, 0, 0, 0.42);
+}
+
+.registro-card-heading,
+.registro-card-value {
+    color: #f8fafc;
+}
+
+.registro-card-label,
+.registro-card-caption {
+    color: #cbd5e1;
+}
+
+.registro-progress-track {
+    background: #303b4f;
 }
