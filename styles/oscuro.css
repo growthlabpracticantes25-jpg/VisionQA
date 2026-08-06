@@ -408,7 +408,7 @@ section[data-testid="stSidebar"]
     width: 340px !important;
     min-width: 340px !important;
     max-width: 340px !important;
-    padding: 26px 24px !important;
+    padding: 8px 22px 14px 22px !important;
     background: transparent !important;
 }
 
@@ -421,16 +421,17 @@ section[data-testid="stSidebar"] [data-testid="stElementContainer"] {
 
 /* Logo IOT */
 section[data-testid="stSidebar"] img {
-    width: 265px !important;
-    max-width: 265px !important;
+    width: 245px !important;
+    max-width: 245px !important;
     display: block !important;
-    margin: 16px auto 34px auto !important;
+    margin: 0 auto 12px auto !important;
 }
 
 /* Identidad VisionQA */
 .sidebar-brand {
     text-align: center;
-    margin-bottom: 26px;
+    margin-top: 4px;
+    margin-bottom: 18px;
 }
 
 .sidebar-title {
@@ -451,8 +452,8 @@ section[data-testid="stSidebar"] img {
 /* Separadores */
 .sidebar-separator {
     height: 1px;
-    background-color: rgba(255, 255, 255, 0.55);
-    margin: 24px 0;
+    background-color: rgba(255, 255, 255, 0.45);
+    margin: 14px 0 18px 0;
 }
 
 /* Menú de navegación */
@@ -784,25 +785,28 @@ div.stButton > button:active {
 
     border-radius: 50%;
     border: 1px solid rgba(255,255,255,.18);
-
     background: rgba(12,75,120,.85);
 
-    color: #FFFFFF !important;
+    color: #ffffff !important;
     text-decoration: none !important;
 
     font-size: 17px;
     font-weight: 700;
-
     cursor: pointer;
-
     transition: .2s;
 }
-.visionqa-topbar-action:link,
-.visionqa-topbar-action:visited,
-.visionqa-topbar-action:hover,
-.visionqa-topbar-action:active {
-    color: #FFFFFF !important;
-    text-decoration: none !important;
+
+.visionqa-topbar-action img {
+    width: 18px !important;
+    height: 18px !important;
+    display: block !important;
+    opacity: 1 !important;
+    filter: brightness(0) invert(1) !important;
+}
+
+.visionqa-topbar-action:hover img {
+    opacity: 1 !important;
+    filter: brightness(0) invert(1) !important;
 }
 
 .visionqa-topbar-action:hover {
@@ -1104,60 +1108,31 @@ div[data-testid="stVerticalBlockBorderWrapper"]
    TARJETAS GENERALES
 ========================================== */
 
-.card-modulo{
-    border-radius:16px;
-    border-left:5px solid #22b8ff;
-    padding:22px;
-    background:#1b2235;
-    border:1px solid #334155;
-    box-shadow:0 4px 12px rgba(0,0,0,.35);
-    margin-bottom:15px;
+.card-modulo {
+    border-radius: 16px;
+    border-left: 5px solid #22b8ff;
+    padding: 22px;
+    background: #1b2235;
+    border: 1px solid #334155;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    margin-bottom: 15px;
 }
-/* TARJETAS MÉTODO DE INSPECCIÓN — TEMA OSCURO */
+/* ==========================================
+   BOTÓN DE AYUDA SUPERIOR
+========================================== */
 
-.inspection-card {
-    background: #172033;
-    border: 2px solid #52627a;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.30);
-}
-
-.inspection-card:hover {
-    box-shadow: 0 9px 24px rgba(0, 0, 0, 0.42);
-}
-
-.inspection-card-title {
-    color: #f8fafc;
+div[data-testid="stButton"]:has(button[kind="secondary"]) {
+    position: fixed;
+    top: 90px;
+    right: 70px;
+    z-index: 99999;
 }
 
-.inspection-card-description {
-    color: #cbd5e1;
-}
-
-.inspection-card.active {
-    border-color: #22b8d6;
-}
-/* ÚLTIMA INSPECCIÓN — TEMA OSCURO */
-
-.registro-card {
-    background: #172033;
-    border: 2px solid #52627a;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.30);
-}
-
-.registro-card:hover {
-    box-shadow: 0 9px 24px rgba(0, 0, 0, 0.42);
-}
-
-.registro-card-heading,
-.registro-card-value {
-    color: #f8fafc;
-}
-
-.registro-card-label,
-.registro-card-caption {
-    color: #cbd5e1;
-}
-
-.registro-progress-track {
-    background: #303b4f;
+div[data-testid="stButton"]:has(button[kind="secondary"]) button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    padding: 0;
+    font-size: 18px;
+    font-weight: bold;
 }

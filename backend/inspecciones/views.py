@@ -27,46 +27,53 @@ def pagina_login(request):
     error = None
 
     if request.method == "POST":
-        username = request.POST.get("username", "").strip()
+        correo = request.POST.get("username", "").strip().lower()
         password = request.POST.get("password", "")
 
-        if not username or not password:
-            error = "Debes ingresar usuario y contraseña."
+        if not correo or not password:
+            error = "Debes ingresar correo electrónico y contraseña."
 
         else:
-            usuario = authenticate(
-                request=request,
-                username=username,
-                password=password,
-            )
+            try:
+                usuario_encontrado = User.objects.get(email__iexact=correo)
 
-            if usuario is None:
-                error = "Usuario o contraseña incorrectos."
-
-            elif not usuario.is_active:
-                error = "El usuario está desactivado."
+            except User.DoesNotExist:
+                error = "Correo electrónico o contraseña incorrectos."
 
             else:
-                auth_login(request, usuario)
-
-                # Asegurar que Django cree la sesión.
-                if not request.session.session_key:
-                    request.session.save()
-
-                token_acceso = signing.dumps(
-                    {
-                        "usuario_id": usuario.id,
-                        "username": usuario.username,
-                        "session_key": request.session.session_key,
-                    },
-                    salt="visionqa-streamlit",
+                usuario = authenticate(
+                    request=request,
+                    username=usuario_encontrado.username,
+                    password=password,
                 )
 
-                token_codificado = quote(token_acceso)
+                if usuario is None:
+                    error = "Correo electrónico o contraseña incorrectos."
 
-                return redirect(
-                    f"http://127.0.0.1:8501/?token={token_codificado}"
-                )
+                elif not usuario.is_active:
+                    error = "El usuario está desactivado."
+
+                else:
+                    auth_login(request, usuario)
+
+                    # Asegurar que Django cree la sesión
+                    if not request.session.session_key:
+                        request.session.save()
+
+                    token_acceso = signing.dumps(
+                        {
+                            "usuario_id": usuario.id,
+                            "username": usuario.username,
+                            "session_key": request.session.session_key,
+                        },
+                        salt="visionqa-streamlit",
+                    )
+
+                    token_codificado = quote(token_acceso)
+
+                    return redirect(
+                        f"http://127.0.0.1:8501/?token={token_codificado}"
+                    )
 
     return render(
         request,
@@ -75,6 +82,7 @@ def pagina_login(request):
             "error": error,
         },
     )
+
 def registrar_usuario(request):
     error = None
 
@@ -246,21 +254,32 @@ def recuperar_password(request):
     )
 
 def login_usuario(request):
-    username = request.data.get("username", "").strip()
+    correo = request.data.get("username", "").strip().lower()
     password = request.data.get("password", "")
 
-    if not username or not password:
+    if not correo or not password:
         return Response(
             {
                 "success": False,
-                "message": "Debes ingresar usuario y contraseña.",
+                "message": "Debes ingresar correo electrónico y contraseña.",
             },
             status=status.HTTP_400_BAD_REQUEST,
         )
 
+    try:
+        usuario_encontrado = User.objects.get(email__iexact=correo)
+    except User.DoesNotExist:
+        return Response(
+            {
+                "success": False,
+                "message": "Correo electrónico o contraseña incorrectos.",
+            },
+            status=status.HTTP_401_UNAUTHORIZED,
+        )
+
     usuario = authenticate(
         request=request,
-        username=username,
+        username=usuario_encontrado.username,
         password=password,
     )
 
@@ -268,7 +287,7 @@ def login_usuario(request):
         return Response(
             {
                 "success": False,
-                "message": "Usuario o contraseña incorrectos.",
+                "message": "Correo electrónico o contraseña incorrectos.",
             },
             status=status.HTTP_401_UNAUTHORIZED,
         )

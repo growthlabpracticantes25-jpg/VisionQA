@@ -41,6 +41,7 @@ from reportlab.platypus import (
     TableStyle,
 )
 
+
 def cargar_tema(nombre_archivo):
     ruta = Path(__file__).parent / "styles" / nombre_archivo
 
@@ -65,6 +66,8 @@ def cargar_css(nombre_archivo):
             )
     else:
         st.warning(f"No se encontró el archivo CSS: {ruta}")
+
+
 # ---------------- APP PRINCIPAL ----------------
 
 st.set_page_config(page_title="VisionQA", page_icon="🔍", layout="wide")
@@ -219,34 +222,36 @@ def obtener_inspecciones_api():
 
     return []
 
+
 def mostrar_titulo(icono, titulo, descripcion):
     html_titulo = (
         '<div style="margin-top:30px; margin-bottom:22px;">'
-            '<div style="'
-                'display:flex;'
-                'align-items:center;'
-                'gap:10px;'
-                'color:#231F20;'
-                'font-size:28px;'
-                'font-weight:700;'
-            '">'
-                f'{icono_svg(icono, 30, 0)}'
-                f'<span>{titulo}</span>'
-            '</div>'
-            '<div style="'
-                'margin-top:6px;'
-                'color:#64748B;'
-                'font-size:14px;'
-            '">'
-                f'{descripcion}'
-            '</div>'
-        '</div>'
+        '<div style="'
+        "display:flex;"
+        "align-items:center;"
+        "gap:10px;"
+        "color:#231F20;"
+        "font-size:28px;"
+        "font-weight:700;"
+        '">'
+        f"{icono_svg(icono, 30, 0)}"
+        f"<span>{titulo}</span>"
+        "</div>"
+        '<div style="'
+        "margin-top:6px;"
+        "color:#64748B;"
+        "font-size:14px;"
+        '">'
+        f"{descripcion}"
+        "</div>"
+        "</div>"
     )
 
     st.markdown(
         html_titulo,
         unsafe_allow_html=True,
     )
+
 
 def mostrar_encabezado_seccion(titulo, descripcion=""):
 
@@ -258,6 +263,7 @@ def mostrar_encabezado_seccion(titulo, descripcion=""):
     )
 
     st.markdown(html, unsafe_allow_html=True)
+
 
 def mostrar_estado_sistema():
     st.subheader("🟢 Estado del Sistema")
@@ -302,6 +308,7 @@ def mostrar_estado_sistema():
 
     st.divider()
 
+
 def cargar_datos_registro():
 
     url_api = "http://127.0.0.1:8000/api/inspecciones/"
@@ -338,6 +345,7 @@ def cargar_datos_registro():
 
         return 0, 0, 0
 
+
 def mostrar_modulo_inspeccion():
 
     mostrar_encabezado_seccion(
@@ -351,13 +359,10 @@ def mostrar_modulo_inspeccion():
     col_metodo_1, col_metodo_2 = st.columns(2)
 
     with col_metodo_1:
-        carga_activa = (
-            st.session_state["metodo_inspeccion"] == "Cargar imagen"
-        )
+        carga_activa = st.session_state["metodo_inspeccion"] == "Cargar imagen"
 
         st.markdown(
-            dedent(
-                f"""
+            dedent(f"""
                 <div class="inspection-card {'active' if carga_activa else ''}">
                     <div class="inspection-card-top"></div>
                     <div class="inspection-card-content">
@@ -368,8 +373,7 @@ def mostrar_modulo_inspeccion():
                         </div>
                     </div>
                 </div>
-                """
-            ),
+                """),
             unsafe_allow_html=True,
         )
 
@@ -383,13 +387,10 @@ def mostrar_modulo_inspeccion():
             st.rerun()
 
     with col_metodo_2:
-        camara_activa = (
-            st.session_state["metodo_inspeccion"] == "Tomar fotografía"
-        )
+        camara_activa = st.session_state["metodo_inspeccion"] == "Tomar fotografía"
 
         st.markdown(
-            dedent(
-                f"""
+            dedent(f"""
                 <div class="inspection-card {'active' if camara_activa else ''}">
                     <div class="inspection-card-top"></div>
                     <div class="inspection-card-content">
@@ -400,8 +401,7 @@ def mostrar_modulo_inspeccion():
                         </div>
                     </div>
                 </div>
-                """
-            ),
+                """),
             unsafe_allow_html=True,
         )
 
@@ -413,7 +413,6 @@ def mostrar_modulo_inspeccion():
         ):
             st.session_state["metodo_inspeccion"] = "Tomar fotografía"
             st.rerun()
-
 
     opcion = st.session_state["metodo_inspeccion"]
 
@@ -812,6 +811,7 @@ def mostrar_indicadores(aptas, no_aptas):
 
     st.divider()
 
+
 def mostrar_registro():
 
     url_api = "http://127.0.0.1:8000/api/inspecciones/"
@@ -852,17 +852,12 @@ def mostrar_registro():
             errors="coerce",
         )
 
-        datos = (
-            datos.sort_values(
-                by="Fecha",
-                ascending=True,
-            )
-            .reset_index(drop=True)
-        )
+        datos = datos.sort_values(
+            by="Fecha",
+            ascending=True,
+        ).reset_index(drop=True)
 
-        datos["Fecha"] = datos["Fecha"].dt.strftime(
-            "%d/%m/%Y %H:%M:%S"
-        )
+        datos["Fecha"] = datos["Fecha"].dt.strftime("%d/%m/%Y %H:%M:%S")
 
         # -------- ÚLTIMA INSPECCIÓN --------
 
@@ -870,25 +865,17 @@ def mostrar_registro():
 
         st.markdown("### Última inspección")
 
-        resultado = str(
-            ultima_inspeccion["Resultado"]
-        ).strip().upper()
+        resultado = str(ultima_inspeccion["Resultado"]).strip().upper()
 
         defecto = ultima_inspeccion.get("Defecto", "")
 
         if pd.notna(defecto) and str(defecto).strip():
-            defecto_texto = (
-                str(defecto)
-                .replace("_", " ")
-                .title()
-            )
+            defecto_texto = str(defecto).replace("_", " ").title()
         else:
             defecto_texto = "Sin defecto"
 
         try:
-            confianza = float(
-                ultima_inspeccion["Confianza (%)"]
-            )
+            confianza = float(ultima_inspeccion["Confianza (%)"])
         except (TypeError, ValueError):
             confianza = 0.0
 
@@ -971,14 +958,10 @@ def mostrar_registro():
             col_fecha, col_origen = st.columns(2)
 
             with col_fecha:
-                st.markdown(
-                    f"📅 **Fecha:** {ultima_inspeccion['Fecha']}"
-                )
+                st.markdown(f"📅 **Fecha:** {ultima_inspeccion['Fecha']}")
 
             with col_origen:
-                st.markdown(
-                    f"📂 **Origen:** {ultima_inspeccion['Origen']}"
-                )
+                st.markdown(f"📂 **Origen:** {ultima_inspeccion['Origen']}")
 
         # -------- HISTORIAL COMPLETO --------
 
@@ -994,29 +977,22 @@ def mostrar_registro():
             ]
 
             datos_mostrados = (
-                datos[columnas_mostradas]
-                .iloc[::-1]
-                .reset_index(drop=True)
+                datos[columnas_mostradas].iloc[::-1].reset_index(drop=True)
             )
 
             # Guardar resultado original para futuros colores
             resultados_originales = (
-                datos_mostrados["Resultado"]
-                .astype(str)
-                .str.strip()
-                .str.upper()
+                datos_mostrados["Resultado"].astype(str).str.strip().str.upper()
             )
 
             # Mejorar visualización del resultado
-            datos_mostrados["Resultado"] = (
-                resultados_originales.replace(
-                    {
-                        "APTO": "🟢 APTO",
-                        "BUENA": "🟢 APTO",
-                        "NO APTO": "🔴 NO APTO",
-                        "MALA": "🔴 NO APTO",
-                    }
-                )
+            datos_mostrados["Resultado"] = resultados_originales.replace(
+                {
+                    "APTO": "🟢 APTO",
+                    "BUENA": "🟢 APTO",
+                    "NO APTO": "🔴 NO APTO",
+                    "MALA": "🔴 NO APTO",
+                }
             )
 
             # Mejorar visualización del defecto
@@ -1071,28 +1047,22 @@ def mostrar_registro():
                 },
             )
 
-            st.info(
-                f"📊 Total de inspecciones registradas: **{len(datos)}**"
-            )
+            st.info(f"📊 Total de inspecciones registradas: **{len(datos)}**")
 
     except requests.exceptions.ConnectionError:
         st.error("No se pudo conectar con Django.")
-        st.info(
-            "Verifica que esté ejecutándose: "
-            "`python manage.py runserver`"
-        )
+        st.info("Verifica que esté ejecutándose: " "`python manage.py runserver`")
 
     except requests.exceptions.RequestException as error:
         st.error("Ocurrió un error al consultar la API.")
         st.caption(f"Detalle técnico: {error}")
 
     except Exception as error:
-        st.error(
-            "No fue posible cargar el registro de inspecciones."
-        )
+        st.error("No fue posible cargar el registro de inspecciones.")
         st.caption(f"Detalle técnico: {error}")
 
     st.divider()
+
 
 def generar_excel_registros(registros):
 
@@ -2626,8 +2596,10 @@ def mostrar_login():
             unsafe_allow_html=True,
         )
 
-        usuario = st.text_input(
-            "Usuario", placeholder="Escribe tu usuario", key="login_usuario"
+        correo = st.text_input(
+            "Correo electrónico",
+            placeholder="Escribe tu correo electrónico",
+            key="login_correo",
         )
 
         contraseña = st.text_input(
@@ -2641,9 +2613,8 @@ def mostrar_login():
 
         if iniciar:
 
-            if not usuario.strip() or not contraseña:
-
-                st.warning("Escribe el usuario y la contraseña.")
+            if not correo.strip() or not contraseña:
+                st.warning("Escribe el correo electrónico y la contraseña.")
 
             else:
 
@@ -2653,7 +2624,7 @@ def mostrar_login():
 
                         respuesta = requests.post(
                             "http://127.0.0.1:8000/api/login/",
-                            json={"username": usuario.strip(), "password": contraseña},
+                            json={"username": correo.strip(), "password": contraseña},
                             timeout=10,
                         )
 
@@ -2664,7 +2635,7 @@ def mostrar_login():
                         if datos.get("success"):
 
                             st.session_state["logueado"] = True
-                            st.session_state["usuario"] = datos.get("username", usuario)
+                            st.session_state["usuario"] = datos.get("username", correo)
                             st.session_state["is_staff"] = datos.get("is_staff", False)
                             st.session_state["is_superuser"] = datos.get(
                                 "is_superuser", False
@@ -2712,27 +2683,28 @@ def mostrar_login():
             """,
             unsafe_allow_html=True,
         )
+
+
 def icono_svg(nombre, tamaño=22, margen_derecho=8):
     ruta = Path(__file__).parent / "assets" / "icons" / nombre
 
     if not ruta.exists():
         return ""
 
-    contenido = base64.b64encode(
-        ruta.read_bytes()
-    ).decode("utf-8")
+    contenido = base64.b64encode(ruta.read_bytes()).decode("utf-8")
 
     return (
-        f'<img '
+        f"<img "
         f'src="data:image/svg+xml;base64,{contenido}" '
         f'width="{tamaño}" '
         f'height="{tamaño}" '
         f'style="'
-        f'vertical-align:middle;'
-        f'margin-right:{margen_derecho}px;'
-        f'object-fit:contain;'
+        f"vertical-align:middle;"
+        f"margin-right:{margen_derecho}px;"
+        f"object-fit:contain;"
         f'">'
     )
+
 
 def redirigir_a(url, mensaje="Redirigiendo..."):
     st.markdown(
@@ -2755,388 +2727,390 @@ def redirigir_a(url, mensaje="Redirigiendo..."):
 
     st.stop()
 
+
+@st.dialog("Centro de ayuda VisionQA")
+def mostrar_ayuda():
+    
+    st.markdown("""
+        ### ¿Cómo usar VisionQA?
+
+        **1. Iniciar una inspección**  
+        Ve al módulo **Inspección** y selecciona si deseas cargar una imagen o tomar una fotografía.
+
+        **2. Interpretar el resultado**  
+        - **APTO:** la pieza cumple con los criterios de calidad.
+        - **NO APTO:** se detectó algún defecto en la pieza.
+
+        **3. Consultar registros**  
+        En el módulo **Registro** puedes revisar el historial de inspecciones.
+
+        **4. Usar IA Generativa**  
+        En el módulo **IA Generativa** puedes analizar causas, tendencias y recomendaciones.
+
+        **5. Descargar reportes**  
+        En **Reportes** puedes exportar el historial y los análisis generados.
+
+        **6. Problemas con la cámara**  
+        Verifica que Windows detecte la webcam y que el navegador tenga permiso para usarla.
+        """)
+
+    if st.button("Cerrar", key="cerrar_ayuda"):
+        st.rerun()
+
+
 def main():
 
-        LOGIN_URL = "http://127.0.0.1:8000/api/login/"
-        LOGOUT_URL = "http://127.0.0.1:8000/api/logout/"
-        VERIFICAR_URL = (
-            "http://127.0.0.1:8000/api/verificar-acceso/"
+    LOGIN_URL = "http://127.0.0.1:8000/api/login/"
+    LOGOUT_URL = "http://127.0.0.1:8000/api/logout/"
+    VERIFICAR_URL = "http://127.0.0.1:8000/api/verificar-acceso/"
+
+    # ---------------------------------------------
+    # CERRAR SESIÓN DESDE STREAMLIT
+    # ---------------------------------------------
+
+    if st.query_params.get("logout") == "1":
+
+        st.session_state.clear()
+        st.query_params.clear()
+
+        redirigir_a(
+            LOGOUT_URL,
+            "Cerrando sesión...",
         )
 
-        # ---------------------------------------------
-        # CERRAR SESIÓN DESDE STREAMLIT
-        # ---------------------------------------------
+    # ---------------------------------------------
+    # OBTENER TOKEN
+    # ---------------------------------------------
 
-        if st.query_params.get("logout") == "1":
+    token_url = st.query_params.get("token")
+
+    if token_url:
+        st.session_state["token_acceso"] = token_url
+
+    token_acceso = st.session_state.get("token_acceso")
+
+    # ---------------------------------------------
+    # SI NO HAY TOKEN, VOLVER AL LOGIN
+    # ---------------------------------------------
+
+    if not token_acceso:
+
+        st.session_state.clear()
+
+        redirigir_a(
+            LOGIN_URL,
+            "Debes iniciar sesión para acceder a VisionQA.",
+        )
+    # ---------------------------------------------
+    # VALIDAR SIEMPRE EL TOKEN CON DJANGO
+    # ---------------------------------------------
+
+    try:
+
+        respuesta = requests.get(
+            VERIFICAR_URL,
+            params={
+                "token": token_acceso,
+            },
+            timeout=10,
+        )
+
+        if respuesta.status_code != 200:
 
             st.session_state.clear()
             st.query_params.clear()
 
             redirigir_a(
-                LOGOUT_URL,
-                "Cerrando sesión...",
+                LOGIN_URL,
+                "Tu sesión no es válida. Inicia sesión nuevamente.",
             )
+        datos_usuario = respuesta.json()
 
-        # ---------------------------------------------
-        # OBTENER TOKEN
-        # ---------------------------------------------
-
-        token_url = st.query_params.get("token")
-
-        if token_url:
-            st.session_state["token_acceso"] = token_url
-
-        token_acceso = st.session_state.get("token_acceso")
-
-        # ---------------------------------------------
-        # SI NO HAY TOKEN, VOLVER AL LOGIN
-        # ---------------------------------------------
-
-        if not token_acceso:
+        if not datos_usuario.get("autenticado"):
 
             st.session_state.clear()
+            st.query_params.clear()
 
             redirigir_a(
                 LOGIN_URL,
-                "Debes iniciar sesión para acceder a VisionQA.",
-            )
-        # ---------------------------------------------
-        # VALIDAR SIEMPRE EL TOKEN CON DJANGO
-        # ---------------------------------------------
-
-        try:
-
-            respuesta = requests.get(
-                VERIFICAR_URL,
-                params={
-                    "token": token_acceso,
-                },
-                timeout=10,
+                "Tu sesión terminó.",
             )
 
-            if respuesta.status_code != 200:
+        nombre = (
+            datos_usuario.get("first_name")
+            or datos_usuario.get("username")
+            or "Usuario"
+        )
 
-                st.session_state.clear()
-                st.query_params.clear()
+        st.session_state["usuario"] = nombre
+        st.session_state["username"] = datos_usuario.get(
+            "username",
+            "",
+        )
+        st.session_state["logueado"] = True
 
-                redirigir_a(
-                    LOGIN_URL,
-                    "Tu sesión no es válida. Inicia sesión nuevamente.",
-                )
-            datos_usuario = respuesta.json()
+    except requests.RequestException:
 
-            if not datos_usuario.get("autenticado"):
+        st.error("No fue posible conectar con el servidor de autenticación.")
 
-                st.session_state.clear()
-                st.query_params.clear()
-
-                redirigir_a(
-
-                    LOGIN_URL,
-                    "Tu sesión terminó.",
-                )
-
-            nombre = (
-                datos_usuario.get("first_name")
-                or datos_usuario.get("username")
-                or "Usuario"
-            )
-
-            st.session_state["usuario"] = nombre
-            st.session_state["username"] = datos_usuario.get(
-                "username",
-                "",
-            )
-            st.session_state["logueado"] = True
-
-        except requests.RequestException:
-
-            st.error(
-                "No fue posible conectar con el servidor de autenticación."
-            )
-
-            st.stop()
+        st.stop()
 
     # -------------------------------------------------
     # USUARIO AUTENTICADO
     # -------------------------------------------------
 
-        nombre_usuario = st.session_state.get(
+    nombre_usuario = st.session_state.get(
         "usuario",
         "Usuario",
     )
-        if "tema" not in st.session_state:
-            st.session_state["tema"] = "Claro"
+    if "tema" not in st.session_state:
+        st.session_state["tema"] = "Claro"
 
-        # -------- MENÚ LATERAL --------
-        ahora = datetime.now()
+    # -------- MENÚ LATERAL --------
+    ahora = datetime.now()
 
-        dias_semana = [
-            "Lunes",
-            "Martes",
-            "Miércoles",
-            "Jueves",
-            "Viernes",
-            "Sábado",
-            "Domingo",
-        ]
+    dias_semana = [
+        "Lunes",
+        "Martes",
+        "Miércoles",
+        "Jueves",
+        "Viernes",
+        "Sábado",
+        "Domingo",
+    ]
 
-        meses = [
-            "Ene",
-            "Feb",
-            "Mar",
-            "Abr",
-            "May",
-            "Jun",
-            "Jul",
-            "Ago",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dic",
-        ]
+    meses = [
+        "Ene",
+        "Feb",
+        "Mar",
+        "Abr",
+        "May",
+        "Jun",
+        "Jul",
+        "Ago",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dic",
+    ]
 
-        dia_semana = dias_semana[ahora.weekday()]
-        mes_actual = meses[ahora.month - 1]
+    dia_semana = dias_semana[ahora.weekday()]
+    mes_actual = meses[ahora.month - 1]
 
-        fecha_actual = f"{dia_semana}, {ahora.day:02d} " f"{mes_actual} {ahora.year}"
+    fecha_actual = f"{dia_semana}, {ahora.day:02d} " f"{mes_actual} {ahora.year}"
 
-        hora_actual = ahora.strftime("%I:%M %p")
+    hora_actual = ahora.strftime("%I:%M %p")
 
-        if ahora.hour < 12:
-            saludo = "Buenos días"
-        elif ahora.hour < 19:
-            saludo = "Buenas tardes"
-        else:
-            saludo = "Buenas noches"
+    if ahora.hour < 12:
+        saludo = "Buenos días"
+    elif ahora.hour < 19:
+        saludo = "Buenas tardes"
+    else:
+        saludo = "Buenas noches"
 
-        nombre_usuario = escape(
-            str(
-                st.session_state.get(
-                    "usuario",
-                    "Usuario",
-                )
+    nombre_usuario = escape(
+        str(
+            st.session_state.get(
+                "usuario",
+                "Usuario",
             )
         )
+    )
+    if "mostrar_ayuda" not in st.session_state:
+        st.session_state["mostrar_ayuda"] = False
 
-        html_barra = (
-            '<div class="visionqa-topbar">'
+    token_actual = st.query_params.get("token", "")
+    html_barra = (
+        '<div class="visionqa-topbar">'
+        '<div class="visionqa-topbar-left">'
+        f'<div class="visionqa-topbar-greeting">'
+        f"{saludo}, {nombre_usuario}"
+        "</div>"
+        '<div class="visionqa-topbar-subtitle">'
+        "Este es el estado actual del sistema VisionQA"
+        "</div>"
+        "</div>"
+        '<div class="visionqa-topbar-right">'
+        '<div class="visionqa-topbar-datetime">'
+        f'<div class="visionqa-topbar-date">'
+        f"{fecha_actual}"
+        "</div>"
+        f'<div class="visionqa-topbar-time">'
+        f"{hora_actual}"
+        "</div>"
+        "</div>"
+        '<div class="visionqa-topbar-actions">'
+        f'<div class="visionqa-topbar-action" '
+        f'title="{nombre_usuario}">'
+        f"{icono_svg('user.svg',20,0)}"
+        "</div>"
 
-                '<div class="visionqa-topbar-left">'
-                    f'<div class="visionqa-topbar-greeting">'
-                        f'{saludo}, {nombre_usuario}'
-                    '</div>'
-                    '<div class="visionqa-topbar-subtitle">'
-                        'Este es el estado actual del sistema VisionQA'
-                    '</div>'
-                '</div>'
+        f'<a class="visionqa-topbar-action" '
+        f'href="?token={token_actual}&ayuda=1" '
+        f'target="_self" '
+        f'title="Ayuda">'
+        f"{icono_svg('help.svg',20,0)}"
+        "</a>"
 
-                '<div class="visionqa-topbar-right">'
+        '<a class="visionqa-topbar-action" '
+        'href="http://127.0.0.1:8501/?logout=1" '
+        'target="_self" '
+        'title="Cerrar sesión">'
+        f"{icono_svg('logout.svg',20,0)}"
+        "</a>"
+        "</div>"
+        "</div>"
+        "</div>"
+    )
+    st.markdown(
+        
+        html_barra,
+        unsafe_allow_html=True,
+    )
 
-                    '<div class="visionqa-topbar-datetime">'
-                        f'<div class="visionqa-topbar-date">'
-                            f'{fecha_actual}'
-                        '</div>'
-                        f'<div class="visionqa-topbar-time">'
-                            f'{hora_actual}'
-                        '</div>'
-                    '</div>'
-
-                    '<div class="visionqa-topbar-actions">'
-
-                        f'<div class="visionqa-topbar-action" '
-                        f'title="{nombre_usuario}">'
-                            f'{icono_svg("user.svg",20,0)}'
-                        '</div>'
-
-                        '<a class="visionqa-topbar-action" '
-                        'href="?pagina=Acerca%20de" '
-                        'title="Ayuda">'
-                            f'{icono_svg("help.svg",20,0)}'
-                        '</a>'
-
-                        '<a class="visionqa-topbar-action" '
-                        'href="http://127.0.0.1:8501/?logout=1" '
-                        'target="_self" '
-                        'title="Cerrar sesión">'
-                            f'{icono_svg("logout.svg",20,0)}'
-                        '</a>'
-
-                    '</div>'
-
-                '</div>'
-
-            '</div>'
+    if st.query_params.get("ayuda") == "1":
+        del st.query_params["ayuda"]
+        mostrar_ayuda()
+        
+    with st.sidebar:
+        
+        st.image(
+            "assets/logo_iot.png",
+            use_container_width=True,
         )
 
         st.markdown(
-            html_barra,
+            '<div class="sidebar-brand">'
+            '<div class="sidebar-title">VisionQA</div>'
+            '<div class="sidebar-subtitle">'
+            "Sistema Inteligente de Inspección Visual"
+            "</div>"
+            "</div>",
             unsafe_allow_html=True,
         )
-        with st.sidebar:
-            st.markdown(
-                f"""
-                <div style="
-                    background:#0d6efd20;
-                    border:1px solid #0d6efd40;
-                    border-radius:10px;
-                    padding:10px;
-                    margin-bottom:15px;
-                    text-align:center;
-                ">
-                    {icono_svg("user.svg", 22, 6)}
-                    <br>
-                    {st.session_state.get("usuario", "Usuario")}
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
 
-            st.image(
-                "assets/logo_iot.png",
-                use_container_width=True,
-            )
+        st.markdown(
+            '<div class="sidebar-separator"></div>',
+            unsafe_allow_html=True,
+        )
 
-            st.markdown(
-                '<div class="sidebar-brand">'
-                '<div class="sidebar-title">VisionQA</div>'
-                '<div class="sidebar-subtitle">'
-                "Sistema Inteligente de Inspección Visual"
-                "</div>"
-                "</div>",
-                unsafe_allow_html=True,
-            )
-
-            st.markdown(
-                '<div class="sidebar-separator"></div>',
-                unsafe_allow_html=True,
-            )
-
-            pagina = option_menu(
-                menu_title=None,
-                options=[
-                    "Dashboard",
-                    "Inspección",
-                    "Registro",
-                    "IA Generativa",
-                    "Reportes",
-                    "Acerca de",
-                ],
-                icons=[
-                    "speedometer2",
-                    "search",
-                    "clipboard-data",
-                    "cpu",
-                    "file-earmark-bar-graph",
-                    "info-circle",
-                ],
-                menu_icon=None,
-                default_index=0,
-                orientation="vertical",
-                styles={
-                    "container": {
-                        "padding": "12px 10px",
-                        "margin": "0px",
-                        "background-color": "#1998B7",
-                        "border": "none",
-                        "border-radius": "0px",
-                        "box-shadow": "none",
-                    },
-                    "icon": {
-                        "color": "#FFFFFF",
-                        "font-size": "18px",
-                    },
-                    "nav-link": {
-                        "font-size": "15px",
-                        "font-weight": "500",
-                        "color": "#FFFFFF",
-                        "text-align": "left",
-                        "margin": "6px 0",
-                        "padding": "14px 16px",
-                        "border-radius": "10px",
-                        "background-color": "#1998B7",
-                        "border": "none",
-                    },
-                    "nav-link-hover": {
-                        "background-color": "rgba(255,255,255,0.16)",
-                        "color": "#FFFFFF",
-                    },
-                    "nav-link-selected": {
-                        "background-color": "#0A4E95",
-                        "color": "#FFFFFF",
-                        "font-weight": "700",
-                        "border-radius": "10px",
-                        "box-shadow": "0 4px 10px rgba(0,0,0,0.18)",
-                    },
+        pagina = option_menu(
+            menu_title=None,
+            options=[
+                "Dashboard",
+                "Inspección",
+                "Registro",
+                "IA Generativa",
+                "Reportes",
+                "Acerca de",
+            ],
+            icons=[
+                "speedometer2",
+                "search",
+                "clipboard-data",
+                "cpu",
+                "file-earmark-bar-graph",
+                "info-circle",
+            ],
+            menu_icon=None,
+            default_index=0,
+            orientation="vertical",
+            styles={
+                "container": {
+                    "padding": "12px 10px",
+                    "margin": "0px",
+                    "background-color": "#1998B7",
+                    "border": "none",
+                    "border-radius": "0px",
+                    "box-shadow": "none",
                 },
-            )
+                "icon": {
+                    "color": "#FFFFFF",
+                    "font-size": "18px",
+                },
+                "nav-link": {
+                    "font-size": "15px",
+                    "font-weight": "500",
+                    "color": "#FFFFFF",
+                    "text-align": "left",
+                    "margin": "6px 0",
+                    "padding": "14px 16px",
+                    "border-radius": "10px",
+                    "background-color": "#1998B7",
+                    "border": "none",
+                },
+                "nav-link-hover": {
+                    "background-color": "rgba(255,255,255,0.16)",
+                    "color": "#FFFFFF",
+                },
+                "nav-link-selected": {
+                    "background-color": "#0A4E95",
+                    "color": "#FFFFFF",
+                    "font-weight": "700",
+                    "border-radius": "10px",
+                    "box-shadow": "0 4px 10px rgba(0,0,0,0.18)",
+                },
+            },
+        )
 
-            st.markdown(
-                '<div class="sidebar-section">Apariencia</div>',
-                unsafe_allow_html=True,
-            )
+        st.markdown(
+            '<div class="sidebar-section">Apariencia</div>',
+            unsafe_allow_html=True,
+        )
 
-            tema_seleccionado = st.radio(
-                "Tema",
-                ["Claro", "Oscuro"],
-                horizontal=True,
-                label_visibility="collapsed",
-                index=(
-                    0
-                    if st.session_state.get("tema", "Claro") == "Claro"
-                    else 1
-                ),
-            )
+        tema_seleccionado = st.radio(
+            "Tema",
+            ["Claro", "Oscuro"],
+            horizontal=True,
+            label_visibility="collapsed",
+            index=(0 if st.session_state.get("tema", "Claro") == "Claro" else 1),
+        )
 
-            st.session_state["tema"] = tema_seleccionado
+        st.session_state["tema"] = tema_seleccionado
 
-            st.markdown("---")
+        st.markdown("---")
 
-            st.markdown(
-                """
+        st.markdown(
+            """
                 <div class="sidebar-footer">
                     <strong>VisionQA</strong><br>
                     Versión 1.0<br>
                     IOT Technologies
                 </div>
                 """,
-                unsafe_allow_html=True,
-            )
+            unsafe_allow_html=True,
+        )
 
-        # ---------------------------------------------
-        # APLICAR TEMA FUERA DEL SIDEBAR
-        # ---------------------------------------------
+    # ---------------------------------------------
+    # APLICAR TEMA FUERA DEL SIDEBAR
+    # ---------------------------------------------
 
-        if st.session_state.get("tema", "Claro") == "Oscuro":
-            cargar_tema("oscuro.css")
-        else:
-            cargar_tema("claro.css")
+    if st.session_state.get("tema", "Claro") == "Oscuro":
+        cargar_tema("oscuro.css")
+    else:
+        cargar_tema("claro.css")
 
-        # -------- BARRA SUPERIOR DEL USUARIO --------
+    # -------- BARRA SUPERIOR DEL USUARIO --------
 
-        # -------- DASHBOARD --------
-        if pagina == "Dashboard":
-            registros = obtener_inspecciones_api()
+    # -------- DASHBOARD --------
+    if pagina == "Dashboard":
+        registros = obtener_inspecciones_api()
 
-            total = len(registros)
+        total = len(registros)
 
-            aptas = sum(
-                1
-                for registro in registros
-                if str(
-                    registro.get("resultado", "")
-                ).strip().upper() == "APTO"
-            )
+        aptas = sum(
+            1
+            for registro in registros
+            if str(registro.get("resultado", "")).strip().upper() == "APTO"
+        )
 
-            no_aptas = sum(
-                1
-                for registro in registros
-                if str(
-                    registro.get("resultado", "")
-                ).strip().upper() == "NO APTO"
-            )
-            st.markdown(
-                f"""
+        no_aptas = sum(
+            1
+            for registro in registros
+            if str(registro.get("resultado", "")).strip().upper() == "NO APTO"
+        )
+        st.markdown(
+            f"""
                 <h2 style="
                     color:#231F20 !important;
                     font-size:32px;
@@ -3150,72 +3124,72 @@ def main():
                     Dashboard Operativo
                 </h2>
                 """,
-                unsafe_allow_html=True,
-            )
-            mostrar_resumen(total, aptas, no_aptas)
+            unsafe_allow_html=True,
+        )
+        mostrar_resumen(total, aptas, no_aptas)
 
-            mostrar_graficas(aptas, no_aptas)
+        mostrar_graficas(aptas, no_aptas)
 
-            mostrar_indicadores(aptas, no_aptas)
+        mostrar_indicadores(aptas, no_aptas)
 
-        # -------- INSPECCIÓN --------
+    # -------- INSPECCIÓN --------
 
-        elif pagina == "Inspección":
+    elif pagina == "Inspección":
 
-            mostrar_titulo(
-                "inspection.svg",
-                "Inspección Visual",
-                "Captura y analiza piezas mediante inteligencia artificial.",
-            )
+        mostrar_titulo(
+            "inspection.svg",
+            "Inspección Visual",
+            "Captura y analiza piezas mediante inteligencia artificial.",
+        )
 
-            mostrar_estado_sistema()
-            mostrar_modulo_inspeccion()
+        mostrar_estado_sistema()
+        mostrar_modulo_inspeccion()
 
-        # -------- REGISTRO --------
+    # -------- REGISTRO --------
 
-        elif pagina == "Registro":
+    elif pagina == "Registro":
 
-            mostrar_titulo(
-                "register.svg",
-                "Registro de Inspecciones",
-                "Consulta los resultados y el historial de inspecciones.",
-            )
+        mostrar_titulo(
+            "register.svg",
+            "Registro de Inspecciones",
+            "Consulta los resultados y el historial de inspecciones.",
+        )
 
-            mostrar_registro()
-        # -------- IA GENERATIVA --------
+        mostrar_registro()
+    # -------- IA GENERATIVA --------
 
-        elif pagina == "IA Generativa":
+    elif pagina == "IA Generativa":
 
-            mostrar_titulo(
-                "ai.svg",
-                "Análisis Inteligente",
-                "Analiza inspecciones mediante Gemini, metodología 6M, Lean Manufacturing y Six Sigma para apoyar la toma de decisiones en calidad.",
-            )
-            mostrar_gemini()
+        mostrar_titulo(
+            "ai.svg",
+            "Análisis Inteligente",
+            "Analiza inspecciones mediante Gemini, metodología 6M, Lean Manufacturing y Six Sigma para apoyar la toma de decisiones en calidad.",
+        )
+        mostrar_gemini()
 
-        # -------- REPORTES --------
+    # -------- REPORTES --------
 
-        elif pagina == "Reportes":
+    elif pagina == "Reportes":
 
-            mostrar_titulo(
-                "report.svg",
-                "Centro de Reportes",
-                "Genera y descarga los documentos disponibles del sistema VisionQA.",
-            )
+        mostrar_titulo(
+            "report.svg",
+            "Centro de Reportes",
+            "Genera y descarga los documentos disponibles del sistema VisionQA.",
+        )
 
-            mostrar_reportes()
+        mostrar_reportes()
 
-        # -------- ACERCA DE --------
+    # -------- ACERCA DE --------
 
-        elif pagina == "Acerca de":
+    elif pagina == "Acerca de":
 
-            mostrar_titulo(
-                "info.svg",
-                "Acerca de VisionQA",
-                "Información general del sistema y las tecnologías utilizadas.",
-            )
+        mostrar_titulo(
+            "info.svg",
+            "Acerca de VisionQA",
+            "Información general del sistema y las tecnologías utilizadas.",
+        )
 
-            st.markdown("""
+        st.markdown("""
                 **VisionQA** es un sistema inteligente de inspección visual
                 desarrollado para apoyar el control de calidad de piezas
                 manufacturadas.
@@ -3230,13 +3204,13 @@ def main():
                 - Principios de Manufactura Esbelta y Six Sigma.
                 """)
 
-            st.markdown("### Información del proyecto")
+        st.markdown("### Información del proyecto")
 
-            col1, col2 = st.columns(2)
+        col1, col2 = st.columns(2)
 
-            with col1:
+        with col1:
 
-                st.markdown("""
+            st.markdown("""
                     **Proyecto:** VisionQA
 
                     **Empresa:** IOT Technologies
@@ -3244,9 +3218,9 @@ def main():
                     **Área:** Control de Calidad
                     """)
 
-            with col2:
+        with col2:
 
-                st.markdown("""
+            st.markdown("""
                     **Desarrolladora:** Dorcas Tabita Perez Martinez
 
                     **Tecnologías:** Python, YOLOv8, OpenCV, Streamlit y Gemini
@@ -3254,9 +3228,10 @@ def main():
                     **Versión:** 1.0
                     """)
 
-            st.divider()
+        st.divider()
 
-        mostrar_footer()
+    mostrar_footer()
+
 
 if __name__ == "__main__":
     main()
