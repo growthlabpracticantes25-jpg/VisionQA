@@ -704,7 +704,11 @@ def mostrar_resumen(total, aptas, no_aptas):
 
 
 def mostrar_graficas(aptas, no_aptas):
+    tema_oscuro = st.session_state.get("tema", "Claro") == "Oscuro"
 
+    fondo_grafica = "#172033" if tema_oscuro else "#FFFFFF"
+    color_texto = "#F8FAFC" if tema_oscuro else "#231F20"
+    color_ejes = "#AAB6C8" if tema_oscuro else "#555555"
     mostrar_encabezado_seccion(
         "Análisis de inspección", "Comparación visual entre piezas aptas y no aptas."
     )
@@ -718,7 +722,16 @@ def mostrar_graficas(aptas, no_aptas):
 
         st.markdown("### Resultados de inspección")
 
-        fig_barras, ax_barras = plt.subplots()
+        fig_barras, ax_barras = plt.subplots(facecolor=fondo_grafica)
+        ax_barras.set_facecolor(fondo_grafica)
+
+        ax_barras.tick_params(colors=color_ejes)
+        ax_barras.xaxis.label.set_color(color_texto)
+        ax_barras.yaxis.label.set_color(color_texto)
+        ax_barras.title.set_color(color_texto)
+
+        for spine in ax_barras.spines.values():
+            spine.set_color(color_ejes)
 
         barras = ax_barras.bar(etiquetas, valores)
 
@@ -733,6 +746,7 @@ def mostrar_graficas(aptas, no_aptas):
                 str(valor),
                 ha="center",
                 va="bottom",
+                color=color_texto,
             )
 
         st.pyplot(fig_barras)
@@ -745,7 +759,8 @@ def mostrar_graficas(aptas, no_aptas):
 
         if total > 0:
 
-            fig_dona, ax_dona = plt.subplots()
+            fig_dona, ax_dona = plt.subplots(facecolor=fondo_grafica)
+            ax_dona.set_facecolor(fondo_grafica)
 
             ax_dona.pie(
                 valores,
@@ -753,6 +768,7 @@ def mostrar_graficas(aptas, no_aptas):
                 autopct="%1.1f%%",
                 startangle=90,
                 wedgeprops={"width": 0.40},
+                textprops={"color": color_texto},
             )
 
             ax_dona.axis("equal")
@@ -2730,7 +2746,7 @@ def redirigir_a(url, mensaje="Redirigiendo..."):
 
 @st.dialog("Centro de ayuda VisionQA")
 def mostrar_ayuda():
-    
+
     st.markdown("""
         ### ¿Cómo usar VisionQA?
 
@@ -2944,14 +2960,12 @@ def main():
         f'title="{nombre_usuario}">'
         f"{icono_svg('user.svg',20,0)}"
         "</div>"
-
         f'<a class="visionqa-topbar-action" '
         f'href="?token={token_actual}&ayuda=1" '
         f'target="_self" '
         f'title="Ayuda">'
         f"{icono_svg('help.svg',20,0)}"
         "</a>"
-
         '<a class="visionqa-topbar-action" '
         'href="http://127.0.0.1:8501/?logout=1" '
         'target="_self" '
@@ -2963,7 +2977,6 @@ def main():
         "</div>"
     )
     st.markdown(
-        
         html_barra,
         unsafe_allow_html=True,
     )
@@ -2971,22 +2984,12 @@ def main():
     if st.query_params.get("ayuda") == "1":
         del st.query_params["ayuda"]
         mostrar_ayuda()
-        
-    with st.sidebar:
-        
-        st.image(
-            "assets/logo_iot.png",
-            use_container_width=True,
-        )
 
-        st.markdown(
-            '<div class="sidebar-brand">'
-            '<div class="sidebar-title">VisionQA</div>'
-            '<div class="sidebar-subtitle">'
-            "Sistema Inteligente de Inspección Visual"
-            "</div>"
-            "</div>",
-            unsafe_allow_html=True,
+    with st.sidebar:
+
+        st.image(
+            "assets/logo_visionqa.png",
+            width=220,
         )
 
         st.markdown(
@@ -3017,7 +3020,7 @@ def main():
             orientation="vertical",
             styles={
                 "container": {
-                    "padding": "12px 10px",
+                    "padding": "16px 12px",
                     "margin": "0px",
                     "background-color": "#1998B7",
                     "border": "none",
@@ -3026,15 +3029,15 @@ def main():
                 },
                 "icon": {
                     "color": "#FFFFFF",
-                    "font-size": "18px",
+                    "font-size": "22px",
                 },
                 "nav-link": {
-                    "font-size": "15px",
-                    "font-weight": "500",
+                    "font-size": "17px",
+                    "font-weight": "600",
                     "color": "#FFFFFF",
                     "text-align": "left",
-                    "margin": "6px 0",
-                    "padding": "14px 16px",
+                    "margin": "8px 0",
+                    "padding": "17px 18px",
                     "border-radius": "10px",
                     "background-color": "#1998B7",
                     "border": "none",
@@ -3113,14 +3116,14 @@ def main():
             f"""
                 <h2 style="
                     color:#231F20 !important;
-                    font-size:32px;
+                    font-size:40px;
                     font-weight:700;
                     margin-top:0;
-                    margin-bottom:18px;
+                    margin-bottom:24px;
                     display:flex;
                     align-items:center;
                 ">
-                    {icono_svg("dashboard.svg", 40, 12)}
+                    {icono_svg("dashboard.svg", 48, 14)}
                     Dashboard Operativo
                 </h2>
                 """,
