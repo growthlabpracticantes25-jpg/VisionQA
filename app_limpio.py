@@ -231,7 +231,7 @@ def mostrar_titulo(icono, titulo, descripcion):
         "align-items:center;"
         "gap:10px;"
         "color:#231F20;"
-        "font-size:28px;"
+        "font-size:40px;"
         "font-weight:700;"
         '">'
         f"{icono_svg(icono, 30, 0)}"
@@ -240,7 +240,7 @@ def mostrar_titulo(icono, titulo, descripcion):
         '<div style="'
         "margin-top:6px;"
         "color:#64748B;"
-        "font-size:14px;"
+        "font-size:18px;"
         '">'
         f"{descripcion}"
         "</div>"
@@ -266,7 +266,9 @@ def mostrar_encabezado_seccion(titulo, descripcion=""):
 
 
 def mostrar_estado_sistema():
-    st.subheader("🟢 Estado del Sistema")
+    mostrar_encabezado_seccion(
+    "🟢 Estado del Sistema"
+)
 
     col1, col2, col3 = st.columns(3)
 
@@ -307,7 +309,6 @@ def mostrar_estado_sistema():
         )
 
     st.divider()
-
 
 def cargar_datos_registro():
 
@@ -1029,40 +1030,162 @@ def mostrar_registro():
                 .fillna(0)
                 .round(2)
             )
-
-            st.data_editor(
-                datos_mostrados,
-                use_container_width=True,
-                hide_index=True,
-                height=420,
-                disabled=True,
-                column_config={
-                    "Fecha": st.column_config.TextColumn(
-                        "📅 Fecha",
-                        width="medium",
-                    ),
-                    "Resultado": st.column_config.TextColumn(
-                        "Resultado",
-                        width="small",
-                    ),
-                    "Defecto": st.column_config.TextColumn(
-                        "⚠️ Defecto",
-                        width="medium",
-                    ),
-                    "Confianza (%)": st.column_config.ProgressColumn(
-                        "📊 Confianza",
-                        min_value=0,
-                        max_value=100,
-                        format="%.2f%%",
-                        width="medium",
-                    ),
-                    "Origen": st.column_config.TextColumn(
-                        "📂 Origen",
-                        width="small",
-                    ),
-                },
+            # Color de barra según resultado
+            datos_mostrados["_Color"] = resultados_originales.apply(
+                lambda x: "#22c55e" if x in ["APTO", "BUENA"] else "#ef4444"
             )
 
+            filas_html = ""
+
+            for _, fila in datos_mostrados.iterrows():
+                confianza_fila = float(fila["Confianza (%)"])
+                color_barra = fila["_Color"]
+
+                filas_html += dedent(f"""
+                <tr>
+                    <td>{fila["Fecha"]}</td>
+                    <td>{fila["Resultado"]}</td>
+                    <td>{fila["Defecto"]}</td>
+                    <td>
+                        <div style="
+                            display:flex;
+                            align-items:center;
+                            gap:12px;
+                        ">
+                            <div style="
+                                flex:1;
+                                height:8px;
+                                background:#374151;
+                                border-radius:20px;
+                                overflow:hidden;
+                            ">
+                                <div style="
+                                    width:{confianza_fila}%;
+                                    height:100%;
+                                    background:{color_barra};
+                                    border-radius:20px;
+                                "></div>
+                            </div>
+
+                            <span style="
+                                min-width:58px;
+                                text-align:right;
+                                font-weight:600;
+                            ">
+                                {confianza_fila:.2f}%
+                            </span>
+                        </div>
+                    </td>
+                    <td>{fila["Origen"]}</td>
+                </tr>
+                """)
+            tema_actual = st.session_state.get("tema", "Claro")
+
+            if tema_actual == "Oscuro":
+                fondo_tabla = "#111827"
+                fondo_encabezado = "#171c26"
+                color_texto = "#f8fafc"
+                borde_tabla = "#374151"
+                borde_filas = "#2b3443"
+                fondo_hover = "#182235"
+            else:
+                fondo_tabla = "#ffffff"
+                fondo_encabezado = "#f8fafc"
+                color_texto = "#1f2937"
+                borde_tabla = "#dbe5ee"
+                borde_filas = "#e5e7eb"
+                fondo_hover = "#f3f6f9"
+            tabla_html = dedent(f"""
+            <style>
+                body {{
+                    margin: 0;
+                    padding: 0;
+                    background: transparent;
+                    font-family: Arial, sans-serif;
+                }}
+
+                .historial-box {{
+                    background: {fondo_tabla};
+                    border: 1px solid {borde_tabla};
+                    border-radius: 12px;
+                    overflow: hidden;
+                    color: {color_texto};
+                }}
+
+                .historial-scroll {{
+                    max-height: 420px;
+                    overflow-y: auto;
+                }}
+
+                table {{
+                    width: 100%;
+                    border-collapse: collapse;
+                    font-size: 14px;
+                    color: {color_texto};
+                }}
+
+                thead {{
+                    position: sticky;
+                    top: 0;
+                    background: {fondo_encabezado};
+                    z-index: 2;
+                }}
+
+                th {{
+                    padding: 12px;
+                    text-align: left;
+                    border-bottom: 1px solid {borde_tabla};
+                    color: {color_texto};
+                }}
+
+                td {{
+                    padding: 10px 12px;
+                    border-bottom: 1px solid {borde_filas};
+                    color: {color_texto};
+                }}
+
+                tbody tr {{
+                    background: {fondo_tabla};
+                }}
+
+                tbody tr:hover {{
+                    background: {fondo_hover};
+                }}
+            </style>
+
+            <div class="historial-box">
+                <div class="historial-scroll">
+                    <table>
+
+                <thead style="
+                    position:sticky;
+                    top:0;
+                    background:{fondo_encabezado};
+                    color:{color_texto};
+                    z-index:2;
+                ">
+                    <tr>
+                        <th style="padding:12px;text-align:left;">📅 Fecha</th>
+                        <th style="padding:12px;text-align:left;">Resultado</th>
+                        <th style="padding:12px;text-align:left;">⚠️ Defecto</th>
+                        <th style="padding:12px;text-align:left;">📊 Confianza</th>
+                        <th style="padding:12px;text-align:left;">📂 Origen</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {filas_html}
+                </tbody>
+                        </table>
+                    </div>
+                </div>
+                """)
+
+            components.html(
+                tabla_html,
+                height=430,
+                scrolling=True,
+            )
             st.info(f"📊 Total de inspecciones registradas: **{len(datos)}**")
 
     except requests.exceptions.ConnectionError:
@@ -2984,7 +3107,23 @@ def main():
     if st.query_params.get("ayuda") == "1":
         del st.query_params["ayuda"]
         mostrar_ayuda()
+    # -------- RECORDAR PÁGINA ACTUAL --------
 
+    opciones_menu = [
+        "Dashboard",
+        "Inspección",
+        "Registro",
+        "IA Generativa",
+        "Reportes",
+        "Acerca de",
+    ]
+
+    if "pagina_actual" not in st.session_state:
+        st.session_state["pagina_actual"] = "Dashboard"
+
+    indice_actual = opciones_menu.index(
+        st.session_state["pagina_actual"]
+    )
     with st.sidebar:
 
         st.image(
@@ -3016,7 +3155,7 @@ def main():
                 "info-circle",
             ],
             menu_icon=None,
-            default_index=0,
+            default_index=indice_actual,
             orientation="vertical",
             styles={
                 "container": {
@@ -3055,7 +3194,7 @@ def main():
                 },
             },
         )
-
+        st.session_state["pagina_actual"] = pagina
         st.markdown(
             '<div class="sidebar-section">Apariencia</div>',
             unsafe_allow_html=True,

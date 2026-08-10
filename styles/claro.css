@@ -349,7 +349,7 @@ header {
     border-bottom: 1px solid var(--iot-border);
 }
 .section-title {
-    font-size: 1.5rem;
+    font-size: 1.7rem !important;
     font-weight: 800;
     color: var(--iot-dark);
     line-height: 1.3;
@@ -841,11 +841,11 @@ div.stButton > button:active {
     border-radius:0;
 }
     .visionqa-topbar-greeting {
-        font-size: 15px;
+        font-size: 22px;
     }
 
     .visionqa-topbar-subtitle {
-        font-size: 11px;
+        font-size: 16px;
     }
 
     .visionqa-topbar-datetime {
@@ -1150,23 +1150,32 @@ div[data-testid="stVerticalBlockBorderWrapper"] label {
     border-radius: 14px;
     box-shadow: 0 5px 16px rgba(15, 23, 42, 0.08);
 }
-
 .system-card-title {
-    color: #1f2937;
-    font-size: 23px;
-    font-weight: 700;
-    margin-bottom: 18px;
+    color: #1f2937 !important;
+    font-size: 28px !important;
+    font-weight: 800 !important;
+    margin-bottom: 18px !important;
 }
 
 .system-card-text {
-    color: #334155;
-    font-size: 15px;
-    margin-bottom: 15px;
+    color: #334155 !important;
+    font-size: 18px !important;
+    margin-bottom: 15px !important;
 }
 
 .system-card-status {
-    color: #475569;
-    font-size: 14px;
+    color: #475569 !important;
+    font-size: 17px !important;
+}
+
+section.main h3 {
+    font-size: 26px !important;
+    font-weight: 800 !important;
+}
+
+div[data-testid="stMainBlockContainer"] h3 {
+    font-size: 28px !important;
+    font-weight: 800 !important;
 }
 /* ==========================================
    TARJETAS GENERALES
@@ -1187,6 +1196,7 @@ div[data-testid="stVerticalBlockBorderWrapper"] label {
     background: #ffffff;
     border: 2px solid #bfd7e8;
     box-shadow: 0 5px 16px rgba(15, 23, 42, 0.10);
+    min-height: 190px !important;
 }
 
 .inspection-card:hover {
@@ -1204,6 +1214,33 @@ div[data-testid="stVerticalBlockBorderWrapper"] label {
 .inspection-card.active {
     border-color: #0a4e95;
 }
+.inspection-card-content {
+    padding: 30px 24px !important;
+    text-align: center !important;
+}
+
+.inspection-card-icon {
+    font-size: 46px !important;
+    margin-bottom: 14px !important;
+}
+
+.inspection-card-title {
+    color: #231f20 !important;
+    font-size: 24px !important;
+    font-weight: 800 !important;
+    margin-bottom: 10px !important;
+}
+
+.inspection-card-description {
+    color: #64748b !important;
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+}
+
+.inspection-card-top {
+    height: 5px !important;
+    background: #1593b7 !important;
+}
 /* ÚLTIMA INSPECCIÓN — TEMA CLARO */
 
 .registro-card {
@@ -1216,14 +1253,29 @@ div[data-testid="stVerticalBlockBorderWrapper"] label {
     box-shadow: 0 8px 22px rgba(15, 23, 42, 0.15);
 }
 
-.registro-card-heading,
-.registro-card-value {
+.registro-card-heading {
     color: #231f20;
+    font-size: 24px !important;
+    font-weight: 800 !important;
+    margin-bottom: 12px !important;
 }
 
-.registro-card-label,
+.registro-card-value {
+    color: #231f20;
+    font-size: 28px !important;
+    font-weight: 700 !important;
+}
+
+.registro-card-label {
+    color: #64748b;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+}
+
 .registro-card-caption {
     color: #64748b;
+    font-size: 15px !important;
+    line-height: 1.5 !important;
 }
 
 .registro-progress-track {
@@ -1328,7 +1380,7 @@ div[data-testid="stCameraInput"] button {
 /* ==========================================
    BOTÓN DE AYUDA SUPERIOR
 ========================================== */
-
+/*
 div[data-testid="stButton"]:has(button[kind="secondary"]) {
     position: fixed;
     top: 90px;
@@ -1343,4 +1395,181 @@ div[data-testid="stButton"]:has(button[kind="secondary"]) button {
     padding: 0;
     font-size: 18px;
     font-weight: bold;
+}
+/* =========================================================
+   INSPECCIÓN VISUAL - MEJORA DE TAMAÑOS
+   ========================================================= */
+*/
+/* Título principal de la página */
+.inspection-title,
+.inspeccion-title {
+    font-size: 32px !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+}
+
+/* Títulos generales de secciones */
+.inspection-section-title,
+.inspeccion-section-title {
+    font-size: 24px !important;
+    font-weight: 750 !important;
+}
+
+/* Tarjetas de estado: Modelo IA, Gemini y Base de datos */
+.status-card h3,
+.status-card strong {
+    font-size: 18px !important;
+}
+
+/* Texto interior de las tarjetas de estado */
+.status-card p,
+.status-card span {
+    font-size: 14px !important;
+}
+
+/* Opciones Cargar imagen / Tomar fotografía */
+.inspection-option h3,
+.inspection-option strong {
+    font-size: 19px !important;
+    font-weight: 750 !important;
+}
+
+/* Descripción de las opciones */
+.inspection-option p,
+.inspection-option span {
+    font-size: 14px !important;
+}
+
+/* Iconos de Cargar imagen / Tomar fotografía */
+.inspection-option .icon {
+    font-size: 38px !important;
+}
+/* FORZAR VISUALIZACIÓN DE BOTONES STREAMLIT */
+div.stButton {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+}
+
+div.stButton > button {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+
+    width: 100% !important;
+    min-height: 52px !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: linear-gradient(
+        135deg,
+        #0f6bcd,
+        #1593b7
+    ) !important;
+
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 10px !important;
+
+    font-size: 16px !important;
+    font-weight: 700 !important;
+
+    padding: 12px 18px !important;
+    margin-top: 10px !important;
+}
+/* =========================================
+   REGISTRO - TABLA HISTORIAL
+   ========================================= */
+
+/* Texto de las celdas del Data Editor */
+div[data-testid="stDataFrame"] {
+    font-size: 15px !important;
+}
+
+/* Tabla completa */
+div[data-testid="stDataFrame"] * {
+    font-size: 15px !important;
+}
+/* =========================================
+   IA GENERATIVA - TAMAÑOS DE TEXTO
+   ========================================= */
+
+/* Texto general dentro de IA Generativa */
+section.main:has(.gemini-page-marker)
+div[data-testid="stMarkdownContainer"] p {
+    font-size: 18px !important;
+    line-height: 1.55 !important;
+}
+
+section.main:has(.gemini-page-marker)
+div[data-testid="stAlert"] p {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+}
+/* Títulos como ¿Qué puede hacer este módulo? y Proceso del análisis */
+section.main:has(.gemini-page-marker)
+h3 {
+    font-size: 24px !important;
+    font-weight: 800 !important;
+}
+/* IA GENERATIVA - TARJETAS SUPERIORES */
+
+.gemini-mini-title {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #231f20 !important;
+    margin-bottom: 14px !important;
+}
+
+.gemini-mini-text {
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+    color: #64748b !important;
+}
+/* =========================================
+   IA GENERATIVA - SOLO TAMAÑO DE LETRA
+   ========================================= */
+
+/* Textos dentro de las cajas de colores */
+section.main:has(.gemini-page-marker)
+div[data-testid="stAlert"] p {
+    font-size: 17px !important;
+    font-weight: 600 !important;
+}
+
+/* Descripciones debajo de las cajas */
+section.main:has(.gemini-page-marker)
+div[data-testid="stVerticalBlockBorderWrapper"] p {
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+}
+/* =========================================
+   REPORTES - SOLO TAMAÑOS DE TEXTO
+   ========================================= */
+
+/* Títulos dentro de las tarjetas */
+section.main:has(.reportes-page-marker) h3 {
+    font-size: 24px !important;
+    font-weight: 800 !important;
+}
+
+/* Texto normal dentro de las tarjetas */
+section.main:has(.reportes-page-marker)
+div[data-testid="stMarkdownContainer"] p {
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+}
+
+/* Textos de las cajas azules/amarillas */
+section.main:has(.reportes-page-marker)
+div[data-testid="stAlert"] p {
+    font-size: 16px !important;
+}
+
+/* Texto pequeño tipo caption */
+section.main:has(.reportes-page-marker)
+div[data-testid="stCaptionContainer"] {
+    font-size: 14px !important;
 }

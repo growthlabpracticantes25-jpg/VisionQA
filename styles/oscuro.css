@@ -702,20 +702,18 @@ div.stButton > button:active {
 
 .visionqa-topbar-greeting {
     color: #FFFFFF;
-    font-size: 16px;
+    font-size: 22px;
     font-weight: 700;
     line-height: 1.25;
 }
 
 .visionqa-topbar-subtitle {
     margin-top: 4px;
-
     color: rgba(255, 255, 255, 0.86);
-    font-size: 12px;
+    font-size: 16px;
     font-weight: 400;
     line-height: 1.2;
 }
-
 .visionqa-topbar-right {
     display: flex;
     align-items: center;
@@ -816,11 +814,11 @@ div.stButton > button:active {
     border-radius:0;
 }
     .visionqa-topbar-greeting {
-        font-size: 15px;
+        font-size: 22px;
     }
 
     .visionqa-topbar-subtitle {
-        font-size: 11px;
+        font-size: 16px;
     }
 
     .visionqa-topbar-datetime {
@@ -1096,7 +1094,7 @@ div[data-testid="stVerticalBlockBorderWrapper"]
 /* ==========================================
    BOTÓN DE AYUDA SUPERIOR
 ========================================== */
-
+/*
 div[data-testid="stButton"]:has(button[kind="secondary"]) {
     position: fixed;
     top: 90px;
@@ -1112,3 +1110,4 @@ div[data-testid="stButton"]:has(button[kind="secondary"]) button {
     font-size: 18px;
     font-weight: bold;
 }
+*/
