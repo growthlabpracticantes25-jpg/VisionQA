@@ -357,7 +357,7 @@ def mostrar_modulo_inspeccion():
     if "metodo_inspeccion" not in st.session_state:
         st.session_state["metodo_inspeccion"] = None
 
-    col_metodo_1, col_metodo_2 = st.columns(2)
+    col_metodo_1, col_metodo_2, col_metodo_3 = st.columns(3)
 
     with col_metodo_1:
         carga_activa = st.session_state["metodo_inspeccion"] == "Cargar imagen"
@@ -414,7 +414,39 @@ def mostrar_modulo_inspeccion():
         ):
             st.session_state["metodo_inspeccion"] = "Tomar fotografía"
             st.rerun()
+    with col_metodo_3:
+        streaming_activo = (
+            st.session_state["metodo_inspeccion"] == "Streaming simulado"
+        )
 
+        clase_activa = "active" if streaming_activo else ""
+
+        html_streaming = (
+            f'<div class="inspection-card {clase_activa}">'
+            '<div class="inspection-card-top"></div>'
+            '<div class="inspection-card-content">'
+            '<div class="inspection-card-icon">🎞️</div>'
+            '<div class="inspection-card-title">Streaming simulado</div>'
+            '<div class="inspection-card-description">'
+            'Procesa varias imágenes de forma secuencial simulando una línea de inspección.'
+            '</div>'
+            '</div>'
+            '</div>'
+        )
+
+        st.markdown(
+            html_streaming,
+            unsafe_allow_html=True
+        )
+
+        if st.button(
+            "✓ Streaming seleccionado" if streaming_activo else "Iniciar streaming",
+            key="seleccionar_streaming",
+            use_container_width=True,
+            type="primary" if streaming_activo else "secondary",
+        ):
+            st.session_state["metodo_inspeccion"] = "Streaming simulado"
+            st.rerun()
     opcion = st.session_state["metodo_inspeccion"]
 
     if opcion == "Cargar imagen":
@@ -422,6 +454,9 @@ def mostrar_modulo_inspeccion():
 
     elif opcion == "Tomar fotografía":
         st.success("📷 Método seleccionado: Tomar fotografía")
+
+    elif opcion == "Streaming simulado":
+        st.success("🎞️ Método seleccionado: Streaming simulado")
 
     else:
         st.info("👆 Selecciona un método de inspección para comenzar.")
@@ -628,7 +663,62 @@ def mostrar_modulo_inspeccion():
                 nombre_archivo = datetime.now().strftime("inspeccion_%Y%m%d_%H%M%S.jpg")
 
                 procesar_inspeccion(fotografia, nombre_archivo, "Cámara")
+    # -------- STREAMING SIMULADO --------
 
+    elif opcion == "Streaming simulado":
+
+        imagenes_streaming = st.file_uploader(
+            "Selecciona varias imágenes para simular el flujo de inspección",
+            type=["jpg", "jpeg", "png"],
+            accept_multiple_files=True,
+            key="streaming_procesamiento",
+        )
+
+        if imagenes_streaming:
+
+            st.info(
+                f"🎞️ {len(imagenes_streaming)} imágenes listas para la simulación."
+            )
+
+            iniciar_simulacion = st.button(
+                "▶ Ejecutar simulación",
+                key="boton_ejecutar_streaming",
+                use_container_width=True,
+            )
+
+            if iniciar_simulacion:
+
+                barra_progreso = st.progress(0)
+
+                total_imagenes = len(imagenes_streaming)
+
+                for indice, imagen_stream in enumerate(
+                    imagenes_streaming,
+                    start=1
+                ):
+
+                    st.markdown(
+                        f"### 🎞️ Inspección {indice} de {total_imagenes}"
+                    )
+
+                    nombre_archivo = datetime.now().strftime(
+                        f"stream_{indice}_%Y%m%d_%H%M%S_%f.jpg"
+                    )
+
+                    procesar_inspeccion(
+                        imagen_stream,
+                        nombre_archivo,
+                        "Streaming simulado",
+                    )
+
+                    barra_progreso.progress(
+                        indice / total_imagenes
+                    )
+
+                st.success(
+                    f"✅ Simulación finalizada. "
+                    f"{total_imagenes} imágenes procesadas."
+                )
     st.divider()
 
 
@@ -991,6 +1081,7 @@ def mostrar_registro():
                 "Defecto",
                 "Confianza (%)",
                 "Origen",
+                "Archivo Guardado",
             ]
 
             datos_mostrados = (
@@ -1040,12 +1131,52 @@ def mostrar_registro():
             for _, fila in datos_mostrados.iterrows():
                 confianza_fila = float(fila["Confianza (%)"])
                 color_barra = fila["_Color"]
+                # Crear miniatura de la imagen de la inspección
+                nombre_imagen = str(fila["Archivo Guardado"]).strip()
 
+                ruta_imagen = os.path.join(
+                    os.path.dirname(os.path.abspath(__file__)),
+                    "inspecciones",
+                    os.path.basename(nombre_imagen)
+                )
+
+                imagen_html = "<span>Sin imagen</span>"
+
+                if os.path.exists(ruta_imagen):
+                    try:
+                        with open(ruta_imagen, "rb") as imagen:
+                            imagen_base64 = base64.b64encode(
+                                imagen.read()
+                            ).decode("utf-8")
+
+                        extension = os.path.splitext(nombre_imagen)[1].lower()
+
+                        if extension == ".png":
+                            tipo_imagen = "png"
+                        else:
+                            tipo_imagen = "jpeg"
+
+                        imagen_html = f"""
+                        <img
+                            src="data:image/{tipo_imagen};base64,{imagen_base64}"
+                            style="
+                                width:60px;
+                                height:60px;
+                                object-fit:cover;
+                                border-radius:8px;
+                                border:1px solid #d1d5db;
+                            "
+                            alt="Miniatura de inspección"
+                        >
+                        """
+                    except Exception:
+                        imagen_html = "<span>No disponible</span>"
                 filas_html += dedent(f"""
                 <tr>
                     <td>{fila["Fecha"]}</td>
                     <td>{fila["Resultado"]}</td>
                     <td>{fila["Defecto"]}</td>
+                    <td>{imagen_html}</td>
                     <td>
                         <div style="
                             display:flex;
@@ -1168,8 +1299,9 @@ def mostrar_registro():
                         <th style="padding:12px;text-align:left;">📅 Fecha</th>
                         <th style="padding:12px;text-align:left;">Resultado</th>
                         <th style="padding:12px;text-align:left;">⚠️ Defecto</th>
+                        <th style="padding:12px;text-align:left;">🖼️ Imagen</th>
                         <th style="padding:12px;text-align:left;">📊 Confianza</th>
-                        <th style="padding:12px;text-align:left;">📂 Origen</th>
+                        <th style="padding:12px;text-align:left;">📁 Origen</th>
                     </tr>
                 </thead>
 

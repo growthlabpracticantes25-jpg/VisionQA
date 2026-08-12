@@ -25,7 +25,28 @@ class InspeccionListCreateView(generics.ListCreateAPIView):
 
 def pagina_login(request):
     error = None
+    # Si el usuario ya tiene una sesión activa, no mostrar el login
+    if request.user.is_authenticated and request.session.get("recordarme", False):
+        usuario = request.user
 
+        # Asegurar que exista una sesión
+        if not request.session.session_key:
+            request.session.save()
+
+        token_acceso = signing.dumps(
+            {
+                "usuario_id": usuario.id,
+                "username": usuario.username,
+                "session_key": request.session.session_key,
+            },
+            salt="visionqa-streamlit",
+        )
+
+        token_codificado = quote(token_acceso)
+
+        return redirect(
+            f"http://127.0.0.1:8501/?token={token_codificado}"
+        )
     if request.method == "POST":
         correo = request.POST.get("username", "").strip().lower()
         password = request.POST.get("password", "")
@@ -55,6 +76,17 @@ def pagina_login(request):
 
                 else:
                     auth_login(request, usuario)
+
+                    # Leer opción "Recordarme"
+                    recordarme = request.POST.get("remember") == "on"
+                    request.session["recordarme"] = recordarme
+                    # Configurar duración de la sesión
+                    if recordarme:
+                        # Mantener la sesión durante 30 días
+                        request.session.set_expiry(60 * 60 * 24 * 30)
+                    else:
+                        # La sesión termina al cerrar el navegador
+                        request.session.set_expiry(0)
 
                     # Asegurar que Django cree la sesión
                     if not request.session.session_key:
@@ -91,6 +123,7 @@ def registrar_usuario(request):
         username = request.POST.get("nuevo_usuario", "").strip()
         email = request.POST.get("email", "").strip()
         password = request.POST.get("password", "")
+        recordarme = request.POST.get("remember") == "on"
         confirmar_password = request.POST.get(
             "confirmar_password",
             ""
