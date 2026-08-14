@@ -41,7 +41,7 @@ IMPORTANTE:
 
 El reporte debe tener exactamente este formato:
 
-# 📌 Resumen del análisis
+# Resumen del análisis
 
 Redacta un resumen ejecutivo en máximo 3 líneas.
 
@@ -56,41 +56,41 @@ No repitas:
 porque esa información ya aparece en las tarjetas superiores.
 ---
 
-# 🔎 Posibles causas (6M)
+# Posibles causas (6M)
 
-### 👷 Mano de obra
+### Mano de obra
 Máximo 2 causas.
 
-### ⚙️ Máquina
+### Máquina
 Máximo 2 causas.
 
-### 📏 Método
+### Método
 Máximo 2 causas.
 
-### 🧱 Material
+### Material
 Máximo 2 causas.
 
-### 📐 Medición
+### Medición
 Máximo 2 causas.
 
-### 🌎 Medio ambiente
+### Medio ambiente
 Máximo 2 causas.
 
 ---
 
-# ✅ Acciones correctivas
+# Acciones correctivas
 
 Genera únicamente 5 acciones concretas y priorizadas.
 
 ---
 
-# 📈 Recomendaciones de mejora
+# Recomendaciones de mejora
 
 Genera únicamente 5 recomendaciones ejecutivas para fortalecer VisionQA.
 
 ---
 
-# 📝 Conclusión
+# Conclusión
 
 Redacta una conclusión en máximo 3 líneas.
 

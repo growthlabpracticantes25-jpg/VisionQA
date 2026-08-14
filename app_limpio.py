@@ -276,7 +276,7 @@ def mostrar_estado_sistema():
         st.markdown(
             """
             <div class="system-card">
-                <div class="system-card-title">🤖 Modelo IA</div>
+                <div class="system-card-title"><i class="bi bi-cpu"></i> Modelo IA</div>
                 <div class="system-card-text"><strong>Estado:</strong> Conectado</div>
                 <div class="system-card-status">🟢 Cargado correctamente</div>
             </div>
@@ -288,7 +288,7 @@ def mostrar_estado_sistema():
         st.markdown(
             """
             <div class="system-card">
-                <div class="system-card-title">🧠 Gemini</div>
+                <div class="system-card-title"><i class="bi bi-stars"></i> Gemini</div>
                 <div class="system-card-text"><strong>Estado:</strong> Disponible</div>
                 <div class="system-card-status">🟢 Conectado</div>
             </div>
@@ -300,7 +300,7 @@ def mostrar_estado_sistema():
         st.markdown(
             """
             <div class="system-card">
-                <div class="system-card-title">💾 Base de datos</div>
+                <div class="system-card-title"><i class="bi bi-database"></i> Base de datos</div>
                 <div class="system-card-text"><strong>Estado:</strong> Disponible</div>
                 <div class="system-card-status">🟢 Registro listo</div>
             </div>
@@ -367,7 +367,7 @@ def mostrar_modulo_inspeccion():
                 <div class="inspection-card {'active' if carga_activa else ''}">
                     <div class="inspection-card-top"></div>
                     <div class="inspection-card-content">
-                        <div class="inspection-card-icon">📂</div>
+                        <div class="inspection-card-icon"><i class="bi bi-image"></i></div>
                         <div class="inspection-card-title">Cargar imagen</div>
                         <div class="inspection-card-description">
                             Selecciona una imagen desde tu computadora.
@@ -395,7 +395,7 @@ def mostrar_modulo_inspeccion():
                 <div class="inspection-card {'active' if camara_activa else ''}">
                     <div class="inspection-card-top"></div>
                     <div class="inspection-card-content">
-                        <div class="inspection-card-icon">📷</div>
+                        <div class="inspection-card-icon"><i class="bi bi-camera"></i></div>
                         <div class="inspection-card-title">Tomar fotografía</div>
                         <div class="inspection-card-description">
                             Captura una imagen utilizando la cámara.
@@ -425,7 +425,7 @@ def mostrar_modulo_inspeccion():
             f'<div class="inspection-card {clase_activa}">'
             '<div class="inspection-card-top"></div>'
             '<div class="inspection-card-content">'
-            '<div class="inspection-card-icon">🎞️</div>'
+            '<div class="inspection-card-icon"><i class="bi bi-film"></i></div>'
             '<div class="inspection-card-title">Streaming simulado</div>'
             '<div class="inspection-card-description">'
             'Procesa varias imágenes de forma secuencial simulando una línea de inspección.'
@@ -789,8 +789,10 @@ def mostrar_resumen(total, aptas, no_aptas):
 
             st.markdown(html, unsafe_allow_html=True)
 
-    st.caption("Actualización automática basada en las inspecciones registradas.")
-
+    st.markdown(
+        '<div style="font-size:21px; color:#6b7280; margin-top:4px;">Actualización automática basada en las inspecciones registradas.</div>',
+        unsafe_allow_html=True
+    )
     st.divider()
 
 
@@ -824,7 +826,11 @@ def mostrar_graficas(aptas, no_aptas):
         for spine in ax_barras.spines.values():
             spine.set_color(color_ejes)
 
-        barras = ax_barras.bar(etiquetas, valores)
+        barras = ax_barras.bar(
+            etiquetas,
+            valores,
+            color=["#1D7EAE", "#FF661B"]
+        )
 
         ax_barras.set_ylabel("Cantidad")
         ax_barras.set_title("Piezas inspeccionadas")
@@ -856,6 +862,7 @@ def mostrar_graficas(aptas, no_aptas):
             ax_dona.pie(
                 valores,
                 labels=etiquetas,
+                colors=["#1D7EAE", "#FF661B"],
                 autopct="%1.1f%%",
                 startangle=90,
                 wedgeprops={"width": 0.40},
@@ -896,7 +903,7 @@ def mostrar_indicadores(aptas, no_aptas):
         st.markdown(
             f"""
             <div class="kpi-card">
-                <div class="kpi-icon">📈</div>
+                <div class="kpi-icon"><i class="bi bi-graph-up-arrow"></i></div>
                 <div class="kpi-value">{porcentaje_apto:.1f}%</div>
                 <div class="kpi-label">Tasa de aprobación</div>
             </div>
@@ -908,7 +915,7 @@ def mostrar_indicadores(aptas, no_aptas):
         st.markdown(
             f"""
             <div class="kpi-card">
-                <div class="kpi-icon">📉</div>
+                <div class="kpi-icon"><i class="bi bi-graph-down-arrow"></i></div>
                 <div class="kpi-value">{porcentaje_no_apto:.1f}%</div>
                 <div class="kpi-label">Tasa de rechazo</div>
             </div>
@@ -1012,9 +1019,13 @@ def mostrar_registro():
                 f"""<div class="registro-card {clase_resultado}">
 <div class="registro-card-top"></div>
 <div class="registro-card-content">
-<div class="registro-card-heading">📋 Resultado</div>
+<div class="registro-card-heading"><i class="bi bi-clipboard-check"></i> Resultado</div>
 <div class="registro-result-badge">{icono_resultado} {texto_resultado}</div>
 <div class="registro-card-caption">Clasificación general de la última inspección.</div>
+<div class="registro-card-caption">
+    <i class="bi bi-calendar3"></i>
+    <strong>Fecha:</strong> {ultima_inspeccion['Fecha']}
+</div>
 </div>
 </div>""",
                 unsafe_allow_html=True,
@@ -1027,10 +1038,14 @@ def mostrar_registro():
                 f"""<div class="registro-card">
 <div class="registro-card-top"></div>
 <div class="registro-card-content">
-<div class="registro-card-heading">⚠️ Defecto</div>
+<div class="registro-card-heading"><i class="bi bi-exclamation-triangle"></i> Defecto</div>
 <div class="registro-card-label">Clasificación detectada</div>
 <div class="registro-card-value">{escape(defecto_texto)}</div>
 <div class="registro-card-caption">Tipo de defecto identificado por el modelo.</div>
+<div class="registro-card-caption">
+    <i class="bi bi-folder2-open"></i>
+    <strong>Origen:</strong> {ultima_inspeccion['Origen']}
+</div>
 </div>
 </div>""",
                 unsafe_allow_html=True,
@@ -1048,7 +1063,7 @@ def mostrar_registro():
                 f"""<div class="registro-card">
 <div class="registro-card-top"></div>
 <div class="registro-card-content">
-<div class="registro-card-heading">🛡️ Confianza</div>
+<div class="registro-card-heading"><i class="bi bi-shield-check"></i> Confianza</div>
 <div class="registro-card-label">Nivel del modelo</div>
 <div class="registro-card-value">{confianza:.2f}%</div>
 <div class="registro-progress-track">
@@ -1059,21 +1074,17 @@ def mostrar_registro():
                 unsafe_allow_html=True,
             )
 
-        # -------- FECHA Y ORIGEN --------
-
-        with st.container(border=True):
-            col_fecha, col_origen = st.columns(2)
-
-            with col_fecha:
-                st.markdown(f"📅 **Fecha:** {ultima_inspeccion['Fecha']}")
-
-            with col_origen:
-                st.markdown(f"📂 **Origen:** {ultima_inspeccion['Origen']}")
-
         # -------- HISTORIAL COMPLETO --------
 
         with st.container(border=True):
-            st.markdown("### 📋 Historial de inspecciones")
+            st.markdown(
+                """
+                <h3 class="registro-section-title">
+                    <i class="bi bi-clipboard-data"></i> Historial de inspecciones
+                </h3>
+                """,
+                unsafe_allow_html=True,
+            )
 
             columnas_mostradas = [
                 "Fecha",
@@ -1106,11 +1117,15 @@ def mostrar_registro():
             # Mejorar visualización del defecto
             datos_mostrados["Defecto"] = (
                 datos_mostrados["Defecto"]
-                .fillna("Sin defecto")
+                .fillna("")
                 .astype(str)
-                .str.replace("_", " ", regex=False)
-                .str.title()
+                .str.strip()
             )
+
+            datos_mostrados.loc[
+                datos_mostrados["Defecto"].isin(["", "nan", "None"]),
+                "Defecto"
+            ] = "Sin defecto"
 
             # Formato de confianza
             datos_mostrados["Confianza (%)"] = (
@@ -1227,6 +1242,7 @@ def mostrar_registro():
                 borde_filas = "#e5e7eb"
                 fondo_hover = "#f3f6f9"
             tabla_html = dedent(f"""
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
             <style>
                 body {{
                     margin: 0;
@@ -1244,22 +1260,37 @@ def mostrar_registro():
                 }}
 
                 .historial-scroll {{
-                    max-height: 420px;
+                    max-height: 510px;
                     overflow-y: auto;
                 }}
 
                 table {{
                     width: 100%;
                     border-collapse: collapse;
-                    font-size: 14px;
+                    font-size: 16px;
                     color: {color_texto};
                 }}
 
                 thead {{
                     position: sticky;
                     top: 0;
-                    background: {fondo_encabezado};
+                    background: #0879C9;
+                    color: white;
                     z-index: 2;
+                }}
+
+                thead th {{
+                    background: #0879C9;
+                    color: white;
+                    font-size: 15px;
+                    font-weight: 600;
+                    padding: 14px 12px !important;
+                    border-bottom: none;
+                }}
+
+                tbody td {{
+                    font-size: 16px;
+                    padding: 14px 12px;
                 }}
 
                 th {{
@@ -1282,6 +1313,7 @@ def mostrar_registro():
                 tbody tr:hover {{
                     background: {fondo_hover};
                 }}
+                
             </style>
 
             <div class="historial-box">
@@ -1296,12 +1328,12 @@ def mostrar_registro():
                     z-index:2;
                 ">
                     <tr>
-                        <th style="padding:12px;text-align:left;">📅 Fecha</th>
-                        <th style="padding:12px;text-align:left;">Resultado</th>
-                        <th style="padding:12px;text-align:left;">⚠️ Defecto</th>
-                        <th style="padding:12px;text-align:left;">🖼️ Imagen</th>
-                        <th style="padding:12px;text-align:left;">📊 Confianza</th>
-                        <th style="padding:12px;text-align:left;">📁 Origen</th>
+                        <th style="padding:12px;text-align:left;"><i class="bi bi-calendar3"></i> Fecha</th>
+                        <th style="padding:12px;text-align:left;"><i class="bi bi-check2-circle"></i> Resultado</th>
+                        <th style="padding:12px;text-align:left;"><i class="bi bi-exclamation-triangle"></i> Defecto</th>
+                        <th style="padding:12px;text-align:left;"><i class="bi bi-image"></i> Imagen</th>
+                        <th style="padding:12px;text-align:left;"><i class="bi bi-shield-check"></i> Confianza</th>
+                        <th style="padding:12px;text-align:left;"><i class="bi bi-folder2-open"></i> Origen</th>
                     </tr>
                 </thead>
 
@@ -1315,7 +1347,7 @@ def mostrar_registro():
 
             components.html(
                 tabla_html,
-                height=430,
+                height=520,
                 scrolling=True,
             )
             st.info(f"📊 Total de inspecciones registradas: **{len(datos)}**")
@@ -1954,91 +1986,272 @@ def mostrar_gemini():
     if resultado_ia is None:
 
         # -------- FUNCIONES DEL MÓDULO --------
+        st.markdown(
+            """
+            <style>
+            .funcion-card {
+                background: transparent;
+                border: none;
+                padding: 0;
+                min-height: 105px;
+            }
 
+            .funcion-titulo {
+                padding: 10px 14px;
+                border-radius: 6px;
+                font-size: 21px;
+                font-weight: 600;
+                margin-bottom: 14px;
+            }
+
+            .funcion-titulo i {
+                margin-right: 7px;
+                font-size: 21px;
+            }
+
+            .funcion-azul {
+                background: #dbeafe;
+                color: #1e3a5f;
+            }
+
+            .funcion-verde {
+                background: #dcfce7;
+                color: #166534;
+            }
+
+            .funcion-amarillo {
+                background: #fef9c3;
+                color: #854d0e;
+            }
+
+            .funcion-texto {
+                font-size: 20px;
+                color: #374151;
+                line-height: 1.4;
+            }
+            div[data-testid="stButton"] button p {
+                font-size: 20px !important;
+                font-weight: 600 !important;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
         st.markdown("### ¿Qué puede hacer este módulo?")
 
         funcion1, funcion2, funcion3, funcion4 = st.columns(4)
 
         with funcion1:
-
-            with st.container(border=True):
-
-                st.info("🔎 Detectar patrones")
-
-                st.write("Identifica defectos repetitivos y posibles tendencias.")
+            st.markdown(
+                """
+                <div class="funcion-card">
+                    <div class="funcion-titulo funcion-azul">
+                        <i class="bi bi-search"></i>
+                        Detectar patrones
+                    </div>
+                    <div class="funcion-texto">
+                        Identifica defectos repetitivos y posibles tendencias.
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
         with funcion2:
-
-            with st.container(border=True):
-
-                st.success("⚙️ Analizar causas")
-
-                st.write("Organiza las causas potenciales mediante la metodología 6M.")
+            st.markdown(
+                """
+                <div class="funcion-card">
+                    <div class="funcion-titulo funcion-verde">
+                        <i class="bi bi-gear"></i>
+                        Analizar causas
+                    </div>
+                    <div class="funcion-texto">
+                        Organiza las causas potenciales mediante la metodología 6M.
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
         with funcion3:
-
-            with st.container(border=True):
-
-                st.warning("⚡ Recomendar acciones")
-
-                st.write("Propone acciones correctivas y oportunidades de mejora.")
+            st.markdown(
+                """
+                <div class="funcion-card">
+                    <div class="funcion-titulo funcion-amarillo">
+                        <i class="bi bi-lightning-charge"></i>
+                        Recomendar acciones
+                    </div>
+                    <div class="funcion-texto">
+                        Propone acciones correctivas y oportunidades de mejora.
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
         with funcion4:
-
-            with st.container(border=True):
-
-                st.info("📋 Generar informes")
-
-                st.write("Presenta los resultados en un formato ejecutivo y claro.")
-
+            st.markdown(
+                """
+                <div class="funcion-card">
+                    <div class="funcion-titulo funcion-azul">
+                        <i class="bi bi-file-earmark-text"></i>
+                        Generar informes
+                    </div>
+                    <div class="funcion-texto">
+                        Presenta los resultados en un formato ejecutivo y claro.
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
         # -------- PROCESO DEL ANÁLISIS --------
 
         st.markdown("### Proceso del análisis")
 
-        paso1, flecha1, paso2, flecha2, paso3, flecha3, paso4 = st.columns(
-            [3, 1, 3, 1, 3, 1, 3]
+        # Estilos de los pasos
+        st.markdown(
+            """
+            <style>
+            .paso-analisis {
+                background: transparent;
+                border: none;
+                padding: 12px 10px;
+                min-height: 90px;
+            }
+
+            .paso-titulo {
+                font-size: 18px;
+                font-weight: 600;
+                color: #111827;
+                margin-bottom: 14px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .paso-numero {
+                background: #3b82f6;
+                color: white;
+                width: 25px;
+                height: 25px;
+                border-radius: 5px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 14px;
+                font-weight: 700;
+            }
+
+            .paso-texto {
+                font-size: 20px;
+                color: #6b7280;
+                line-height: 1.4;
+            }
+
+            .flecha-proceso {
+                height: 110px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 28px;
+                color: #374151;
+            }
+            /* Texto dentro de mensajes success e info */
+            div[data-testid="stAlert"] p {
+                font-size: 21px !important;
+            }
+            div[data-testid="stCaptionContainer"] p {
+                font-size: 19px !important;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True
         )
 
+        paso1, flecha1, paso2, flecha2, paso3, flecha3, paso4 = st.columns(
+            [3, 0.7, 3, 0.7, 3, 0.7, 3]
+        )
         with paso1:
-
-            with st.container(border=True):
-
-                st.markdown("#### 1️⃣ Selección")
-
-                st.caption("El usuario selecciona el tipo de análisis.")
+            st.markdown(
+                """
+                <div class="paso-analisis">
+                    <div class="paso-titulo">
+                        <span class="paso-numero">1</span>
+                        Selección
+                    </div>
+                    <div class="paso-texto">
+                        El usuario selecciona el tipo de análisis.
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
         with flecha1:
-            st.markdown("## ➜")
+            st.markdown(
+                '<div class="flecha-proceso"><i class="bi bi-arrow-right"></i></div>',
+                unsafe_allow_html=True
+            )
 
         with paso2:
-
-            with st.container(border=True):
-
-                st.markdown("#### 2️⃣ Consulta")
-
-                st.caption("VisionQA obtiene los registros almacenados.")
+            st.markdown(
+                """
+                <div class="paso-analisis">
+                    <div class="paso-titulo">
+                        <span class="paso-numero">2</span>
+                        Consulta
+                    </div>
+                    <div class="paso-texto">
+                        VisionQA obtiene los registros almacenados.
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
         with flecha2:
-            st.markdown("## ➜")
+            st.markdown(
+                '<div class="flecha-proceso"><i class="bi bi-arrow-right"></i></div>',
+                unsafe_allow_html=True
+            )
 
         with paso3:
-
-            with st.container(border=True):
-
-                st.markdown("#### 3️⃣ Análisis")
-
-                st.caption("Gemini interpreta los resultados y posibles causas.")
+            st.markdown(
+                """
+                <div class="paso-analisis">
+                    <div class="paso-titulo">
+                        <span class="paso-numero">3</span>
+                        Análisis
+                    </div>
+                    <div class="paso-texto">
+                        Gemini interpreta los resultados y posibles causas.
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
         with flecha3:
-            st.markdown("## ➜")
+            st.markdown(
+                '<div class="flecha-proceso"><i class="bi bi-arrow-right"></i></div>',
+                unsafe_allow_html=True
+            )
 
         with paso4:
-
-            with st.container(border=True):
-
-                st.markdown("#### 4️⃣ Decisión")
-
-                st.caption("Se generan recomendaciones para el supervisor.")
+            st.markdown(
+                """
+                <div class="paso-analisis">
+                    <div class="paso-titulo">
+                        <span class="paso-numero">4</span>
+                        Decisión
+                    </div>
+                    <div class="paso-texto">
+                        Se generan recomendaciones para el supervisor.
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
         st.info("""
             💡 Selecciona el análisis individual para revisar un caso
@@ -2055,7 +2268,10 @@ def mostrar_gemini():
 
         st.divider()
 
-        st.markdown("## 🚀 Selecciona el tipo de análisis")
+        st.markdown(
+            '## <i class="bi bi-hand-index"></i> Selecciona el tipo de análisis',
+            unsafe_allow_html=True
+        )
 
         st.caption("Elige la información que deseas analizar mediante IA Generativa.")
 
@@ -2069,21 +2285,33 @@ def mostrar_gemini():
 
             with st.container(border=True):
                 st.caption("🟢 ANÁLISIS INDIVIDUAL")
-                st.markdown("## 🔎 Última inspección")
-
-                st.write("""
-                    Analiza únicamente el registro más reciente almacenado
-                    en VisionQA y genera un diagnóstico individual.
-                    """)
+                st.markdown(
+                    '## <i class="bi bi-search"></i> Última inspección',
+                    unsafe_allow_html=True
+                )
+                st.markdown(
+                    """
+                    <div style="font-size:20px; line-height:1.5;">
+                        Analiza únicamente el registro más reciente almacenado
+                        en VisionQA y genera un diagnóstico individual.
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
 
                 st.success("✔ Identificación de posibles causas raíz")
                 st.success("✔ Acciones correctivas priorizadas")
                 st.success("✔ Recomendaciones mediante metodología 6M")
 
-                st.caption("⏱️ Análisis individual del último registro disponible.")
+                st.markdown(
+                    '<div style="font-size: 17px; color: #6b7280;">'
+                    '<i class="bi bi-clock"></i>&nbsp; Análisis individual del último registro disponible.'
+                    '</div>',
+                    unsafe_allow_html=True
+                )
 
                 if st.button(
-                    "🧠 Analizar última inspección",
+                    "Analizar última inspección",
                     key="analizar_ultima_inspeccion",
                     width="stretch",
                 ):
@@ -2175,21 +2403,34 @@ Origen: {ultima.get('origen', 'Sin origen')}
 
             with st.container(border=True):
                 st.caption("🔵 ANÁLISIS HISTÓRICO")
-                st.markdown("## 📊 Últimas 10 inspecciones")
+                st.markdown(
+                    '## <i class="bi bi-bar-chart-line"></i> Últimas 10 inspecciones',
+                    unsafe_allow_html=True
+                )
 
-                st.write("""
-                    Analiza el historial reciente para identificar defectos
-                    recurrentes, tendencias y oportunidades de mejora.
-                    """)
+                st.markdown(
+                    """
+                    <div style="font-size:20px; line-height:1.5;">
+                        Analiza el historial reciente para identificar defectos
+                        recurrentes, tendencias y oportunidades de mejora.
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
 
-                st.info("📈 Identificación de tendencias")
-                st.info("📌 Detección de defectos recurrentes")
-                st.info("📊 Análisis comparativo del historial")
+                st.info("✓ Identificación de tendencias")
+                st.info("✓ Detección de defectos recurrentes")
+                st.info("✓ Análisis comparativo del historial")
 
-                st.caption("⏱️ Análisis agrupado de hasta diez registros recientes.")
+                st.markdown(
+                    '<div style="font-size: 17px; color: #6b7280;">'
+                    '<i class="bi bi-clock"></i>&nbsp; Análisis agrupado de hasta diez registros recientes.'
+                    '</div>',
+                    unsafe_allow_html=True
+                )
 
                 if st.button(
-                    "📊 Analizar historial",
+                    "Analizar historial",
                     key="analizar_ultimas_10_inspecciones",
                     width="stretch",
                 ):
@@ -2262,7 +2503,7 @@ Origen: {registro.get('origen', 'Sin origen')}
                 font-weight:700;
                 margin-bottom:8px;
             ">
-                🧠 Informe Ejecutivo IA
+                <i class="bi bi-file-earmark-text"></i>&nbsp; Informe Ejecutivo IA
             </div>
 
             <div style="
@@ -2297,16 +2538,13 @@ Origen: {registro.get('origen', 'Sin origen')}
                 with st.container(border=True):
 
                     if estado_tarjeta in ["APTO", "BUENA"]:
-
-                        st.success("✅ Resultado")
+                        st.success("✓ Resultado")
 
                     elif estado_tarjeta in ["NO APTO", "MALA"]:
-
-                        st.error("❌ Resultado")
+                        st.error("✕ Resultado")
 
                     else:
-
-                        st.warning("⚠️ Resultado")
+                        st.warning("⚠ Resultado")
 
                     st.metric(
                         label="Estado",
@@ -2319,7 +2557,7 @@ Origen: {registro.get('origen', 'Sin origen')}
 
                 with st.container(border=True):
 
-                    st.info("📊 Confianza")
+                    st.info("▥ Confianza")
 
                     st.metric(
                         label="Nivel",
@@ -2333,16 +2571,13 @@ Origen: {registro.get('origen', 'Sin origen')}
                 with st.container(border=True):
 
                     if prioridad_tarjeta == "ALTA":
-
-                        st.error("🔴 Prioridad")
+                        st.error("⚠ Prioridad")
 
                     elif prioridad_tarjeta == "MEDIA":
-
-                        st.warning("🟡 Prioridad")
+                        st.warning("⚠ Prioridad")
 
                     else:
-
-                        st.success("🟢 Prioridad")
+                        st.success("✓ Prioridad")
 
                     st.metric(
                         label="Nivel",
@@ -2355,7 +2590,7 @@ Origen: {registro.get('origen', 'Sin origen')}
 
                 with st.container(border=True):
 
-                    st.warning("🔎 Defecto")
+                    st.warning("◎ Defecto")
 
                     st.metric(
                         label="Detectado",
@@ -2368,7 +2603,7 @@ Origen: {registro.get('origen', 'Sin origen')}
 
                 with st.container(border=True):
 
-                    st.info("⚡ Acción")
+                    st.info("→ Acción")
 
                     st.metric(
                         label="Inmediata",
@@ -2417,12 +2652,43 @@ Origen: {registro.get('origen', 'Sin origen')}
 
 def mostrar_reportes():
     st.markdown(
+    """
+    <style>
+
+    /* Mensajes info, warning y error */
+    div[data-testid="stAlert"] p {
+        font-size: 20px !important;
+    }
+
+    /* Botones normales */
+    div[data-testid="stButton"] button p {
+        font-size: 20px !important;
+        font-weight: 600 !important;
+    }
+
+    /* Botones de descarga */
+    div[data-testid="stDownloadButton"] button p {
+        font-size: 20px !important;
+        font-weight: 600 !important;
+    }
+
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+    st.markdown(
         '<span class="reportes-page-marker"></span>',
         unsafe_allow_html=True,
     )
-    st.markdown("## 📂 Documentos disponibles")
+    st.markdown(
+        '## <i class="bi bi-folder2-open"></i>&nbsp; Documentos disponibles',
+        unsafe_allow_html=True
+    )
 
-    st.caption("Selecciona el documento que deseas generar o descargar.")
+    st.markdown(
+        '<div style="font-size:18px; color:#6b7280;">Selecciona el documento que deseas generar o descargar.</div>',
+        unsafe_allow_html=True
+    )
 
     st.write("")
 
@@ -2436,15 +2702,22 @@ def mostrar_reportes():
 
         with st.container(border=True):
 
-            st.markdown("# 📊")
+            st.markdown(
+                '<div style="font-size:30px;"><i class="bi bi-bar-chart-line"></i></div>',
+                unsafe_allow_html=True
+            )
 
             st.markdown("### Historial de inspecciones")
 
-            st.write("""
-                Exporta todos los registros de inspección
-                almacenados por VisionQA en formato Excel.
-                """)
-
+            st.markdown(
+                """
+                <div style="font-size:20px; line-height:1.5;">
+                    Exporta todos los registros de inspección
+                    almacenados por VisionQA en formato Excel.
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
             st.info("Incluye fecha, resultado, confianza, " "defecto y origen.")
 
             registros = obtener_inspecciones_api()
@@ -2473,7 +2746,7 @@ def mostrar_reportes():
                     )
 
                     st.download_button(
-                        label="📥 Descargar Excel",
+                        label="Descargar Excel",
                         data=archivo_excel,
                         file_name=nombre_excel,
                         mime=(
@@ -2484,7 +2757,10 @@ def mostrar_reportes():
                         width="stretch",
                     )
 
-                    st.caption(f"Registros disponibles: {total_registros}")
+                    st.markdown(
+                        f'<div style="font-size:17px; color:#6b7280;">Registros disponibles: {total_registros}</div>',
+                        unsafe_allow_html=True
+                    )
 
                 except Exception as error:
 
@@ -2499,7 +2775,10 @@ def mostrar_reportes():
 
         with st.container(border=True):
 
-            st.markdown("# 🤖")
+            st.markdown(
+                '<div style="font-size:30px;"><i class="bi bi-file-earmark-text"></i></div>',
+                unsafe_allow_html=True
+            )
 
             st.markdown("### Informe Ejecutivo IA")
 
@@ -2513,7 +2792,7 @@ def mostrar_reportes():
             if "pdf_informe_ia" in st.session_state:
 
                 st.download_button(
-                    label="📄 Descargar PDF",
+                    label="Descargar PDF",
                     data=st.session_state["pdf_informe_ia"],
                     file_name=st.session_state.get(
                         "nombre_pdf_ia",
@@ -2537,7 +2816,7 @@ def mostrar_reportes():
                 st.warning("Primero genera un análisis en la sección IA Generativa.")
 
                 st.button(
-                    "📄 PDF no disponible",
+                    "PDF no disponible",
                     key="pdf_no_disponible",
                     width="stretch",
                     disabled=True,
@@ -2557,24 +2836,41 @@ def mostrar_reportes():
 
 
 def mostrar_footer():
-
     st.markdown(
         """
-<div class="footer">
-<b>VisionQA v1.0</b><br>
-Sistema Inteligente de Inspección Visual Asistido por Inteligencia Artificial
-<hr>
-Instituto Superior de Ciencias de Ciudad Juárez<br>
-Proyecto desarrollado para IOT Technologies
-<hr>
-© 2026 VisionQA
+<style>
+.visionqa-footer {
+    margin-top: 24px;
+    padding: 16px 4px 8px 4px;
+    border-top: 1px solid #d9e1e8;
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.5;
+}
+.visionqa-footer-title {
+    color: #231F20;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 3px;
+}
+.visionqa-footer-info {
+    margin-top: 10px;
+}
+.visionqa-footer-copy {
+    margin-top: 10px;
+    color: #94a3b8;
+    font-size: 13px;
+}
+</style>
+<div class="visionqa-footer">
+<div class="visionqa-footer-title">VisionQA v1.0</div>
+<div>Sistema Inteligente de Inspección Visual Asistido por Inteligencia Artificial</div>
+<div class="visionqa-footer-info">Instituto Superior de Ciencias de Ciudad Juárez<br>Proyecto desarrollado para IOT Technologies</div>
+<div class="visionqa-footer-copy">© 2026 VisionQA</div>
 </div>
 """,
         unsafe_allow_html=True,
     )
-
-
-cargar_css("global.css")
 
 
 def mostrar_login():
@@ -3456,7 +3752,26 @@ def main():
     # -------- ACERCA DE --------
 
     elif pagina == "Acerca de":
+        st.markdown(
+            """
+            <style>
 
+            /* Texto normal de la sección Acerca de */
+            div[data-testid="stMarkdownContainer"] p {
+                font-size: 22px;
+                line-height: 1.6;
+            }
+
+            /* Listas */
+            div[data-testid="stMarkdownContainer"] li {
+                font-size: 22px;
+                line-height: 1.6;
+            }
+
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
         mostrar_titulo(
             "info.svg",
             "Acerca de VisionQA",

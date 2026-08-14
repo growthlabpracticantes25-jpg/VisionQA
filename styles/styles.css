@@ -358,7 +358,7 @@ header {
 
 .section-description {
     margin-top: 0.25rem;
-    font-size: 0.88rem;
+    font-size: 21px !important;
     color: #6b7280;
 }
 /* ==========================
