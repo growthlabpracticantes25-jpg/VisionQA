@@ -509,12 +509,52 @@ def mostrar_modulo_inspeccion():
         if resultado_normalizado in ["APTO", "BUENA"]:
 
             resultado_registro = "APTO"
-            st.success("✅ PIEZA APTA — La pieza cumple con los criterios de calidad.")
+            st.markdown("""
+                <div style="
+                    display:flex;
+                    align-items:center;
+                    gap:10px;
+                    background:rgba(34, 197, 94, 0.12);
+                    border:1px solid rgba(34, 197, 94, 0.35);
+                    padding:12px 14px;
+                    border-radius:7px;
+                ">
+                    <svg width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="#22c55e" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="9"></circle>
+                        <path d="M8 12l2.5 2.5L16 9"></path>
+                    </svg>
+                    <span>
+                        <strong>PIEZA APTA</strong> — La pieza cumple con los criterios de calidad.
+                    </span>
+                </div>
+                """, unsafe_allow_html=True)
 
         elif resultado_normalizado in ["NO APTO", "MALA"]:
 
             resultado_registro = "NO APTO"
-            st.error("❌ PIEZA NO APTA — La pieza requiere revisión o rechazo.")
+            st.markdown("""
+                <div style="
+                    display:flex;
+                    align-items:center;
+                    gap:10px;
+                    background:rgba(239, 68, 68, 0.12);
+                    border:1px solid rgba(239, 68, 68, 0.35);
+                    padding:12px 14px;
+                    border-radius:7px;
+                ">
+                    <svg width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="#ef4444" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="9"></circle>
+                        <path d="M9 9l6 6M15 9l-6 6"></path>
+                    </svg>
+                    <span>
+                        <strong>PIEZA NO APTA</strong> — La pieza requiere revisión o rechazo.
+                    </span>
+                </div>
+                """, unsafe_allow_html=True)
 
             if defecto:
                 st.markdown(
@@ -550,7 +590,7 @@ def mostrar_modulo_inspeccion():
         )
 
         if guardado_api:
-            st.caption(f"✅ {mensaje_api}")
+            st.caption(mensaje_api)
         else:
             st.warning(mensaje_api)
 
@@ -559,7 +599,18 @@ def mostrar_modulo_inspeccion():
         col_imagen, col_info = st.columns([2, 1])
 
         with col_imagen:
-            st.markdown("### 🖼️ Imagen procesada")
+            st.markdown("""
+            <div style="display:flex; align-items:center; gap:9px; margin-bottom:12px;">
+                <svg width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="#38bdf8" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <path d="M21 15l-5-5L5 21"></path>
+                </svg>
+                <h3 style="margin:0;">Imagen procesada</h3>
+            </div>
+            """, unsafe_allow_html=True)
 
             if imagen_resultado is not None:
                 try:
@@ -574,7 +625,19 @@ def mostrar_modulo_inspeccion():
 
             with st.container(border=True):
 
-                st.markdown("### 📊 Confianza del modelo")
+                st.markdown("""
+                <div style="display:flex; align-items:center; gap:9px; margin-bottom:10px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="#38bdf8" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19V10"></path>
+                        <path d="M10 19V5"></path>
+                        <path d="M16 19v-7"></path>
+                        <path d="M22 19H2"></path>
+                    </svg>
+                    <h3 style="margin:0;">Confianza del modelo</h3>
+                </div>
+                """, unsafe_allow_html=True)
 
                 st.metric(label="Resultado", value=f"{confianza_porcentaje:.2f}%")
 
@@ -582,7 +645,16 @@ def mostrar_modulo_inspeccion():
 
             with st.container(border=True):
 
-                st.markdown("### 📂 Origen de la imagen")
+                st.markdown("""
+                <div style="display:flex; align-items:center; gap:9px; margin-bottom:10px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="#38bdf8" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 6h6l2 2h10v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z"></path>
+                    </svg>
+                    <h3 style="margin:0;">Origen de la imagen</h3>
+                </div>
+                """, unsafe_allow_html=True)
 
                 st.metric(label="Fuente", value=origen)
 
@@ -592,7 +664,18 @@ def mostrar_modulo_inspeccion():
 
                     defecto_texto = str(defecto).replace("_", " ").title()
 
-                    st.markdown("### ⚠️ Defecto detectado")
+                    st.markdown("""
+                    <div style="display:flex; align-items:center; gap:9px; margin-bottom:10px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="#f59e0b" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10.3 3.6L2.5 17a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.6a2 2 0 0 0-3.4 0z"></path>
+                            <path d="M12 9v4"></path>
+                            <path d="M12 17h.01"></path>
+                        </svg>
+                        <h3 style="margin:0;">Defecto detectado</h3>
+                    </div>
+                    """, unsafe_allow_html=True)
 
                     st.metric(label="Clasificación", value=defecto_texto)
 
@@ -1158,34 +1241,22 @@ def mostrar_registro():
                 imagen_html = "<span>Sin imagen</span>"
 
                 if os.path.exists(ruta_imagen):
-                    try:
-                        with open(ruta_imagen, "rb") as imagen:
-                            imagen_base64 = base64.b64encode(
-                                imagen.read()
-                            ).decode("utf-8")
-
-                        extension = os.path.splitext(nombre_imagen)[1].lower()
-
-                        if extension == ".png":
-                            tipo_imagen = "png"
-                        else:
-                            tipo_imagen = "jpeg"
-
-                        imagen_html = f"""
-                        <img
-                            src="data:image/{tipo_imagen};base64,{imagen_base64}"
-                            style="
-                                width:60px;
-                                height:60px;
-                                object-fit:cover;
-                                border-radius:8px;
-                                border:1px solid #d1d5db;
-                            "
-                            alt="Miniatura de inspección"
-                        >
-                        """
-                    except Exception:
-                        imagen_html = "<span>No disponible</span>"
+                    imagen_html = """
+                    <span style="
+                        display:inline-flex;
+                        align-items:center;
+                        justify-content:center;
+                        width:60px;
+                        height:60px;
+                        border-radius:8px;
+                        background:#f1f5f9;
+                        font-size:22px;
+                    ">
+                        🖼️
+                    </span>
+                    """
+                else:
+                    imagen_html = "<span>No disponible</span>"
                 filas_html += dedent(f"""
                 <tr>
                     <td>{fila["Fecha"]}</td>
@@ -3596,7 +3667,7 @@ def main():
                 },
                 "icon": {
                     "color": "#FFFFFF",
-                    "font-size": "22px",
+                    "font-size": "24px",
                 },
                 "nav-link": {
                     "font-size": "17px",

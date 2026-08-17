@@ -1027,3 +1027,42 @@ section.main > div {
     border-radius: 999px;
     background: #1696d2;
 }
+/* =====================================================
+   ICONOGRAFÍA OFICIAL - IOT TECHNOLOGIES / VISIONQA
+   Brand Sheet: Grid 24x24 px | Trazo 2 px
+   ===================================================== */
+
+.vqa-icon {
+    width: 24px !important;
+    height: 24px !important;
+    min-width: 24px;
+    min-height: 24px;
+    flex-shrink: 0;
+
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    vertical-align: middle;
+}
+
+/* Azul institucional */
+.vqa-icon-primary {
+    stroke: #1D7EAE;
+}
+
+/* Azul profundo: elementos activos */
+.vqa-icon-active {
+    stroke: #0032A0;
+}
+
+/* Naranja: alertas */
+.vqa-icon-alert {
+    stroke: #FF661B;
+}
+
+/* Gris: elementos secundarios */
+.vqa-icon-neutral {
+    stroke: #BDC6C3;
+}
